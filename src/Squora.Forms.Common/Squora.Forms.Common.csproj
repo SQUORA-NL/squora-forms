@@ -5,7 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
       <IsPackable>true</IsPackable>
-    </PropertyGroup>
+      <Description>Shared enums and helpers used by the Squora Forms packages.</Description>
+  </PropertyGroup>
 
     <ItemGroup>
       <Compile Remove="Models\**" />

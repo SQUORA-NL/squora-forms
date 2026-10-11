@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <Description>MudBlazor implementation of the Squora Forms Blazor components.</Description>
   </PropertyGroup>
 
 

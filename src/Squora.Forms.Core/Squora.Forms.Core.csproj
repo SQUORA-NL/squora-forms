@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
+    <Description>Framework-neutral form model, rules engine and parsing for Squora Forms. No Blazor dependency, so the same form definition can be used from Blazor, React or any other host.</Description>
   </PropertyGroup>
 
   <ItemGroup>

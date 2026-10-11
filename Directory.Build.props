@@ -7,6 +7,7 @@
     <PackageProjectUrl>https://github.com/SQUORA-NL/squora-forms</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SQUORA-NL/squora-forms</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>forms;json-schema;ui-schema;dynamic-forms;blazor</PackageTags>
     <VersionPrefix>1.0.0</VersionPrefix>
     <IncludeSymbols>true</IncludeSymbols>

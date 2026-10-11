@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
+    <Description>Dependency-injection registration (`AddSquoraForms`) and component registry for Squora Forms on Blazor.</Description>
   </PropertyGroup>
 
   <ItemGroup>

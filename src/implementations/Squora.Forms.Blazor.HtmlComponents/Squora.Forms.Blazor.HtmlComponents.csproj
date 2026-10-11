@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <Description>Plain HTML implementation of the Squora Forms Blazor components. No third-party UI library required.</Description>
   </PropertyGroup>
 
 

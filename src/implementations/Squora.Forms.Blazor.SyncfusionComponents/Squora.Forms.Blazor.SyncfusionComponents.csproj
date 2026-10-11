@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <Description>Syncfusion implementation of the Squora Forms Blazor components. Requires your own Syncfusion license.</Description>
   </PropertyGroup>
 
   <ItemGroup>

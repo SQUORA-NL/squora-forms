@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <Description>Abstract Blazor field and layout components that the Squora Forms UI framework packages implement.</Description>
   </PropertyGroup>
 
 

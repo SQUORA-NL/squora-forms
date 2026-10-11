@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <Description>Blazor renderer base for Squora Forms: form component, layout and state services.</Description>
   </PropertyGroup>
 
 

@@ -6,7 +6,8 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Squora.Forms.JsonSchema</RootNamespace>
       <IsPackable>true</IsPackable>
-    </PropertyGroup>
+      <Description>JSON Schema generation and handling for Squora Forms.</Description>
+  </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Squora.Forms.Contracts\Squora.Forms.Contracts.csproj" />

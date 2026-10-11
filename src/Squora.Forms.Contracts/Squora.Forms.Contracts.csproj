@@ -5,7 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
       <IsPackable>true</IsPackable>
-    </PropertyGroup>
+      <Description>Interfaces for Squora Forms schema and scope providers.</Description>
+  </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Squora.Forms.Common\Squora.Forms.Common.csproj" />
