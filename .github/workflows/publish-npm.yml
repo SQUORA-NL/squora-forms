@@ -1,0 +1,34 @@
+name: Publish npm package
+# Create a GitHub release tagged react-vX.Y.Z (e.g. react-v1.0.0, react-v1.1.0-beta.1) to publish @squora/forms-react.
+on:
+  release:
+    types: [published]
+jobs:
+  publish:
+    if: startsWith(github.event.release.tag_name, 'react-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # npm Trusted Publishing (OIDC) + provenance
+    defaults:
+      run:
+        working-directory: react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+          cache-dependency-path: react/package-lock.json
+      - name: Use npm with Trusted Publishing support
+        run: npm install -g npm@^11.5.1
+      - run: npm ci
+      - name: Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#react-v}"
+          npm version "$VERSION" --no-git-tag-version -w @squora/forms-react
+          if [[ "$VERSION" == *-* ]]; then echo "NPM_TAG=next" >> "$GITHUB_ENV"; else echo "NPM_TAG=latest" >> "$GITHUB_ENV"; fi
+      - run: npm run build
+      - name: Publish
+        run: npm publish -w @squora/forms-react --access public --tag "$NPM_TAG"

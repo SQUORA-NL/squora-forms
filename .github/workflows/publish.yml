@@ -5,6 +5,8 @@ on:
     types: [published]
 jobs:
   publish:
+    # NuGet releases use tags like v1.2.3; npm releases use react-v1.2.3 (see publish-npm.yml)
+    if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # OIDC token for NuGet Trusted Publishing
