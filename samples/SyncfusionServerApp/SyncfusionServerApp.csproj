@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SquoraForms\Squora.Forms.csproj" />
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.SyncfusionComponents\Squora.Forms.Blazor.SyncfusionComponents.csproj" />
   </ItemGroup>
 
