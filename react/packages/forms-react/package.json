@@ -1,0 +1,67 @@
+{
+  "name": "@squora/forms-react",
+  "version": "1.0.0",
+  "description": "Render Squora Forms JSON Schema + UI Schema definitions as React forms. Same form definition as the Squora Forms .NET packages.",
+  "license": "MIT",
+  "author": "Squora",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SQUORA-NL/squora-forms.git",
+    "directory": "react/packages/forms-react"
+  },
+  "homepage": "https://github.com/SQUORA-NL/squora-forms#readme",
+  "bugs": "https://github.com/SQUORA-NL/squora-forms/issues",
+  "keywords": [
+    "forms",
+    "react",
+    "json-schema",
+    "ui-schema",
+    "dynamic-forms",
+    "form-builder"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup && cp src/styles.css dist/styles.css",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "ajv": "^8.18.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "react": "19.2.4",
+    "typescript": "^5",
+    "tsup": "^8"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "module": "./dist/index.mjs"
+}

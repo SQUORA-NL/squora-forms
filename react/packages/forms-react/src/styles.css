@@ -1,0 +1,138 @@
+/* @squora/forms-react default styles.
+   Themes: set data-theme="default" | "dark" | "compact" on a parent element.
+   Override the --sq-* variables to customise. */
+
+
+/* ── SquoraForm form ── */
+
+.sq-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sq-gap);
+}
+
+.sq-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sq-field label {
+  font-weight: 600;
+  font-size: var(--sq-font-size);
+  color: var(--sq-fg);
+}
+
+.sq-field input[type="text"],
+.sq-field input[type="number"],
+.sq-field input[type="date"],
+.sq-field input[type="datetime-local"],
+.sq-field textarea,
+.sq-field select {
+  padding: 8px 10px;
+  border: 1px solid var(--sq-border);
+  border-radius: var(--sq-radius);
+  font-size: var(--sq-font-size);
+  font-family: inherit;
+  width: 100%;
+  background: var(--sq-field-bg);
+  color: var(--sq-fg);
+}
+
+.sq-field input:focus,
+.sq-field textarea:focus,
+.sq-field select:focus {
+  outline: 2px solid var(--sq-focus-ring);
+  outline-offset: -1px;
+  border-color: var(--sq-focus-ring);
+}
+
+.sq-field input[aria-invalid="true"],
+.sq-field textarea[aria-invalid="true"],
+.sq-field select[aria-invalid="true"] {
+  border-color: var(--sq-error);
+}
+
+.sq-field input:disabled,
+.sq-field textarea:disabled,
+.sq-field select:disabled {
+  background-color: var(--sq-surface-alt);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.sq-boolean-field label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.sq-boolean-field input[type="checkbox"] {
+  width: auto;
+}
+
+.sq-error {
+  color: var(--sq-error);
+  font-size: 12px;
+}
+
+.sq-submit-button {
+  padding: 10px 20px;
+  background-color: var(--sq-primary);
+  color: white;
+  border: none;
+  border-radius: var(--sq-radius);
+  font-size: 15px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.sq-submit-button:hover {
+  background-color: var(--sq-primary-hover);
+}
+
+.sq-submit-button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+/* ── Actions ── */
+
+.sq-add-action {
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: var(--sq-radius);
+  border: 1px solid var(--sq-add-border);
+  background-color: var(--sq-add-bg);
+  color: var(--sq-add-color);
+  margin-bottom: 8px;
+}
+
+.sq-delete-action {
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: var(--sq-radius);
+  border: 1px solid var(--sq-del-border);
+  background-color: var(--sq-del-bg);
+  color: var(--sq-del-color);
+  align-self: center;
+}
+
+/* ── Layouts ── */
+
+.sq-group-layout {
+  border: 1px solid var(--sq-group-border);
+  border-radius: var(--sq-radius);
+  padding: 12px;
+  background: var(--sq-surface);
+}
+
+.sq-list-item {
+  border-left: 3px solid var(--sq-list-accent);
+  padding-left: 12px;
+  margin-bottom: 12px;
+}

@@ -321,3 +321,9 @@ fabric.properties
 
 # Local pack output
 artifacts/
+
+# npm workspace packages (not NuGet packages folder)
+!react/packages/
+!react/packages/**
+react/packages/**/node_modules/
+react/packages/**/dist/
