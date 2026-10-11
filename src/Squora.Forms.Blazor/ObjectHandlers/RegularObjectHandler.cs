@@ -165,6 +165,35 @@ namespace Squora.Forms.Blazor.ObjectHandlers
             return propInfo;
         }
 
+        /// <summary>
+        /// Parameter values come from JSON, where <c>1</c> is read as a 64-bit integer and <c>1.5</c> as a double. A
+        /// component property typed <c>double</c> (Minimum, Maximum, Step) or <c>int</c> cannot be set from the other, and
+        /// Blazor throws while setting it, which ends the whole circuit. Numbers are converted to the property's own type;
+        /// anything else, or a value that does not fit, is passed through unchanged.
+        /// </summary>
+        internal static object CoerceToProperty(Type componentType, string propertyName, object value)
+        {
+            if (value == null) { return value; }
+            var property = componentType.GetProperty(propertyName);
+            if (property == null) { return value; }
+
+            var target = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+            if (target.IsInstanceOfType(value) || !IsNumeric(target) || !IsNumeric(value.GetType())) { return value; }
+
+            try
+            {
+                return Convert.ChangeType(value, target, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (Exception ex) when (ex is OverflowException or InvalidCastException or FormatException)
+            {
+                return value;
+            }
+        }
+
+        private static bool IsNumeric(Type type) =>
+            Type.GetTypeCode(type) is TypeCode.SByte or TypeCode.Byte or TypeCode.Int16 or TypeCode.UInt16 or TypeCode.Int32
+                or TypeCode.UInt32 or TypeCode.Int64 or TypeCode.UInt64 or TypeCode.Single or TypeCode.Double or TypeCode.Decimal;
+
         public static List<string> GetPropertiesWithParameterAnnotation(Type componentType)
         {
             return componentType.GetProperties()
@@ -182,7 +211,7 @@ namespace Squora.Forms.Blazor.ObjectHandlers
             {
                 if (componentProperties.Contains(p.Key))
                 {
-                    validParameters.Add(p.Key, p.Value);
+                    validParameters.Add(p.Key, CoerceToProperty(componentType, p.Key, p.Value));
                 }
             }
             );

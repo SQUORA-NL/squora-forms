@@ -30,6 +30,12 @@ export function ContactForm() {
 
 See `react/demo` in the repository for complete examples (lists, groups, rules, themes).
 
+## One definition for Blazor and React
+
+`uiSchema` may be written either way: camelCase with `scope` (as above), or the PascalCase `DynamicFormModel` the Blazor packages and the
+Squora designer write (`DynamicType.ComponentType`, `Elements`, `Parameters.Path`). `SquoraForm` translates the second into the first;
+option labels, default values and rule schemas are never renamed. `normalizeModel` is exported if you need it yourself.
+
 ## Styling
 
 `styles.css` ships a default theme driven by `--sq-*` CSS variables. Set `data-theme="default" | "dark" | "compact"` on a parent element, or override the variables.

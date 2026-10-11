@@ -17,6 +17,7 @@ import {
 import { resolveVisibility, resolveEnabled } from './core/rules';
 import { validateForm } from './core/validation';
 import { useFormState } from './core/state';
+import { normalizeModel } from './core/normalize';
 import { createDefaultRegistry } from './renderers/defaults';
 import { UnknownField } from './renderers/fields/UnknownField';
 import { NumberDisplay } from './renderers/fields/NumberDisplay';
@@ -259,7 +260,7 @@ export interface SquoraFormProps {
 
 export function SquoraForm({
   schema,
-  uiSchema,
+  uiSchema: uiSchemaProp,
   initialValues,
   onSubmit,
   onChange,
@@ -268,6 +269,11 @@ export function SquoraForm({
   registry: externalRegistry,
 }: SquoraFormProps) {
   const registryRef = useRef(externalRegistry ?? createDefaultRegistry());
+  // The definition may be written the Blazor / designer way (PascalCase, Path); the renderers read camelCase / scope.
+  const uiSchema = useMemo(
+    () => (uiSchemaProp ? normalizeModel(uiSchemaProp) : uiSchemaProp),
+    [uiSchemaProp]
+  );
   const {
     state,
     changeField,
