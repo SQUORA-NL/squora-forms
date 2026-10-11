@@ -33,6 +33,10 @@ namespace Squora.Forms.Blazor.Components
             if (ValidationState != null)
             {
                 ValidationState.ValidationRequested += OnValidationRequested;
+                if (FormComponent != null)
+                {
+                    ValidationState.Register(FormComponent);
+                }
             }
         }
 
@@ -84,6 +88,10 @@ namespace Squora.Forms.Blazor.Components
             if (ValidationState != null)
             {
                 ValidationState.ValidationRequested -= OnValidationRequested;
+                if (FormComponent != null)
+                {
+                    ValidationState.Unregister(FormComponent);
+                }
             }
         }
     }

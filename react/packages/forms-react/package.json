@@ -45,7 +45,8 @@
   ],
   "scripts": {
     "build": "tsup && cp src/styles.css dist/styles.css",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "vitest run"
   },
   "dependencies": {
     "ajv": "^8.18.0"
@@ -56,8 +57,9 @@
   "devDependencies": {
     "@types/react": "^19",
     "react": "19.2.4",
+    "tsup": "^8",
     "typescript": "^5",
-    "tsup": "^8"
+    "vitest": "^3.2.7"
   },
   "publishConfig": {
     "access": "public",

@@ -44,6 +44,9 @@ export type {
   FormState,
 } from './core/types';
 
+// Accept a definition written the Blazor / designer way
+export { normalizeModel } from './core/normalize';
+
 // Scope utilities
 export {
   resolveScopePath,

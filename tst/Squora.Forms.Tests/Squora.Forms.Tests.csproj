@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\src\Squora.Forms.JsonSchema\Squora.Forms.JsonSchema.csproj" />
     <ProjectReference Include="..\..\src\Squora.Forms.UISchema\Squora.Forms.UISchema.csproj" />
     <ProjectReference Include="..\..\src\Squora.Forms.Blazor.Components\Squora.Forms.Blazor.Components.csproj" />
+    <ProjectReference Include="..\..\src\Squora.Forms.Blazor\Squora.Forms.Blazor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
