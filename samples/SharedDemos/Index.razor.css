@@ -1,0 +1,220 @@
+/* Landing page (Index) — precedent.dev-inspired, scoped to Index.razor.
+   Layout chrome (appbar, footer, background) lives in LandingLayout.razor.css. */
+
+/* Hero -------------------------------------------------------------- */
+
+.bd-hero {
+    padding: 7rem 1.5rem 5rem 1.5rem;
+    text-align: center;
+}
+
+.bd-hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.bd-pill {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #4f46e5;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    margin-bottom: 1.75rem;
+    animation: bd-fade-up 0.5s ease-out both;
+}
+
+.bd-hero-title {
+    font-size: clamp(2.75rem, 7vw, 5.25rem);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    margin: 0 0 1.5rem 0;
+    background: linear-gradient(180deg, #0a0a0a 0%, #78716c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: bd-fade-up 0.6s ease-out 0.05s both;
+}
+
+.bd-hero-sub {
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    color: #525252;
+    max-width: 680px;
+    margin: 0 auto 2.25rem auto;
+    animation: bd-fade-up 0.6s ease-out 0.1s both;
+}
+
+.bd-hero-cta {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: bd-fade-up 0.6s ease-out 0.15s both;
+}
+
+/* Buttons ----------------------------------------------------------- */
+
+.bd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    padding: 0 1.375rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.bd-btn-primary {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    border-color: #0a0a0a;
+}
+
+.bd-btn-primary:hover,
+.bd-btn-primary:focus-visible {
+    background-color: #ffffff;
+    color: #0a0a0a;
+    border-color: #0a0a0a;
+}
+
+.bd-btn-secondary {
+    background-color: #ffffff;
+    color: #0a0a0a;
+    border-color: #e5e7eb;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+.bd-btn-secondary:hover,
+.bd-btn-secondary:focus-visible {
+    background-color: #f9fafb;
+    border-color: #d4d4d8;
+}
+
+.bd-btn:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+}
+
+/* Feature grid ------------------------------------------------------ */
+
+.bd-features {
+    padding: 2.5rem 1.5rem 5rem 1.5rem;
+}
+
+.bd-features-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+@media (min-width: 720px) {
+    .bd-features-inner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1040px) {
+    .bd-features-inner {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.bd-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 1.625rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    animation: bd-fade-up 0.6s ease-out 0.2s both;
+}
+
+.bd-card:hover {
+    transform: translateY(-2px);
+    border-color: #d4d4d8;
+    box-shadow: 0 12px 20px -6px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.08);
+}
+
+::deep .bd-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.125rem;
+    background-color: #f5f5f5;
+    border: 1px solid #e5e7eb;
+    color: #0a0a0a;
+}
+
+::deep .bd-card-icon .mud-icon-root {
+    color: inherit;
+}
+
+.bd-card h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #0a0a0a;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.01em;
+}
+
+.bd-card p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #525252;
+    margin: 0;
+}
+
+/* Bottom CTA band --------------------------------------------------- */
+
+.bd-cta-band {
+    padding: 4rem 1.5rem 6rem 1.5rem;
+    text-align: center;
+}
+
+.bd-cta-band-inner {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.bd-cta-band h2 {
+    font-size: clamp(1.875rem, 3.2vw, 2.5rem);
+    font-weight: 700;
+    color: #0a0a0a;
+    margin: 0 0 0.75rem 0;
+    letter-spacing: -0.025em;
+}
+
+.bd-cta-band p {
+    font-size: 1.0625rem;
+    color: #525252;
+    margin: 0 0 1.75rem 0;
+}
+
+/* Animations -------------------------------------------------------- */
+
+@keyframes bd-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,120 @@
+/* SyncfusionServerApp site-level styles */
+
+html, body {
+    font-family: var(--e-font-family, 'Segoe UI', sans-serif);
+    height: 100%;
+    margin: 0;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar {
+    background-color: #1b2a3b;
+    flex: 0 0 250px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    overflow: hidden;
+}
+
+main {
+    flex: 1;
+    margin-left: 250px;
+    overflow-y: auto;
+    padding-top: 1rem;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+/* Nav menu */
+.top-row {
+    background-color: #1b2a3b;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+}
+
+.nav-scrollable {
+    overflow: hidden;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Demo layout */
+.demo-header-card {
+    margin-bottom: 1.5rem;
+}
+
+.demo-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .demo-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.demo-form {
+    min-width: 0;
+}
+
+.demo-output pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 0.85rem;
+    margin: 0;
+    min-height: 200px;
+}
+
+/* Error UI */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

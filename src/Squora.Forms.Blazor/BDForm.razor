@@ -1,0 +1,46 @@
+@inherits Squora.Forms.Blazor.Components.LayoutFormComponent
+
+<div class="sq-dynamicform" @onclick="@OnBackgroundClick">
+    @if (ShowEditModeToggle)
+    {
+        <EditModeToggle EditMode="@EditMode" EditModeChanged="@OnEditModeChanged" />
+    }
+    
+    <CascadingValue Value="dragStateService" IsFixed="true">
+        <CascadingValue Value="selectionStateService" IsFixed="true">
+            <CascadingValue Value="validationStateService" IsFixed="true">
+            <CascadingValue Value="FormModel" IsFixed="true">
+                @if (EditMode && ShowToolbox)
+                {
+                    <div class="bd-form-editor" @onclick:stopPropagation="true">
+                        <div class="bd-toolbox-top-container">
+                            <div class="bd-toolbox-header">
+                                <h4>Components</h4>
+                                <button class="bd-toolbox-toggle" @onclick="ToggleToolbox">@(isToolboxCollapsed ? "Show Components" : "Hide Components")</button>
+                            </div>
+                            @if (!isToolboxCollapsed)
+                            {
+                                <div class="bd-toolbox-content-top">
+                                    <ComponentToolbox />
+                                </div>
+                            }
+                        </div>
+                        <div class="bd-editor-main">
+                            <div class="bd-form-container-fullwidth">
+                                <DynamicComponent Type=@componentType Parameters=@validParameters />
+                            </div>
+                            <div class="bd-property-sidebar">
+                                <PropertyEditor />
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <DynamicComponent Type=@componentType Parameters=@validParameters />
+                }
+            </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
+</div> 

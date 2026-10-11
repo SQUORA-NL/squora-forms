@@ -1,0 +1,7 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Input
+@inherits  Squora.Forms.Blazor.Components.Input.IntComponentBase
+
+<BDFormComponentWrapper Class="intcomponent intcomponentstar" FormComponent="@this">
+    @Label
+    <MudRating @bind-SelectedValue=@NumberValue />
+</BDFormComponentWrapper>

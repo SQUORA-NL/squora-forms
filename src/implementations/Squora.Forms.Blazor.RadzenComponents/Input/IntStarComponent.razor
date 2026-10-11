@@ -1,0 +1,11 @@
+﻿@namespace Squora.Forms.Blazor.RadzenComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.IntComponentBase
+
+<BDFormComponentWrapper Class="intcomponent intcomponentstar" FormComponent="@this">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <RadzenText>@Label</RadzenText>
+    }
+
+        <RadzenRating @bind-Value="@NumberValue" />
+</BDFormComponentWrapper>

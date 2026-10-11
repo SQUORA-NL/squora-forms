@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "FirstName": { "type": "string" },
+    "LastName": { "type": "string" },
+    "BirthDate": { "type": "string", "format": "date" },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "IsActive": { "type": "boolean" },
+        "StreetName": { "type": "string" },
+        "City": { "type": "string" }
+      }
+    },
+    "Cars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Make": { "type": "string" },
+          "Model": { "type": "string" },
+          "Rating": { "type": "integer", "minimum": 0, "maximum": 10 },
+          "Comments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Text": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

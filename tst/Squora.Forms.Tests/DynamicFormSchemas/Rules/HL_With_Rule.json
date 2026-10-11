@@ -1,0 +1,17 @@
+{
+  "type": "HorizontalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Name",
+      "scope": "#/properties/name"
+    }
+  ],
+  "rule": {
+    "effect": "HIDE",
+    "condition": {
+      "scope": "#/properties/counter",
+      "schema": { "const": 10 }
+    }
+  }
+}

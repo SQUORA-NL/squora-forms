@@ -1,0 +1,7 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.AddActionBase
+
+<BDFormComponentWrapper Class="addaction" FormComponent="@this">
+    <MudButton OnClick="@AddItem" Disabled="@IsDisabled">@Label</MudButton>
+</BDFormComponentWrapper>
+

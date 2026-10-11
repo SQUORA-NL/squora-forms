@@ -1,0 +1,19 @@
+﻿@inherits SampleBasePage
+@page "/samples/components/string"
+
+<SampleDocumentation MarkDownFile="Samples.Components.StringSample.razor.md" Data="@data" FormModel="@model" >
+    <BDForm FormModel="@model" Components="@UserSettingsService.Components" Value="@data" ValueChanged="@update"></BDForm>
+</SampleDocumentation>
+
+
+@code {
+
+    private void update()
+    {
+        StateHasChanged();
+    }
+
+    public ExpandoObject data = new ExpandoObject();
+
+    public DynamicFormModel model = FormFactory.StringComponent("Name", "$.name");
+}

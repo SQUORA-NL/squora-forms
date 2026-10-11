@@ -1,0 +1,85 @@
+{
+  "dynamicType": { "componentType": "VerticalLayout" },
+  "elements": [
+    {
+      "dynamicType": { "componentType": "GroupLayout" },
+      "options": { "label": "Personal Information" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "HorizontalLayout" },
+          "elements": [
+            {
+              "dynamicType": { "componentType": "String" },
+              "parameters": { "scope": "$.firstName", "label": "First Name" }
+            },
+            {
+              "dynamicType": { "componentType": "String" },
+              "parameters": { "scope": "$.lastName", "label": "Last Name" }
+            }
+          ]
+        },
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.email", "label": "Email" }
+        },
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.phone", "label": "Phone" }
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "GroupLayout" },
+      "options": { "label": "Address" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.street", "label": "Street" }
+        },
+        {
+          "dynamicType": { "componentType": "HorizontalLayout" },
+          "elements": [
+            {
+              "dynamicType": { "componentType": "String" },
+              "parameters": { "scope": "$.city", "label": "City" }
+            },
+            {
+              "dynamicType": { "componentType": "String" },
+              "parameters": { "scope": "$.state", "label": "State" }
+            },
+            {
+              "dynamicType": { "componentType": "String" },
+              "parameters": { "scope": "$.zip", "label": "Zip" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "GroupLayout" },
+      "options": { "label": "Preferences" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "Boolean" },
+          "parameters": { "scope": "$.newsletter", "label": "Subscribe to newsletter" }
+        },
+        {
+          "dynamicType": { "componentType": "Dropdown" },
+          "parameters": {
+            "scope": "$.contactMethod",
+            "label": "Contact Method",
+            "options": { "email": "Email", "phone": "Phone", "sms": "SMS" }
+          }
+        },
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.notes", "label": "Notes" }
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "SubmitAction" },
+      "parameters": { "label": "Submit" }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "FirstName": "John",
+  "LastName": "Doe",
+  "BirthDate": "1995-06-29",
+  "Address": {
+    "IsActive": true,
+    "StreetName": "kabouterlaan",
+    "City": "Amsterdam"
+  },
+  "Cars": [
+    {
+      "Make": "Citroen",
+      "Model": "C4 cactus",
+      "Rating": 3,
+      "Comments": [
+        { "Text": "wowo" },
+        { "Text": "jaja" }
+      ]
+    },
+    {
+      "Make": "Mazda",
+      "Model": "3",
+      "Rating": 5,
+      "Comments": []
+    }
+  ]
+}

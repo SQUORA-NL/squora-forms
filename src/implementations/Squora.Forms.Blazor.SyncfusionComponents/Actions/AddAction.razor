@@ -1,0 +1,6 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.AddActionBase
+
+<BDFormComponentWrapper Class="addaction" FormComponent="@this">
+    <SfButton OnClick="@AddItem" Disabled="@IsDisabled">@Label</SfButton>
+</BDFormComponentWrapper>

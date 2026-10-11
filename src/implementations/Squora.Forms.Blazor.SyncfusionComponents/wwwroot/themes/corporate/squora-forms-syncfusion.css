@@ -1,0 +1,325 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Corporate / Syncfusion Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.SyncfusionComponents/themes/corporate/squora-forms-syncfusion.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Corporate palette overrides (Bootstrap5 CSS variables)
+   -------------------------------------------------------------------------- */
+:root {
+    --bs-primary: #2563eb;
+    --bs-primary-rgb: 37, 99, 235;
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #111827;
+    --bs-border-color: #d1d5db;
+    --bs-card-bg: #ffffff;
+    --bs-card-border-color: #d1d5db;
+    --bs-secondary-bg: #f3f4f6;
+}
+
+/* --------------------------------------------------------------------------
+   2. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.sf-layout-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sf-layout-stack.edit-mode {
+    gap: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Horizontal Stack
+   -------------------------------------------------------------------------- */
+.sf-horizontal-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.sf-horizontal-layout.edit-mode {
+    gap: 0;
+}
+
+.sf-horizontal-layout:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Layout: Group (Syncfusion e-card) — corporate blue accent
+   -------------------------------------------------------------------------- */
+.groupcomponent .e-card {
+    border: 1px solid #d1d5db;
+    border-left: 3px solid #2563eb;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.groupcomponent .e-card-header {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-bottom: 1px solid #d1d5db;
+    padding: 12px 16px;
+}
+
+.groupcomponent .e-card-header-title {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #2563eb;
+}
+
+.groupcomponent .e-card-content {
+    padding: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Component wrappers — ensure SF inputs fill their container
+   -------------------------------------------------------------------------- */
+.stringcomponent,
+.intcomponent,
+.numbercomponent,
+.datetimecomponent,
+.dropdowncomponent {
+    display: block;
+    width: 100%;
+}
+
+.stringcomponent .e-input-group,
+.intcomponent .e-input-group,
+.numbercomponent .e-input-group,
+.datetimecomponent .e-input-group,
+.dropdowncomponent .e-ddl.e-input-group,
+.dropdowncomponent .e-ddl {
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.stringcomponent .e-float-input,
+.intcomponent .e-float-input,
+.numbercomponent .e-float-input,
+.datetimecomponent .e-float-input,
+.dropdowncomponent .e-float-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   6b. Checkbox and button wrappers
+   -------------------------------------------------------------------------- */
+.boolcomponent {
+    display: block;
+    padding: 4px 0;
+}
+
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction,
+.deleteaction {
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   7. Syncfusion input corporate overrides
+   -------------------------------------------------------------------------- */
+
+/* Focused underline in corporate blue */
+.e-float-input.e-input-focus::before,
+.e-float-input.e-input-focus::after,
+.e-float-input.e-control-wrapper.e-input-focus::before,
+.e-float-input.e-control-wrapper.e-input-focus::after,
+.e-input-group.e-input-focus::before,
+.e-input-group.e-input-focus::after {
+    background: #2563eb !important;
+}
+
+/* Float label when focused — corporate blue */
+.e-float-input.e-input-focus label,
+.e-float-input.e-control-wrapper.e-input-focus label,
+.e-float-input input:not(:placeholder-shown) ~ label,
+.e-float-input.e-control-wrapper input:not(:placeholder-shown) ~ label {
+    color: #2563eb !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Form Fields: bd-field (opt-in inline labels)
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   9. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: #dc2626;
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   11. Showcase overrides (corporate)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #111827;
+    background: #eef2f7;
+}
+
+.showcase-header h1 {
+    color: #2563eb;
+}
+
+.showcase-header p {
+    color: #6b7280;
+}
+
+.showcase-section h2 {
+    color: #111827;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+.form-container {
+    background: #ffffff;
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.showcase-controls {
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+.showcase-select-label {
+    color: #6b7280;
+}
+
+.showcase-select {
+    color: #111827;
+    background-color: #ffffff;
+    border-color: #d1d5db;
+}
+
+.showcase-tabs {
+    border-bottom-color: #d1d5db;
+}
+
+.showcase-tab {
+    color: #6b7280;
+}
+
+.showcase-tab:hover {
+    color: #111827;
+}
+
+.showcase-tab.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+}
+
+.showcase-section-desc {
+    color: #6b7280;
+}
+
+.json-output {
+    border-color: #d1d5db;
+}
+
+.json-output summary {
+    color: #6b7280;
+    background: #f3f4f6;
+}
+
+.json-output summary:hover {
+    background: #e5e7eb;
+}
+
+.json-output pre {
+    background: #1e293b;
+    color: #94a3b8;
+    border-top-color: #d1d5db;
+}
+
+body:has(.showcase-page) {
+    background: #eef2f7;
+}
+
+/* --------------------------------------------------------------------------
+   12. Popup z-index overrides (above MudBlazor's 1300 and Radzen's overlays)
+   -------------------------------------------------------------------------- */
+.e-popup,
+.e-popup-wrapper,
+.e-ddl.e-popup,
+.e-calendar-container,
+.e-date-range-wrapper.e-popup {
+    z-index: 1500 !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .sf-horizontal-layout:not(.edit-mode) {
+        flex-direction: column;
+    }
+
+    .sf-horizontal-layout:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

@@ -1,0 +1,17 @@
+@namespace Squora.Forms.Blazor.RadzenComponents.Layout
+@inherits  Squora.Forms.Blazor.Components.Layout.ListComponentBase
+
+<BDFormComponentWrapper Class="listcomponent" FormComponent="@this">
+    <RadzenText>@Label</RadzenText>
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Start">
+                @for (int i = 0; i < _listValue.Count; i++)
+            {
+                @foreach (var element in this.FormModel.Elements)
+                {
+                    <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersFor(element, i) />
+                }
+            }
+        </RadzenStack>
+    </RadzenCard>
+</BDFormComponentWrapper>

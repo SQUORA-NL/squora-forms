@@ -1,0 +1,70 @@
+﻿@page "/"
+@using Squora.Forms.Core.Models
+@using Squora.Forms.Blazor
+@using Squora.Forms.Blazor.Components.Factories
+@using Squora.Forms.Common.Enums;
+@using System.Text.Json;
+@using Squora.Forms.Blazor.MudBlazorComponents.Extensions;
+@using System.Dynamic
+
+@inject ComponentsList DynamicComponentList
+
+<PageTitle></PageTitle>
+
+<BDForm FormModel=@model 
+        Components=@DynamicComponentList 
+        Value="@data" 
+        ValueChanged="@update" 
+        EditMode="@editMode" 
+        ShowEditModeToggle="true"
+        EditModeChanged="@OnEditModeChanged"></BDForm>
+
+<MudCard>
+    <MudCardHeader>
+        Data
+    </MudCardHeader>
+    <MudCardContent>
+        @result
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    private string result = string.Empty;
+    private bool editMode = true;
+
+    private void update()
+    {
+        result = JsonSerializer.Serialize(data);
+        StateHasChanged();
+    }
+
+    private void OnEditModeChanged(bool newEditMode)
+    {
+        editMode = newEditMode;
+        StateHasChanged();
+    }
+
+    public ExpandoObject data = new ExpandoObject();
+
+    public DynamicFormModel model = FormFactory.GroupLayout(group =>
+        group
+           .WithParameter("Collapsed", false)
+           .WithParameter("HeaderModel", HeaderForm())
+           .WithElements(DetailForm())
+        ).WithTypeDefinionName("Collapsable");
+
+
+    private static DynamicFormModel HeaderForm()
+    {
+        return FormFactory.StringDisplay("Name", "$.name");
+    }
+
+    private static DynamicFormModel DetailForm()
+    {
+        return FormFactory.VerticalLayout(
+            FormFactory.StringComponent("Name", "$.name"),
+            FormFactory.StringComponent("City", "$.city")
+            );
+    }
+}

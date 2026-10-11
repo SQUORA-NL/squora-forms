@@ -1,0 +1,15 @@
+/* Specific styles for number/rating components */
+.numbercomponent .rating label {
+    cursor: pointer;
+    font-size: 2rem;
+}
+
+    .numbercomponent .rating label:hover,
+    .numbercomponent .rating label:hover ~ label,
+    .numbercomponent .rating input[type="radio"]:checked ~ label {
+        content: "★";
+    }
+
+    .numbercomponent .rating input[type="radio"] {
+        display: none;
+    }

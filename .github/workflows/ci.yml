@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: dotnet build SquoraForms.sln -c Release
+      - run: dotnet test SquoraForms.sln -c Release --no-build
+  react:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: react/package-lock.json
+      - run: npm ci
+      - run: npm run build

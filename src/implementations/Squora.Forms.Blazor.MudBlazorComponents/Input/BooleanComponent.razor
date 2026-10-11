@@ -1,0 +1,6 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.BooleanComponentBase
+
+<BDFormComponentWrapper Class="boolcomponent" FormComponent="@this">
+    <MudCheckBox @bind-Value="@BooleanValue" Label="@Label" Disabled="@IsDisabled" />
+</BDFormComponentWrapper>

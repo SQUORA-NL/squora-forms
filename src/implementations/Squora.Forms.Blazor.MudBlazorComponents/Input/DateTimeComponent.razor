@@ -1,0 +1,16 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.DateTimeComponentBase
+
+<BDFormComponentWrapper Class="datetimecomponent" FormComponent="@this" ShowValidation="false">
+    <MudDatePicker @bind-Date="@DateTimeValue" Label="@Label" Variant="Variant.Outlined" Validation="@(new Func<string, string>(ValueMatch))" AutoClose="true" Disabled="@IsDisabled" />
+</BDFormComponentWrapper>
+
+@code{
+         
+    private string ValueMatch(string arg)
+    {
+        if(!IsValid)
+            return ValidationString;
+        return null;
+    }
+ }

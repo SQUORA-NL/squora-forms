@@ -1,0 +1,343 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Dark / Radzen Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.RadzenComponents/themes/dark/squora-forms-radzen.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Dark palette overrides (Radzen CSS variables)
+   -------------------------------------------------------------------------- */
+:root {
+    --rz-base-100: #18181b;
+    --rz-base-200: #1c1c1f;
+    --rz-base-300: #27272a;
+    --rz-base-background-color: #09090b;
+    --rz-text-color: #fafafa;
+    --rz-text-secondary-color: #a1a1aa;
+    --rz-text-disabled-color: #52525b;
+    --rz-border-color: #27272a;
+    --rz-danger: #ef4444;
+    --rz-primary: #fafafa;
+    --rz-primary-text: #09090b;
+    --rz-input-background-color: #09090b;
+    --rz-input-border-color: #27272a;
+    --rz-input-color: #fafafa;
+}
+
+/* --------------------------------------------------------------------------
+   2. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.rz-stack:not(.edit-mode) {
+    gap: 20px !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Horizontal Stack — children distribute equally
+   -------------------------------------------------------------------------- */
+.rz-stack[style*="row"]:not(.edit-mode) {
+    gap: 16px !important;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.rz-stack[style*="row"]:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Layout: Group (RadzenCard with role="group")
+   -------------------------------------------------------------------------- */
+.groupcomponent .rz-card {
+    margin-bottom: 16px;
+    border: 1px solid var(--rz-base-300, #27272a);
+    border-radius: 8px;
+    background: var(--rz-base-100, #18181b);
+}
+
+.groupcomponent .rz-card > .rz-stack > .rz-text {
+    font-weight: 600;
+    font-size: 15px;
+    padding: 12px 20px;
+    background: var(--rz-base-200, #1c1c1f);
+    border-bottom: 1px solid var(--rz-base-300, #27272a);
+    color: var(--rz-text-color, #fafafa);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   5b. Component wrappers — flex-column for label-above-input layout
+   -------------------------------------------------------------------------- */
+.stringcomponent,
+.intcomponent,
+.numbercomponent,
+.datetimecomponent,
+.dropdowncomponent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.stringcomponent .rz-textbox,
+.intcomponent .rz-textbox,
+.numbercomponent .rz-numeric,
+.numbercomponent .rz-spinner,
+.datetimecomponent .rz-datepicker-input,
+.dropdowncomponent .rz-dropdown,
+.dropdowncomponent .rz-dropdown-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.boolcomponent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.boolcomponent .bd-label {
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--rz-text-color, #fafafa);
+    margin: 0;
+    user-select: none;
+}
+
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction, .deleteaction { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   6. Form Fields: Label + Input wrapper
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Radzen Input Spacing (legacy — kept for backward compat)
+   -------------------------------------------------------------------------- */
+.groupcomponent .rz-textbox,
+.groupcomponent .rz-dropdown,
+.groupcomponent .rz-datepicker,
+.verticalcomponent .rz-textbox,
+.verticalcomponent .rz-dropdown,
+.verticalcomponent .rz-datepicker,
+.horizontalcomponent .rz-textbox,
+.horizontalcomponent .rz-dropdown,
+.horizontalcomponent .rz-datepicker {
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   8. Focus Indicators (WCAG 2.1 - light outline for dark bg)
+   -------------------------------------------------------------------------- */
+.rz-textbox:focus-visible,
+.rz-dropdown:focus-visible,
+.rz-datepicker input:focus-visible,
+.rz-checkbox input:focus-visible,
+.rz-button:focus-visible {
+    outline: 2px solid #e4e4e7;
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: var(--rz-danger, #ef4444);
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: var(--rz-danger, #ef4444);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .rz-stack[style*="row"]:not(.edit-mode) {
+        flex-direction: column !important;
+    }
+
+    .rz-stack[style*="row"]:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Showcase overrides (dark)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #fafafa;
+    background: #09090b;
+}
+
+/* --------------------------------------------------------------------------
+   13. Tabs + section description (dark) — missing from base showcase.css
+   -------------------------------------------------------------------------- */
+.showcase-tabs {
+    border-bottom-color: #27272a;
+}
+
+.showcase-tab {
+    color: #a1a1aa;
+}
+
+.showcase-tab:hover {
+    color: #fafafa;
+}
+
+.showcase-tab.active {
+    color: #fafafa;
+    border-bottom-color: #fafafa;
+}
+
+.showcase-section-desc {
+    color: #a1a1aa;
+}
+
+/* --------------------------------------------------------------------------
+   14. Radzen input dark overrides (material-base.css uses hardcoded light colors)
+   -------------------------------------------------------------------------- */
+.rz-textbox,
+.rz-numeric,
+.rz-spinner-input {
+    background-color: #09090b !important;
+    color: #fafafa !important;
+    border-color: #27272a !important;
+}
+
+.rz-textbox:focus,
+.rz-numeric:focus {
+    border-color: #e4e4e7 !important;
+}
+
+.rz-dropdown .rz-helper-hidden-accessible,
+.rz-multiselect-label {
+    color: #fafafa;
+}
+
+.rz-overlay-panel {
+    background: #18181b;
+    border: 1px solid #27272a;
+    color: #fafafa;
+}
+
+.rz-listbox .rz-listbox-item,
+.rz-dropdown-panel .rz-dropdown-item {
+    color: #fafafa;
+}
+
+.rz-listbox .rz-listbox-item:hover,
+.rz-dropdown-panel .rz-dropdown-item:hover,
+.rz-listbox .rz-state-highlight,
+.rz-dropdown-panel .rz-state-highlight {
+    background-color: #27272a;
+}
+
+.showcase-header h1 {
+    color: #fafafa;
+}
+
+.showcase-header p {
+    color: #a1a1aa;
+}
+
+.showcase-section h2 {
+    color: #fafafa;
+}
+
+.form-container {
+    background: #18181b;
+    border-color: #27272a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.showcase-controls {
+    background: #18181b;
+    border-color: #27272a;
+}
+
+.showcase-select-label {
+    color: #a1a1aa;
+}
+
+.showcase-select {
+    color: #fafafa;
+    background-color: #09090b;
+    border-color: #27272a;
+}
+
+.json-output {
+    border-color: #27272a;
+}
+
+.json-output summary {
+    color: #a1a1aa;
+    background: #18181b;
+}
+
+.json-output summary:hover {
+    background: #27272a;
+}
+
+.json-output pre {
+    background: #000000;
+    color: #a1a1aa;
+    border-top-color: #27272a;
+}
+
+body:has(.showcase-page) {
+    background: #09090b;
+    color-scheme: dark;
+}

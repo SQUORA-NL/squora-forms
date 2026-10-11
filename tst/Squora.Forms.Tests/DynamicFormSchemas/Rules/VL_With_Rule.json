@@ -1,0 +1,11 @@
+{
+  "type": "VerticalLayout",
+  "elements": [],
+  "rule": {
+    "effect": "HIDE",
+    "condition": {
+      "scope": "#/properties/counter",
+      "schema": { "const": 10 }
+    }
+  }
+}

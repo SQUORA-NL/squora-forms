@@ -1,0 +1,10 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.IntComponentBase
+
+<BDFormComponentWrapper Class="intcomponent" FormComponent="@this" ShowValidation="false">
+    <SfNumericTextBox TValue="int"
+                      @bind-Value="@NumberValue"
+                      Placeholder="@Label"
+                      FloatLabelType="FloatLabelType.Auto"
+                      Enabled="@(!IsDisabled)" />
+</BDFormComponentWrapper>

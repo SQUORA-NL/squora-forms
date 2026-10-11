@@ -1,0 +1,131 @@
+{
+  "dynamicType": { "componentType": "GroupLayout" },
+  "elements": [
+    {
+      "dynamicType": { "componentType": "String" },
+      "parameters": { "scope": "$.FirstName", "label": "First Name" }
+    },
+    {
+      "dynamicType": { "componentType": "String" },
+      "parameters": { "scope": "$.LastName", "label": "Last Name" }
+    },
+    {
+      "dynamicType": { "componentType": "DateTime" },
+      "parameters": { "scope": "$.BirthDate", "label": "Birth Date" }
+    },
+    {
+      "dynamicType": { "componentType": "Boolean" },
+      "parameters": { "scope": "$.Address.IsActive", "label": "Is address Active" }
+    },
+    {
+      "dynamicType": { "componentType": "GroupLayout" },
+      "options": { "label": "Address" },
+      "rules": [
+        {
+          "effect": "HIDE",
+          "condition": {
+            "scope": "#/properties/Address/properties/IsActive",
+            "schema": { "const": false }
+          }
+        }
+      ],
+      "elements": [
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.Address.StreetName", "label": "Street Name" }
+        },
+        {
+          "dynamicType": { "componentType": "Dropdown" },
+          "parameters": {
+            "scope": "$.Address.City",
+            "label": "City",
+            "options": {
+              "Utrecht": "Utrecht",
+              "Oradea": "Oradea",
+              "Amsterdam": "Amsterdam"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "AddAction" },
+      "parameters": {
+        "scope": "$.Cars",
+        "label": "+ car",
+        "defaultValue": { "Make": "", "Model": "", "Rating": 0, "Comments": [] }
+      }
+    },
+    {
+      "dynamicType": { "componentType": "NumberDisplay" },
+      "parameters": { "scope": "$.Cars", "label": "Cars:" }
+    },
+    {
+      "dynamicType": { "componentType": "List" },
+      "parameters": { "scope": "$.Cars", "label": "Cars" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "GroupLayout" },
+          "elements": [
+            {
+              "dynamicType": { "componentType": "HorizontalLayout" },
+              "elements": [
+                {
+                  "dynamicType": { "componentType": "String" },
+                  "parameters": { "scope": "@.Make", "label": "Make" }
+                },
+                {
+                  "dynamicType": { "componentType": "String" },
+                  "parameters": { "scope": "@.Model", "label": "Model" }
+                },
+                {
+                  "dynamicType": { "componentType": "Int" },
+                  "parameters": { "scope": "@.Rating", "label": "Rating" }
+                },
+                {
+                  "dynamicType": { "componentType": "DeleteAction" },
+                  "parameters": { "scope": "@", "label": "Delete Car" }
+                }
+              ]
+            },
+            {
+              "dynamicType": { "componentType": "AddAction" },
+              "parameters": {
+                "scope": "@.Comments",
+                "label": "+ Comment",
+                "defaultValue": { "Text": "" }
+              }
+            },
+            {
+              "dynamicType": { "componentType": "NumberDisplay" },
+              "parameters": { "scope": "@.Comments", "label": "Comments:" }
+            },
+            {
+              "dynamicType": { "componentType": "List" },
+              "parameters": { "scope": "@.Comments" },
+              "elements": [
+                {
+                  "dynamicType": { "componentType": "HorizontalLayout" },
+                  "elements": [
+                    {
+                      "dynamicType": { "componentType": "String" },
+                      "parameters": { "scope": "@.Text", "label": "Comment Text" }
+                    },
+                    {
+                      "dynamicType": { "componentType": "DeleteAction" },
+                      "parameters": { "scope": "@", "label": "Delete" }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "SubmitAction" },
+      "parameters": { "label": "Save" }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+﻿@namespace Squora.Forms.Blazor.RadzenComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.SubmitActionBase
+
+<BDFormComponentWrapper Class="submitaction" FormComponent="@this">
+    <RadzenButton Click="@Submit" ButtonType="ButtonType.Submit" Disabled="@IsDisabled">@Label</RadzenButton>
+</BDFormComponentWrapper>

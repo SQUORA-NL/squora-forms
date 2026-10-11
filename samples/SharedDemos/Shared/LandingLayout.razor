@@ -1,0 +1,36 @@
+@inherits LayoutComponentBase
+@using MudBlazor
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<div class="bd-landing-root">
+    <header class="bd-landing-appbar">
+        <div class="bd-landing-appbar-inner">
+            <a class="bd-landing-brand" href="/">Blazor Dynamics</a>
+            <nav class="bd-landing-appbar-nav">
+                <a href="/documentation/getting-started">Docs</a>
+                <a href="/samples/components/string">Samples</a>
+                <a href="/showcase/form" target="_blank" rel="noopener">Showcase</a>
+                <a href="/editor/form" target="_blank" rel="noopener">Editor</a>
+            </nav>
+        </div>
+    </header>
+    <main class="bd-landing-main">
+        @Body
+    </main>
+    <footer class="bd-landing-footer">
+        <div class="bd-landing-footer-inner">
+            <div class="bd-landing-footer-brand">
+                <strong>Blazor Dynamics</strong> · Schema-driven forms for Blazor
+            </div>
+            <nav class="bd-landing-footer-nav">
+                <a href="/documentation/getting-started">Docs</a>
+                <a href="/showcase/form" target="_blank" rel="noopener">Showcase</a>
+                <a href="/editor/form" target="_blank" rel="noopener">Editor</a>
+            </nav>
+        </div>
+    </footer>
+</div>

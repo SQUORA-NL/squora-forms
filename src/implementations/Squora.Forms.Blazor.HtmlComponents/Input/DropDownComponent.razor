@@ -1,0 +1,23 @@
+﻿@namespace Squora.Forms.Blazor.HtmlComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.DropDownComponentBase
+
+<BDFormComponentWrapper Class="dropdowncomponent" FormComponent="@this">
+    <label for="@ComponentId" class="bd-label">
+        @Label
+        @if (Required)
+        {
+            <span class="bd-required-indicator" aria-hidden="true">*</span>
+            <span class="sr-only">required</span>
+        }
+    </label>
+    <select id="@ComponentId" @onchange="HandleChange"
+            disabled="@IsDisabled"
+            aria-invalid="@(IsInvalid ? "true" : null)"
+            aria-required="@(Required ? "true" : null)"
+            aria-describedby="@ErrorMessageId">
+        @foreach (var option in Options)
+        {
+            <option value="@GetUniqueId(option.Key)">@option.Value</option>
+        }
+    </select>
+</BDFormComponentWrapper>

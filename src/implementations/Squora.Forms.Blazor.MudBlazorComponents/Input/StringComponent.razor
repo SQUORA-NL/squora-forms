@@ -1,0 +1,16 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.StringComponentBase
+
+<BDFormComponentWrapper Class="stringcomponent" FormComponent="@this" ShowValidation="false">
+    <MudTextField @bind-Value="@StringValue" Label="@Label" Variant="Variant.Outlined" Validation="@(new Func<string, string>(ValueValidation))" Disabled="@IsDisabled" />
+</BDFormComponentWrapper>
+
+@code {
+
+    private string ValueValidation(string arg)
+    {
+        if (!IsValid)
+            return ValidationString;
+        return null;
+    }
+ }

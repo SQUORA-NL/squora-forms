@@ -1,0 +1,38 @@
+﻿@namespace SharedDemos.Shared.Components
+@inherits Documentation
+@using System.Reflection
+@using Newtonsoft.Json
+
+<MudCard>
+    <MudCardHeader>
+        <h3>Documentation</h3>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudMarkdown Value="@markdownContent" />
+    </MudCardContent>
+</MudCard>
+<div style="min-height:50px;">
+
+</div>
+<MudCard>
+    <h3>Live demo</h3>
+    @if (ShowPlaygroundButton)
+    {
+        <MudCardHeader>
+            <MudButton OnClick="@GotoPlayground">Edit in playground</MudButton>
+        </MudCardHeader>
+    }
+    <MudCardContent>
+        @ChildContent
+    </MudCardContent>
+</MudCard>
+<div style="min-height:50px;">
+</div>
+<MudCard>
+    <MudCardHeader>
+        <h3>Resulting data</h3>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudMarkdown @key="@refreshKey" Value="@dataResult" />
+    </MudCardContent>
+</MudCard>

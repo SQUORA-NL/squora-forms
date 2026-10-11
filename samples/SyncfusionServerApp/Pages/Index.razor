@@ -1,0 +1,90 @@
+@page "/"
+@using System.Text.Json
+@using System.Dynamic
+@using Squora.Forms.Core.Models
+@using Squora.Forms.Blazor
+@using Squora.Forms.Blazor.Components.Factories
+@using Squora.Forms.Common.Enums
+
+@inject ComponentsList DynamicComponentList
+
+<PageTitle>Syncfusion Demo</PageTitle>
+
+<div class="e-card demo-header-card">
+    <div class="e-card-header">
+        <div class="e-card-header-caption">
+            <span class="e-card-header-title">SquoraForms — Syncfusion Controls</span>
+        </div>
+    </div>
+    <div class="e-card-content">
+        Demonstrates all SquoraForms field types rendered with native Syncfusion Blazor controls.
+        To switch themes, change the CSS link in <code>Pages/_Host.cshtml</code>.
+    </div>
+</div>
+
+<div class="demo-layout">
+    <div class="demo-form">
+        <BDForm FormModel="@model"
+                Components="@DynamicComponentList"
+                Value="@data"
+                ValueChanged="@Update"
+                EditMode="@editMode"
+                ShowEditModeToggle="true"
+                EditModeChanged="@OnEditModeChanged" />
+    </div>
+
+    <div class="e-card demo-output">
+        <div class="e-card-header">
+            <div class="e-card-header-caption">
+                <span class="e-card-header-title">Form Data (JSON)</span>
+            </div>
+        </div>
+        <div class="e-card-content">
+            <pre>@result</pre>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string result = "{}";
+    private bool editMode = false;
+    public ExpandoObject data = new ExpandoObject();
+
+    private void Update()
+    {
+        result = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        StateHasChanged();
+    }
+
+    private void OnEditModeChanged(bool newEditMode)
+    {
+        editMode = newEditMode;
+        StateHasChanged();
+    }
+
+    public DynamicFormModel model = FormFactory.GroupLayout(
+        FormFactory.HorizontalLayout(
+            FormFactory.StringComponent("First Name", "$.firstName"),
+            FormFactory.StringComponent("Last Name", "$.lastName")
+        ),
+        FormFactory.HorizontalLayout(
+            FormFactory.IntComponent("Age", "$.age"),
+            FormFactory.NumberComponent("Salary", "$.salary")
+        ),
+        FormFactory.DropDownComponent("Role", "$.role",
+            new Dictionary<object, string>
+            {
+                { "admin", "Administrator" },
+                { "user", "User" },
+                { "guest", "Guest" }
+            }
+        ),
+        FormFactory.DateTimeComponent("Start Date", "$.startDate"),
+        FormFactory.BooleanComponent("Active", "$.isActive"),
+        FormFactory.GroupLayout(
+            FormFactory.StringComponent("Street", "$.address.street"),
+            FormFactory.StringComponent("City", "$.address.city")
+        ),
+        FormFactory.SubmitAction("Submit")
+    );
+}

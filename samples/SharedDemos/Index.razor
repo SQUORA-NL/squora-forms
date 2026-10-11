@@ -1,0 +1,70 @@
+@page "/"
+@layout LandingLayout
+@using MudBlazor
+
+<PageTitle>Blazor Dynamics — Dynamic forms for Blazor</PageTitle>
+
+<section class="bd-hero">
+    <div class="bd-hero-inner">
+        <span class="bd-pill">Open source · Schema-driven · Multi-framework</span>
+        <h1 class="bd-hero-title">Dynamic forms for Blazor, defined as data.</h1>
+        <p class="bd-hero-sub">
+            Describe a form once as a schema. Render it with MudBlazor, Radzen, or plain HTML.
+            Edit it visually. Validate it everywhere.
+        </p>
+        <div class="bd-hero-cta">
+            <a class="bd-btn bd-btn-primary" href="/editor/form" target="_blank" rel="noopener">
+                Try the editor
+            </a>
+            <a class="bd-btn bd-btn-secondary" href="/showcase/form" target="_blank" rel="noopener">
+                See the showcase
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="bd-features">
+    <div class="bd-features-inner">
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.Dashboard" Size="Size.Medium" /></div>
+            <h3>Dynamic Form Rendering</h3>
+            <p>Describe a form once as data and render it anywhere — no per-form Razor markup to maintain.</p>
+        </div>
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.DragIndicator" Size="Size.Medium" /></div>
+            <h3>Drag-and-Drop Editor</h3>
+            <p>Build and rearrange form layouts visually, then export the definition as JSON.</p>
+        </div>
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.RuleFolder" Size="Size.Medium" /></div>
+            <h3>Validation</h3>
+            <p>Field-level rules and cross-field logic ship with the form definition, not bolted on after.</p>
+        </div>
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.Layers" Size="Size.Medium" /></div>
+            <h3>Multi-framework</h3>
+            <p>One definition renders against MudBlazor, Radzen, or plain HTML — pick the look without rewriting forms.</p>
+        </div>
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.DataObject" Size="Size.Medium" /></div>
+            <h3>Type-safe Binding</h3>
+            <p>Bind directly to your C# models with strongly-typed property paths and editor support.</p>
+        </div>
+        <div class="bd-card">
+            <div class="bd-card-icon"><MudIcon Icon="@Icons.Material.Outlined.Widgets" Size="Size.Medium" /></div>
+            <h3>Editor Toolbox</h3>
+            <p>Drop in custom components and reuse them across every form built with Blazor Dynamics.</p>
+        </div>
+    </div>
+</section>
+
+<section class="bd-cta-band">
+    <div class="bd-cta-band-inner">
+        <h2>Ready to build forms as data?</h2>
+        <p>Browse the live samples in the docs, or jump straight into the visual editor.</p>
+        <div class="bd-hero-cta">
+            <a class="bd-btn bd-btn-primary" href="/editor/form" target="_blank" rel="noopener">Open the editor</a>
+            <a class="bd-btn bd-btn-secondary" href="/documentation/getting-started">Read the docs</a>
+        </div>
+    </div>
+</section>

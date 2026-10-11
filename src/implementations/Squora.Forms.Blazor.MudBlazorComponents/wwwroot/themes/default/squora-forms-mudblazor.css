@@ -1,0 +1,182 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Default / MudBlazor Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.MudBlazorComponents/themes/default/squora-forms-mudblazor.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.mud-stack:not(.edit-mode) {
+    gap: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Horizontal Stack — children distribute equally
+   -------------------------------------------------------------------------- */
+.mud-stack[style*="row"]:not(.edit-mode) {
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.mud-stack[style*="row"]:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Group (MudCard with role="group")
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-card {
+    margin-bottom: 16px;
+}
+
+.groupcomponent .mud-card-header {
+    font-weight: 600;
+    font-size: 15px;
+    background: var(--mud-palette-background-grey, #f5f5f5);
+    border-bottom: 1px solid var(--mud-palette-lines-default, #e0e0e0);
+}
+
+/* --------------------------------------------------------------------------
+   4b. Component wrappers
+   -------------------------------------------------------------------------- */
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction, .deleteaction { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   5. Form Fields: Label + Input wrapper
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5b. MudBlazor DatePicker Popup Fix
+   -------------------------------------------------------------------------- */
+.mud-popover-open .mud-popover-cascading-value,
+.mud-popover-open .mud-picker,
+.mud-popover-open .mud-picker-container {
+    background-color: var(--mud-palette-surface, #ffffff) !important;
+}
+
+.mud-picker-calendar-transition {
+    background-color: var(--mud-palette-surface, #ffffff);
+}
+
+.mud-popover {
+    z-index: 1300;
+}
+
+/* Force datepicker to open downward */
+.mud-popover-anchor-bottom-center,
+.mud-popover-anchor-bottom-left,
+.mud-popover-anchor-bottom-right {
+    transform-origin: top center;
+}
+
+/* --------------------------------------------------------------------------
+   6. MudBlazor Input Spacing
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-input-control,
+.verticalcomponent .mud-input-control,
+.horizontalcomponent .mud-input-control {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Focus Indicators (WCAG 2.1 - 3:1 contrast)
+   -------------------------------------------------------------------------- */
+.mud-input-control .mud-input-slot:focus-visible,
+.mud-button-root:focus-visible,
+.mud-checkbox .mud-button-root:focus-visible,
+.mud-select .mud-input-slot:focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: var(--mud-palette-error, #d32f2f);
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   9. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: var(--mud-palette-error, #d32f2f);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   10. Showcase shell overrides (default/light)
+   -------------------------------------------------------------------------- */
+
+/* showcase.css defaults both .showcase-page and .form-container to #ffffff —
+   give the page a light muted background so white form cards stand out. */
+.showcase-page {
+    background: #f8fafc;
+}
+
+body:has(.showcase-page) {
+    background: linear-gradient(135deg, #eef2ff 0%, #ffffff 50%, #cffafe 100%);
+    background-attachment: fixed;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .mud-stack[style*="row"]:not(.edit-mode) {
+        flex-direction: column !important;
+    }
+
+    .mud-stack[style*="row"]:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

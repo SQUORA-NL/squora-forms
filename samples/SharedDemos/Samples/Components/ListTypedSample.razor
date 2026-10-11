@@ -1,0 +1,41 @@
+﻿@inherits  SampleBasePage
+@page "/samples/components/list-Typed"
+
+<SampleDocumentation MarkDownFile="Samples.Components.ListTypedSample.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel="@model" Components="@UserSettingsService.Components" Value="@data" ValueChanged="@update"></BDForm>
+</SampleDocumentation>
+
+@code {
+
+    private void update()
+    {
+        StateHasChanged();
+    }
+
+    public Container data = new Container();
+
+    public DynamicFormModel model =
+    FormFactory.GroupLayout(
+        FormFactory.AddAction("Add person", "$.items", new Name { firstname = "<firstname>", lastname = "<lastname>" }),
+        FormFactory.NumberDisplay("Aantal:", "$.items"),
+        FormFactory.ListComponent("Items", "$.items",
+            FormFactory.HorizontalLayout(
+                FormFactory.StringComponent("Firstname", "@.firstname"),
+                FormFactory.StringComponent("Lastname", "@.lastname"),
+                FormFactory.DeleteAction("Delete", "@")
+                )
+            )
+       );
+
+    public class Container
+    {
+        public List<Name> items { get; set; } = new List<Name>();
+    }
+
+    public class Name
+    {
+        public string firstname { get; set; } = "<firstname>";
+        public string lastname { get; set; } = "<lastname>";
+    }
+}
+

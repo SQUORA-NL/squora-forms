@@ -1,0 +1,287 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Dark / Syncfusion Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.SyncfusionComponents/themes/dark/squora-forms-syncfusion.css" rel="stylesheet" />
+
+   The Syncfusion base CSS for dark mode is bootstrap5-dark.css (loaded as sf-base-css).
+   This file adds only SquoraForms layout and showcase overrides on top.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.sf-layout-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sf-layout-stack.edit-mode {
+    gap: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Horizontal Stack
+   -------------------------------------------------------------------------- */
+.sf-horizontal-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.sf-horizontal-layout.edit-mode {
+    gap: 0;
+}
+
+.sf-horizontal-layout:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Group (Syncfusion e-card) — dark
+   -------------------------------------------------------------------------- */
+.groupcomponent .e-card {
+    margin-bottom: 16px;
+    border: 1px solid #27272a;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.groupcomponent .e-card-header {
+    padding: 12px 16px;
+}
+
+.groupcomponent .e-card-header-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.groupcomponent .e-card-content {
+    padding: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Component wrappers — full-width SF inputs
+   -------------------------------------------------------------------------- */
+.stringcomponent,
+.intcomponent,
+.numbercomponent,
+.datetimecomponent,
+.dropdowncomponent {
+    display: block;
+    width: 100%;
+}
+
+.stringcomponent .e-input-group,
+.intcomponent .e-input-group,
+.numbercomponent .e-input-group,
+.datetimecomponent .e-input-group,
+.dropdowncomponent .e-ddl.e-input-group,
+.dropdowncomponent .e-ddl {
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.stringcomponent .e-float-input,
+.intcomponent .e-float-input,
+.numbercomponent .e-float-input,
+.datetimecomponent .e-float-input,
+.dropdowncomponent .e-float-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   5b. Checkbox and button wrappers
+   -------------------------------------------------------------------------- */
+.boolcomponent {
+    display: block;
+    padding: 4px 0;
+}
+
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction,
+.deleteaction {
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   6. Form Fields: bd-field (opt-in inline labels)
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: #ef4444;
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   8. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   8. Showcase overrides (dark)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #fafafa;
+    background: #09090b;
+}
+
+.showcase-header h1 {
+    color: #fafafa;
+}
+
+.showcase-header p {
+    color: #a1a1aa;
+}
+
+.showcase-section h2 {
+    color: #fafafa;
+}
+
+.form-container {
+    background: #18181b;
+    border-color: #27272a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.showcase-controls {
+    background: #18181b;
+    border-color: #27272a;
+}
+
+.showcase-select-label {
+    color: #a1a1aa;
+}
+
+.showcase-select {
+    color: #fafafa;
+    background-color: #09090b;
+    border-color: #27272a;
+}
+
+.json-output {
+    border-color: #27272a;
+}
+
+.json-output summary {
+    color: #a1a1aa;
+    background: #18181b;
+}
+
+.json-output summary:hover {
+    background: #27272a;
+}
+
+.json-output pre {
+    background: #000000;
+    color: #a1a1aa;
+    border-top-color: #27272a;
+}
+
+body:has(.showcase-page) {
+    background: #09090b;
+    color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   9. Tabs + section description (dark) — missing from base showcase.css
+   -------------------------------------------------------------------------- */
+.showcase-tabs {
+    border-bottom-color: #27272a;
+}
+
+.showcase-tab {
+    color: #a1a1aa;
+}
+
+.showcase-tab:hover {
+    color: #fafafa;
+}
+
+.showcase-tab.active {
+    color: #fafafa;
+    border-bottom-color: #fafafa;
+}
+
+.showcase-section-desc {
+    color: #a1a1aa;
+}
+
+/* --------------------------------------------------------------------------
+   10. Popup z-index overrides (above any remaining overlays)
+   -------------------------------------------------------------------------- */
+.e-popup,
+.e-popup-wrapper,
+.e-ddl.e-popup,
+.e-calendar-container,
+.e-date-range-wrapper.e-popup {
+    z-index: 1500 !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .sf-horizontal-layout:not(.edit-mode) {
+        flex-direction: column;
+    }
+
+    .sf-horizontal-layout:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

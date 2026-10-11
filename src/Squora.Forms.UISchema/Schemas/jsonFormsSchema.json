@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "type"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "Control",
+        "HorizontalLayout",
+        "VerticalLayout",
+        "Categorization"
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/definitions/Control"
+    },
+    {
+      "$ref": "#/definitions/HorizontalLayout"
+    },
+    {
+      "$ref": "#/definitions/VerticalLayout"
+    },
+    {
+      "$ref": "#/definitions/Categorization"
+    }
+  ],
+  "definitions": {
+    "Control": {
+      "type": "object",
+      "required": [
+        "type",
+        "scope"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Control"
+          ]
+        },
+        "scope": {
+          "type": "string"
+        },
+        "label": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "details": {
+              "type": "string"
+            },
+            "showSortButtons": {
+              "type": "boolean"
+            },
+            "elementLabelProp": {
+              "type": "string"
+            },
+            "format": {
+              "type": "string"
+            },
+            "readonly": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "HorizontalLayout": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "HorizontalLayout"
+          ]
+        }
+      }
+    },
+    "VerticalLayout": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "VerticalLayout"
+          ]
+        }
+      }
+    },
+    "Categorization": {
+      "type": "object",
+      "required": [
+        "type",
+        "elements"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Categorization"
+          ]
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "required": [
+        "type",
+        "label",
+        "elements"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Category"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Control"
+          }
+        }
+      }
+    }
+  }
+}

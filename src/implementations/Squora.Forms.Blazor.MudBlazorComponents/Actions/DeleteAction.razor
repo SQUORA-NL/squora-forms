@@ -1,0 +1,6 @@
+﻿@namespace Squora.Forms.Blazor.MudBlazorComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.DeleteActionBase
+
+<BDFormComponentWrapper Class="deleteaction" FormComponent="@this">
+    <MudButton OnClick="@DeleteItem" Disabled="@IsDisabled">@Label</MudButton>
+</BDFormComponentWrapper>

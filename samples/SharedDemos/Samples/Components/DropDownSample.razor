@@ -1,0 +1,34 @@
+﻿@inherits SampleBasePage
+@page "/samples/components/dropdown"
+
+<SampleDocumentation MarkDownFile="Samples.Components.DropDownSample.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel="@model" Components="@UserSettingsService.Components" Value="@data" ValueChanged="@update"></BDForm>
+</SampleDocumentation>
+
+
+@code {
+
+    private void update()
+    {
+        StateHasChanged();
+    }
+
+    public ExpandoObject data = new ExpandoObject();
+
+    public DynamicFormModel model = FormFactory.DropDownComponent("Selection", "$.selected", new Dictionary<object, string>()
+            {
+                {
+                    "Selection1", "Selection one"
+                },
+                {
+                    "Selection2", "Selection two"
+                },
+                {
+                    "Selection3", "Selection three"
+                },
+                {
+                    "Selection4", "Selection four"
+                }
+            }
+    );
+}

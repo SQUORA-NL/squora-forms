@@ -1,0 +1,58 @@
+{
+  "dynamicType": { "componentType": "VerticalLayout" },
+  "elements": [
+    {
+      "dynamicType": { "componentType": "HorizontalLayout" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.username", "label": "Username" }
+        },
+        {
+          "dynamicType": { "componentType": "String" },
+          "parameters": { "scope": "$.displayName", "label": "Display Name" }
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "String" },
+      "parameters": { "scope": "$.email", "label": "Email Address" }
+    },
+    {
+      "dynamicType": { "componentType": "HorizontalLayout" },
+      "elements": [
+        {
+          "dynamicType": { "componentType": "DateTime" },
+          "parameters": { "scope": "$.dob", "label": "Date of Birth" }
+        },
+        {
+          "dynamicType": { "componentType": "Dropdown" },
+          "parameters": {
+            "scope": "$.country",
+            "label": "Country",
+            "options": {
+              "NL": "Netherlands",
+              "US": "United States",
+              "DE": "Germany",
+              "RO": "Romania",
+              "GB": "United Kingdom",
+              "FR": "France"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "dynamicType": { "componentType": "Number" },
+      "parameters": { "scope": "$.height", "label": "Height (cm)" }
+    },
+    {
+      "dynamicType": { "componentType": "Boolean" },
+      "parameters": { "scope": "$.terms", "label": "I agree to the terms", "needsToBeChecked": true }
+    },
+    {
+      "dynamicType": { "componentType": "SubmitAction" },
+      "parameters": { "label": "Register" }
+    }
+  ]
+}

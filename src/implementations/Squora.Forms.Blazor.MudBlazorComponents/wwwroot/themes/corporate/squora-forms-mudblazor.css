@@ -1,0 +1,235 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Corporate / MudBlazor Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.MudBlazorComponents/themes/corporate/squora-forms-mudblazor.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Corporate palette overrides (MudBlazor CSS variables)
+   -------------------------------------------------------------------------- */
+:root {
+    --mud-palette-primary: #2563eb;
+    --mud-palette-primary-text: #ffffff;
+    --mud-palette-primary-hover: #1d4ed8;
+    --mud-palette-background: #ffffff;
+    --mud-palette-background-grey: #f3f4f6;
+    --mud-palette-surface: #ffffff;
+    --mud-palette-lines-default: #d1d5db;
+    --mud-palette-text-primary: #111827;
+    --mud-palette-text-secondary: #6b7280;
+    --mud-palette-text-disabled: #9ca3af;
+    --mud-palette-action-default: #6b7280;
+    --mud-palette-divider: #d1d5db;
+    --mud-palette-error: #dc2626;
+}
+
+/* --------------------------------------------------------------------------
+   2. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.mud-stack:not(.edit-mode) {
+    gap: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Horizontal Stack — children distribute equally
+   -------------------------------------------------------------------------- */
+.mud-stack[style*="row"]:not(.edit-mode) {
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.mud-stack[style*="row"]:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Layout: Group (MudCard with role="group") - Corporate blue gradient
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-card {
+    margin-bottom: 16px;
+    border: 1px solid var(--mud-palette-lines-default, #d1d5db);
+    border-left: 3px solid var(--mud-palette-primary, #2563eb);
+}
+
+.groupcomponent .mud-card-header {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-bottom: 1px solid var(--mud-palette-lines-default, #d1d5db);
+    color: var(--mud-palette-primary, #2563eb);
+}
+
+/* --------------------------------------------------------------------------
+   5b. Component wrappers
+   -------------------------------------------------------------------------- */
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction, .deleteaction { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   6. Form Fields: Label + Input wrapper
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. MudBlazor Input Spacing
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-input-control,
+.verticalcomponent .mud-input-control,
+.horizontalcomponent .mud-input-control {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Focus Indicators (WCAG 2.1 - corporate blue)
+   -------------------------------------------------------------------------- */
+.mud-input-control .mud-input-slot:focus-visible,
+.mud-button-root:focus-visible,
+.mud-checkbox .mud-button-root:focus-visible,
+.mud-select .mud-input-slot:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: var(--mud-palette-error, #dc2626);
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: var(--mud-palette-error, #dc2626);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .mud-stack[style*="row"]:not(.edit-mode) {
+        flex-direction: column !important;
+    }
+
+    .mud-stack[style*="row"]:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Showcase overrides (corporate)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #111827;
+    background: #eef2f7;
+}
+
+.showcase-header h1 {
+    color: #2563eb;
+}
+
+.showcase-header p {
+    color: #6b7280;
+}
+
+.showcase-section h2 {
+    color: #111827;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+.form-container {
+    background: #ffffff;
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.showcase-controls {
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+.showcase-select-label {
+    color: #6b7280;
+}
+
+.showcase-select {
+    color: #111827;
+    background-color: #ffffff;
+    border-color: #d1d5db;
+}
+
+.json-output {
+    border-color: #d1d5db;
+}
+
+.json-output summary {
+    color: #6b7280;
+    background: #f3f4f6;
+}
+
+.json-output summary:hover {
+    background: #e5e7eb;
+}
+
+.json-output pre {
+    background: #1e293b;
+    color: #94a3b8;
+    border-top-color: #d1d5db;
+}
+
+body:has(.showcase-page) {
+    background: #eef2f7;
+}

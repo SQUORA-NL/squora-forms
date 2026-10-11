@@ -1,0 +1,21 @@
+﻿@using Squora.Forms.Blazor
+@using Squora.Forms.Blazor.Components
+@using Squora.Forms.Blazor.Services
+@using Squora.Forms.Common.Enums
+@namespace Squora.Forms.Blazor.Components
+
+<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
+     aria-live="polite"
+     aria-disabled="@(FormComponent?.IsDisabled == true ? "true" : null)"
+     @onclick="@OnElementClick"
+     @onclick:stopPropagation="true"
+     @onfocusout="OnFocusOut">
+    @if ((FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)
+    {
+        @ChildContent
+    }
+    @if (ShowValidation && (!FormComponent?.IsValid ?? true))
+    {
+        <div class="bd-validation" id="@(FormComponent?.ErrorMessageId)" role="alert">@(FormComponent?.ValidationString??"")</div>
+    }
+</div>

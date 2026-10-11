@@ -1,0 +1,284 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Corporate / Radzen Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.RadzenComponents/themes/corporate/squora-forms-radzen.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Corporate palette overrides (Radzen CSS variables)
+   -------------------------------------------------------------------------- */
+:root {
+    --rz-base-100: #f3f4f6;
+    --rz-base-200: #e5e7eb;
+    --rz-base-300: #d1d5db;
+    --rz-base-background-color: #ffffff;
+    --rz-text-color: #111827;
+    --rz-text-secondary-color: #6b7280;
+    --rz-text-disabled-color: #9ca3af;
+    --rz-border-color: #d1d5db;
+    --rz-danger: #dc2626;
+    --rz-primary: #2563eb;
+    --rz-primary-text: #ffffff;
+    --rz-input-background-color: #ffffff;
+    --rz-input-border-color: #d1d5db;
+    --rz-input-color: #111827;
+}
+
+/* --------------------------------------------------------------------------
+   2. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.rz-stack:not(.edit-mode) {
+    gap: 20px !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Horizontal Stack — children distribute equally
+   -------------------------------------------------------------------------- */
+.rz-stack[style*="row"]:not(.edit-mode) {
+    gap: 16px !important;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.rz-stack[style*="row"]:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Layout: Group (RadzenCard) - Corporate blue gradient header
+   -------------------------------------------------------------------------- */
+.groupcomponent .rz-card {
+    margin-bottom: 16px;
+    border: 1px solid var(--rz-base-300, #d1d5db);
+    border-left: 3px solid var(--rz-primary, #2563eb);
+    border-radius: 8px;
+}
+
+.groupcomponent .rz-card > .rz-stack > .rz-text {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-bottom: 1px solid var(--rz-base-300, #d1d5db);
+    color: var(--rz-primary, #2563eb);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   5b. Component wrappers — flex-column for label-above-input layout
+   -------------------------------------------------------------------------- */
+.stringcomponent,
+.intcomponent,
+.numbercomponent,
+.datetimecomponent,
+.dropdowncomponent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.stringcomponent .rz-textbox,
+.intcomponent .rz-textbox,
+.numbercomponent .rz-numeric,
+.numbercomponent .rz-spinner,
+.datetimecomponent .rz-datepicker-input,
+.dropdowncomponent .rz-dropdown,
+.dropdowncomponent .rz-dropdown-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.boolcomponent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.boolcomponent .bd-label {
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--rz-text-color, #111827);
+    margin: 0;
+    user-select: none;
+}
+
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction, .deleteaction { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   6. Form Fields: Label + Input wrapper
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Radzen Input Spacing (legacy)
+   -------------------------------------------------------------------------- */
+.groupcomponent .rz-textbox,
+.groupcomponent .rz-dropdown,
+.groupcomponent .rz-datepicker,
+.verticalcomponent .rz-textbox,
+.verticalcomponent .rz-dropdown,
+.verticalcomponent .rz-datepicker,
+.horizontalcomponent .rz-textbox,
+.horizontalcomponent .rz-dropdown,
+.horizontalcomponent .rz-datepicker {
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   8. Focus Indicators (WCAG 2.1 - corporate blue)
+   -------------------------------------------------------------------------- */
+.rz-textbox:focus-visible,
+.rz-dropdown:focus-visible,
+.rz-datepicker input:focus-visible,
+.rz-checkbox input:focus-visible,
+.rz-button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: var(--rz-danger, #dc2626);
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: var(--rz-danger, #dc2626);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .rz-stack[style*="row"]:not(.edit-mode) {
+        flex-direction: column !important;
+    }
+
+    .rz-stack[style*="row"]:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Showcase overrides (corporate)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #111827;
+    background: #eef2f7;
+}
+
+.showcase-header h1 {
+    color: #2563eb;
+}
+
+.showcase-header p {
+    color: #6b7280;
+}
+
+.showcase-section h2 {
+    color: #111827;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+.form-container {
+    background: #ffffff;
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.showcase-controls {
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+.showcase-select-label {
+    color: #6b7280;
+}
+
+.showcase-select {
+    color: #111827;
+    background-color: #ffffff;
+    border-color: #d1d5db;
+}
+
+.json-output {
+    border-color: #d1d5db;
+}
+
+.json-output summary {
+    color: #6b7280;
+    background: #f3f4f6;
+}
+
+.json-output summary:hover {
+    background: #e5e7eb;
+}
+
+.json-output pre {
+    background: #1e293b;
+    color: #94a3b8;
+    border-top-color: #d1d5db;
+}
+
+body:has(.showcase-page) {
+    background: #eef2f7;
+}

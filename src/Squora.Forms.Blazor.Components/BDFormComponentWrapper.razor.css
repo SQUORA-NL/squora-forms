@@ -1,0 +1,33 @@
+.bd-editable {
+    position: relative;
+}
+
+.bd-editable:hover {
+    outline: 2px dashed #80bdff;
+    outline-offset: 2px;
+}
+
+.bd-selected {
+    outline: 2px solid #007bff !important;
+    outline-offset: 2px;
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.bd-selected:hover {
+    outline: 2px solid #007bff !important;
+}
+
+.bd-editable {
+    cursor: pointer;
+}
+
+.bd-validation {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.bd-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

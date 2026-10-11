@@ -1,0 +1,38 @@
+﻿@using Squora.Forms.Blazor.HtmlComponents.Extensions
+@using Squora.Forms.Blazor.MudBlazorComponents.Extensions;
+@using Squora.Forms.Blazor.RadzenComponents.Extensions
+@inject UserSettingsService usersettings 
+@inject MudBlazorComponentProvider mudBlazorComponentProvider
+@inject RadzenComponentProvider radzenComponentProvider
+
+<select @onchange="OnValueChanged" style="max-width:450px">
+    @foreach (var set in componentSets)
+    {
+        <option value="@set.Key">@set.Value</option>
+    }
+</select>
+
+@code {
+    private Dictionary<string, string> componentSets = new Dictionary<string, string>
+    {
+        { "Html", "Html Components" },
+        { "MudBlazor", "Mud Blazor Components" },
+        { "Radzen", "Radzen Components" },
+    };
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        switch (e.Value)
+        {
+            case "Radzen":
+                usersettings.UpdateComponents(radzenComponentProvider.GetComponents());
+                break;
+            case "MudBlazor":
+                usersettings.UpdateComponents(mudBlazorComponentProvider.GetComponents());
+                break;
+            default:
+                 usersettings.UpdateComponents(new HtmlComponentsProvider().GetComponents());
+                break;
+        }
+    }
+}

@@ -1,0 +1,29 @@
+﻿@inherits SampleBasePage
+@page "/samples/playground/editor"
+
+<div style="margin-bottom: 20px;">
+    <h3>Drag and Drop Form Editor</h3>
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
+        <label style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" @bind="EditModeIndicator" />
+            <span>Edit Mode (Enable Drag & Drop)</span>
+        </label>
+        <button style="padding: 6px 14px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px;"
+                @onclick="OpenInEditor">
+            Open in Form Editor
+        </button>
+    </div>
+    @if (EditModeIndicator)
+    {
+        <div style="padding: 10px; background-color: #e3f2fd; border-radius: 4px; margin-bottom: 10px;">
+            <strong>Drag & Drop Instructions:</strong><br/>
+            • When in edit mode, you can drag form elements using the handle (⋮⋮) on the left<br/>
+            • Drop elements in the highlighted drop zones to reorder them<br/>
+            • The full component including children will be moved together
+        </div>
+    }
+</div>
+
+<SampleDocumentation MarkDownFile="Samples.Playground.Editor.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel=@model Components=@UserSettingsService.Components Value="@data" ValueChanged="@update" EditMode=@EditModeIndicator></BDForm>
+</SampleDocumentation>

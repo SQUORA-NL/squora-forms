@@ -1,0 +1,7 @@
+﻿@namespace Squora.Forms.Blazor.RadzenComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.BooleanComponentBase
+
+<BDFormComponentWrapper Class="boolcomponent" FormComponent="@this">
+    <RadzenCheckBox @bind-Value="@BooleanValue" Name="@ComponentId" Disabled="@IsDisabled" />
+    <label for="@ComponentId" class="bd-label">@Label</label>
+</BDFormComponentWrapper>

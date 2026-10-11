@@ -1,0 +1,54 @@
+﻿@page "/fetchdata"
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+@using RadzenServerApp.Data
+@inject WeatherForecastService ForecastService
+
+<PageTitle>Dynamic</PageTitle>
+<RadzenCard>
+    
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenCard>
+            @data.name
+        </RadzenCard>
+        <RadzenCard>
+            <SquoraForm Components="@components" Data="@data" Schema="@Schema" UISchema="@UISchema" ValueChanged="@update"></SquoraForm>
+        </RadzenCard>
+        <RadzenCard>
+            @result
+        </RadzenCard>
+    </RadzenStack>
+</RadzenCard>
+
+@code
+{
+    private string result = string.Empty;
+
+    private void update()
+    {
+        result = System.Text.Json.JsonSerializer.Serialize(data);
+        StateHasChanged();
+    }
+
+    ComponentsList components = new Squora.Forms.Blazor.RadzenComponents.Extensions.RadzenComponentProvider().GetComponents();
+    JToken UISchema;
+    JObject Schema;
+    TestData data = new TestData() { name = "demo", birthDate = "none" };
+
+
+    protected override Task OnInitializedAsync()
+    {
+        UISchema = JToken.Parse("{\"type\":\"HorizontalLayout\",\"elements\":[{\"type\":\"Control\",\"label\":\"Name\",\"scope\":\"#/properties/name\"},{\"type\":\"Control\",\"label\":\"Birth Date\",\"scope\":\"#/properties/birthDate\"}]}");
+        Schema = JObject.Parse("{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"Schema for a recording\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"birthDate\":{\"type\":\"string\",\"format\":\"date-time\"}}}");
+
+
+        return base.OnInitializedAsync();
+    }
+
+
+    public class TestData
+    {
+        public string name { get; set; }
+        public string birthDate { get; set; }
+    }
+}

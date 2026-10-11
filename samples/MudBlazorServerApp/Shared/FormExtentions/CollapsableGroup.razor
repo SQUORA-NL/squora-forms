@@ -1,0 +1,69 @@
+﻿@inherits Squora.Forms.Blazor.Components.Layout.GroupLayoutBase
+
+<div class="groupcomponent @Class" style="@Style">
+    @if (RuleEffect != Squora.Forms.Common.Enums.RuleEffect.HIDE)
+    {
+        @if (collapsed)
+        {
+            <MudCard>
+                <MudCardHeader>
+                    <MudStack AlignItems="AlignItems.Stretch" Row=true>
+                        @if (!string.IsNullOrEmpty(Label))
+                        {
+                            <MudText>@Label</MudText>
+                        }
+                        <MudButton OnClick="@Toggle">Expand</MudButton>
+                    </MudStack>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudStack>
+                            <DynamicComponent Type=@GetComponentTypeFor(HeaderModel) Parameters=@GetValidParametersFor(HeaderModel) />
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        }
+        else
+        {
+            <MudCard>
+
+                <MudCardHeader>
+                    <MudStack AlignItems="AlignItems.Stretch" Row=true>
+                        @if (!string.IsNullOrEmpty(Label))
+                        {
+                            <MudText>@Label</MudText>
+                        }
+                        <MudButton OnClick="@Toggle">Collapse</MudButton>
+                    </MudStack>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudStack>
+                        @foreach (var element in this.FormModel.Elements)
+                        {
+                            <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersFor(element) />
+                        }
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+</div>
+
+@code {
+    private bool collapsed;
+    [Parameter]
+    public bool StartCollapsed { get; set; } = true;
+
+    [Parameter]
+    public DynamicFormModel HeaderModel { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        collapsed = StartCollapsed; // Set the initial state only once
+    }
+
+    private void Toggle()
+    {
+        collapsed = !collapsed;
+    }
+}

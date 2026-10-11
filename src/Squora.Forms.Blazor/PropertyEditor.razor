@@ -1,0 +1,544 @@
+@using Squora.Forms.Common.Enums
+@using Squora.Forms.Core.Models
+@using Squora.Forms.Core.Models.ParameterModels
+@using Squora.Forms.Core.Parser
+@using Squora.Forms.Blazor.Services
+
+<div class="bd-property-editor">
+    @if (SelectionState?.SelectedElement != null)
+    {
+        <div class="bd-property-editor-header">
+            <h4>Properties</h4>
+            <div class="bd-header-buttons">
+                <button class="bd-delete-button" @onclick="DeleteSelectedElement" title="Delete Element">Delete</button>
+                <button class="bd-json-toggle-button" @onclick="ToggleJsonView" title="Toggle JSON View">@(showJsonView ? "Properties" : "JSON")</button>
+                @if (showJsonView)
+                {
+                    <button class="bd-json-mode-button @(isFullFormJsonMode ? "active" : "")" @onclick="ToggleJsonMode" title="Toggle JSON Mode">
+                        @(isFullFormJsonMode ? "Form" : "Element")
+                    </button>
+                }
+                <button class="bd-close-button" @onclick="ClearSelection">Close</button>
+            </div>
+        </div>
+        <div class="bd-property-editor-content">
+            @{
+                var element = SelectionState.SelectedElement;
+                var componentType = element.DynamicType.ComponentType;
+            }
+            
+            <div class="bd-property-group">
+                <label class="bd-property-label">Component Type</label>
+                <div class="bd-property-value">@GetComponentDisplayName(componentType)</div>
+            </div>
+
+            @if (HasLabelProperty(componentType))
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">Label</label>
+                    <input class="bd-property-input" 
+                           type="text" 
+                           value="@GetParameterValue(element, "Label")" 
+                           @onchange="@((e) => UpdateParameter(element, "Label", e.Value?.ToString()))" />
+                </div>
+            }
+
+            @if (HasPathProperty(componentType))
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">Path</label>
+                    <input class="bd-property-input" 
+                           type="text" 
+                           value="@GetParameterValue(element, "Path")" 
+                           @onchange="@((e) => UpdateParameter(element, "Path", e.Value?.ToString()))" />
+                </div>
+            }
+
+            @if (componentType == ComponentType.Dropdown)
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">Options</label>
+                    <div class="bd-options-editor">
+                        @{
+                            var options = GetDropdownOptions(element);
+                        }
+                        @foreach (var option in options)
+                        {
+                            <div class="bd-option-row">
+                                <input class="bd-option-key" 
+                                       type="text" 
+                                       placeholder="Value"
+                                       value="@option.Key?.ToString()" 
+                                       @onchange="@((e) => UpdateOptionKey(element, option.Key, e.Value?.ToString()))" />
+                                <input class="bd-option-label" 
+                                       type="text" 
+                                       placeholder="Display Text"
+                                       value="@option.Value" 
+                                       @onchange="@((e) => UpdateOptionValue(element, option.Key, e.Value?.ToString()))" />
+                                <button class="bd-remove-option" @onclick="@(() => RemoveOption(element, option.Key))">Remove</button>
+                            </div>
+                        }
+                        <button class="bd-add-option" @onclick="@(() => AddOption(element))">+ Add Option</button>
+                    </div>
+                </div>
+            }
+
+            @if (componentType == ComponentType.Boolean)
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">
+                        <input type="checkbox" 
+                               checked="@GetBooleanParameter(element, "Required")" 
+                               @onchange="@((e) => UpdateParameter(element, "Required", (bool?)e.Value))" />
+                        Required
+                    </label>
+                </div>
+            }
+
+            @if (IsNumberComponent(componentType))
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">Min Value</label>
+                    <input class="bd-property-input" 
+                           type="number" 
+                           value="@GetParameterValue(element, "Min")" 
+                           @onchange="@((e) => UpdateNumericParameter(element, "Min", e.Value?.ToString()))" />
+                </div>
+                <div class="bd-property-group">
+                    <label class="bd-property-label">Max Value</label>
+                    <input class="bd-property-input" 
+                           type="number" 
+                           value="@GetParameterValue(element, "Max")" 
+                           @onchange="@((e) => UpdateNumericParameter(element, "Max", e.Value?.ToString()))" />
+                </div>
+            }
+            
+            @if (showJsonView)
+            {
+                <div class="bd-property-group">
+                    <label class="bd-property-label">
+                        @if (isFullFormJsonMode)
+                        {
+                            <span>Full Form JSON</span>
+                        }
+                        else
+                        {
+                            <span>Element JSON</span>
+                        }
+                    </label>
+                    <textarea class="bd-json-editor" 
+                              rows="15" 
+                              @bind="currentJsonContent" 
+                              @oninput="OnJsonChanged"></textarea>
+                    <div class="bd-json-buttons">
+                        <button class="bd-apply-json-button" @onclick="ApplyJsonChanges">Apply Changes</button>
+                        @if (hasJsonError)
+                        {
+                            <div class="bd-json-error">Invalid JSON format</div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="bd-property-editor-empty">
+            <p>Select a component to edit its properties</p>
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] 
+    public SelectionStateService? SelectionState { get; set; }
+    
+    [CascadingParameter]
+    public DynamicFormModel? RootModel { get; set; }
+    
+    private bool showJsonView = false;
+    private bool isFullFormJsonMode = false;
+    private string selectedElementJson = "";
+    private string fullFormJson = "";
+    private string currentJsonContent = "";
+    private bool hasJsonError = false;
+    private DynamicFormModelParser jsonParser = new DynamicFormModelParser();
+
+    protected override void OnInitialized()
+    {
+        if (SelectionState != null)
+        {
+            SelectionState.StateChanged += OnSelectionChanged;
+        }
+    }
+    
+    private void OnSelectionChanged()
+    {
+        if (showJsonView)
+        {
+            UpdateJsonContent();
+        }
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        if (SelectionState != null)
+        {
+            SelectionState.StateChanged -= OnSelectionChanged;
+        }
+    }
+
+    private void ClearSelection()
+    {
+        SelectionState?.ClearSelection();
+    }
+
+    private string GetParameterValue(DynamicFormModel element, string parameterName)
+    {
+        if (element.Parameters.Entries.TryGetValue(parameterName, out var value))
+        {
+            return value?.ToString() ?? "";
+        }
+        return "";
+    }
+
+    private bool GetBooleanParameter(DynamicFormModel element, string parameterName)
+    {
+        if (element.Parameters.Entries.TryGetValue(parameterName, out var value))
+        {
+            return value is bool boolValue && boolValue;
+        }
+        return false;
+    }
+
+    private void UpdateParameter(DynamicFormModel element, string parameterName, string? newValue)
+    {
+        if (newValue != null)
+        {
+            element.Parameters.Add(parameterName, newValue);
+            StateHasChanged();
+        }
+    }
+
+    private void UpdateParameter(DynamicFormModel element, string parameterName, bool? newValue)
+    {
+        if (newValue.HasValue)
+        {
+            element.Parameters.Add(parameterName, newValue.Value);
+            StateHasChanged();
+        }
+    }
+
+    private void UpdateNumericParameter(DynamicFormModel element, string parameterName, string? newValue)
+    {
+        if (string.IsNullOrWhiteSpace(newValue))
+        {
+            // Remove parameter if empty
+            if (element.Parameters.Entries.ContainsKey(parameterName))
+            {
+                element.Parameters.Entries.Remove(parameterName);
+            }
+        }
+        else if (double.TryParse(newValue, out var numValue))
+        {
+            element.Parameters.Add(parameterName, numValue);
+        }
+        StateHasChanged();
+    }
+
+    private Dictionary<object, string> GetDropdownOptions(DynamicFormModel element)
+    {
+        if (element.Parameters.Entries.TryGetValue("Options", out var value) && 
+            value is Dictionary<object, string> options)
+        {
+            return options;
+        }
+        return new Dictionary<object, string>();
+    }
+
+    private void UpdateOptionKey(DynamicFormModel element, object oldKey, string? newKey)
+    {
+        if (string.IsNullOrWhiteSpace(newKey)) return;
+
+        var options = GetDropdownOptions(element);
+        if (options.TryGetValue(oldKey, out var displayText))
+        {
+            options.Remove(oldKey);
+            options[newKey] = displayText;
+            element.Parameters.Add("Options", options);
+            StateHasChanged();
+        }
+    }
+
+    private void UpdateOptionValue(DynamicFormModel element, object key, string? newValue)
+    {
+        var options = GetDropdownOptions(element);
+        if (options.ContainsKey(key))
+        {
+            options[key] = newValue ?? "";
+            element.Parameters.Add("Options", options);
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveOption(DynamicFormModel element, object key)
+    {
+        var options = GetDropdownOptions(element);
+        if (options.Remove(key))
+        {
+            element.Parameters.Add("Options", options);
+            StateHasChanged();
+        }
+    }
+
+    private void AddOption(DynamicFormModel element)
+    {
+        var options = GetDropdownOptions(element);
+        var optionCount = options.Count + 1;
+        options[$"option{optionCount}"] = $"Option {optionCount}";
+        element.Parameters.Add("Options", options);
+        StateHasChanged();
+    }
+
+    private void DeleteSelectedElement()
+    {
+        if (SelectionState?.SelectedElement == null || RootModel == null) return;
+        
+        var elementToDelete = SelectionState.SelectedElement;
+        
+        // Find and remove from parent
+        if (RemoveElementFromParent(RootModel, elementToDelete))
+        {
+            SelectionState.ClearSelection();
+            StateHasChanged();
+        }
+    }
+    
+    private bool RemoveElementFromParent(DynamicFormModel parent, DynamicFormModel elementToRemove)
+    {
+        // Check if the element is a direct child
+        if (parent.Elements.Contains(elementToRemove))
+        {
+            parent.Elements.Remove(elementToRemove);
+            return true;
+        }
+        
+        // Recursively check children
+        foreach (var child in parent.Elements)
+        {
+            if (RemoveElementFromParent(child, elementToRemove))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private void ToggleJsonView()
+    {
+        showJsonView = !showJsonView;
+        if (showJsonView)
+        {
+            UpdateJsonContent();
+        }
+        StateHasChanged();
+    }
+    
+    private void ToggleJsonMode()
+    {
+        isFullFormJsonMode = !isFullFormJsonMode;
+        UpdateJsonContent();
+        StateHasChanged();
+    }
+    
+    private void UpdateJsonContent()
+    {
+        if (isFullFormJsonMode && RootModel != null)
+        {
+            UpdateJsonFromFullForm();
+        }
+        else if (SelectionState?.SelectedElement != null)
+        {
+            UpdateJsonFromElement();
+        }
+    }
+    
+    private void UpdateJsonFromFullForm()
+    {
+        if (RootModel != null)
+        {
+            try
+            {
+                fullFormJson = jsonParser.Serialize(RootModel);
+                currentJsonContent = fullFormJson;
+                hasJsonError = false;
+            }
+            catch
+            {
+                hasJsonError = true;
+            }
+        }
+    }
+    
+    private void UpdateJsonFromElement()
+    {
+        if (SelectionState?.SelectedElement != null)
+        {
+            try
+            {
+                selectedElementJson = jsonParser.Serialize(SelectionState.SelectedElement);
+                currentJsonContent = selectedElementJson;
+                hasJsonError = false;
+            }
+            catch
+            {
+                hasJsonError = true;
+            }
+        }
+    }
+    
+    private void OnJsonChanged(ChangeEventArgs e)
+    {
+        currentJsonContent = e.Value?.ToString() ?? "";
+        hasJsonError = false;
+    }
+    
+    private void ApplyJsonChanges()
+    {
+        if (string.IsNullOrWhiteSpace(currentJsonContent)) return;
+        
+        try
+        {
+            if (isFullFormJsonMode && RootModel != null)
+            {
+                ApplyFullFormJsonChanges();
+            }
+            else if (SelectionState?.SelectedElement != null)
+            {
+                ApplyElementJsonChanges();
+            }
+        }
+        catch
+        {
+            hasJsonError = true;
+        }
+    }
+    
+    private void ApplyFullFormJsonChanges()
+    {
+        try
+        {
+            var newFormModel = jsonParser.Deserialize(currentJsonContent);
+            if (newFormModel != null && RootModel != null)
+            {
+                // Replace the entire form structure
+                RootModel.Elements.Clear();
+                RootModel.Elements.AddRange(newFormModel.Elements);
+                RootModel.Parameters = newFormModel.Parameters;
+                RootModel.DynamicType = newFormModel.DynamicType;
+                
+                fullFormJson = currentJsonContent;
+                hasJsonError = false;
+                
+                // Clear selection as the structure may have changed
+                SelectionState?.ClearSelection();
+                StateHasChanged();
+            }
+            else
+            {
+                hasJsonError = true;
+            }
+        }
+        catch
+        {
+            hasJsonError = true;
+        }
+    }
+    
+    private void ApplyElementJsonChanges()
+    {
+        try
+        {
+            var newElement = jsonParser.Deserialize(currentJsonContent);
+            if (newElement != null && RootModel != null && SelectionState?.SelectedElement != null)
+            {
+                // Replace the element in the parent
+                if (ReplaceElementInParent(RootModel, SelectionState.SelectedElement, newElement))
+                {
+                    SelectionState.SelectElement(newElement);
+                    selectedElementJson = currentJsonContent;
+                    hasJsonError = false;
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                hasJsonError = true;
+            }
+        }
+        catch
+        {
+            hasJsonError = true;
+        }
+    }
+    
+    private bool ReplaceElementInParent(DynamicFormModel parent, DynamicFormModel oldElement, DynamicFormModel newElement)
+    {
+        // Check if the element is a direct child
+        var index = parent.Elements.IndexOf(oldElement);
+        if (index >= 0)
+        {
+            parent.Elements[index] = newElement;
+            return true;
+        }
+        
+        // Recursively check children
+        foreach (var child in parent.Elements)
+        {
+            if (ReplaceElementInParent(child, oldElement, newElement))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private bool HasLabelProperty(ComponentType componentType)
+    {
+        return componentType != ComponentType.VerticalLayout && 
+               componentType != ComponentType.HorizontalLayout;
+    }
+
+    private bool HasPathProperty(ComponentType componentType)
+    {
+        return componentType != ComponentType.VerticalLayout && 
+               componentType != ComponentType.HorizontalLayout &&
+               componentType != ComponentType.GroupLayout;
+    }
+
+    private bool IsNumberComponent(ComponentType componentType)
+    {
+        return componentType == ComponentType.Int || componentType == ComponentType.Number;
+    }
+
+    private string GetComponentDisplayName(ComponentType componentType)
+    {
+        return componentType switch
+        {
+            ComponentType.String => "Text Field",
+            ComponentType.Boolean => "Checkbox",
+            ComponentType.Int => "Integer",
+            ComponentType.Number => "Number",
+            ComponentType.DateTime => "Date/Time",
+            ComponentType.Dropdown => "Dropdown",
+            ComponentType.VerticalLayout => "Vertical Layout",
+            ComponentType.HorizontalLayout => "Horizontal Layout",
+            ComponentType.GroupLayout => "Group Layout",
+            ComponentType.List => "List",
+            _ => "Unknown"
+        };
+    }
+}

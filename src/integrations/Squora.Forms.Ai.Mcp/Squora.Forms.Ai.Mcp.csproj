@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>Squora.Forms.Ai.Mcp</PackageId>
+    <Description>MCP (Model Context Protocol) adapter for SquoraForms Hub. Exposes form definitions as MCP resources with JSON Schema contracts for AI agent tool-calling.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+</Project>

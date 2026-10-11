@@ -1,0 +1,82 @@
+.bd-edit-mode-toggle {
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+}
+
+.bd-toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+}
+
+.bd-toggle-input {
+    display: none;
+}
+
+.bd-toggle-slider {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.bd-toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.bd-toggle-input:checked + .bd-toggle-slider {
+    background-color: #2196F3;
+}
+
+.bd-toggle-input:checked + .bd-toggle-slider::before {
+    transform: translateX(26px);
+}
+
+.bd-toggle-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    min-width: 80px;
+}
+
+/* Hover effects */
+.bd-toggle-label:hover .bd-toggle-slider {
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.bd-toggle-input:checked + .bd-toggle-slider:hover {
+    background-color: #1976D2;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .bd-toggle-slider {
+        background-color: #4a5568;
+    }
+    
+    .bd-toggle-input:checked + .bd-toggle-slider {
+        background-color: #4299e1;
+    }
+    
+    .bd-toggle-text {
+        color: #e2e8f0;
+    }
+    
+    .bd-toggle-input:checked + .bd-toggle-slider:hover {
+        background-color: #3182ce;
+    }
+}

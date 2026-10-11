@@ -1,0 +1,45 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.DropDownComponentBase
+
+<BDFormComponentWrapper Class="dropdowncomponent" FormComponent="@this" ShowValidation="false">
+    <SfDropDownList TValue="string"
+                    TItem="DropDownOption"
+                    Placeholder="@Label"
+                    FloatLabelType="FloatLabelType.Auto"
+                    DataSource="@DropDownOptions"
+                    Value="@StringValue"
+                    ValueChanged="@OnValueChanged"
+                    Enabled="@(!IsDisabled)">
+        <DropDownListFieldSettings Value="Key" Text="DisplayValue" />
+    </SfDropDownList>
+</BDFormComponentWrapper>
+
+@code {
+    private string StringValue => SelectedValue?.ToString() ?? string.Empty;
+
+    // Cache the DataSource list so re-renders don't create a new object reference.
+    // Syncfusion's SfDropDownList re-initialises (and closes the popup) whenever it
+    // receives a DataSource with a different reference, even if the content is identical.
+    private List<DropDownOption>? _cachedDropDownOptions;
+    private Dictionary<object, string>? _cachedOptionsRef;
+
+    private List<DropDownOption> DropDownOptions
+    {
+        get
+        {
+            if (_cachedDropDownOptions == null || !ReferenceEquals(_cachedOptionsRef, Options))
+            {
+                _cachedOptionsRef = Options;
+                _cachedDropDownOptions = (Options ?? new Dictionary<object, string>())
+                    .Select(o => new DropDownOption(o.Key?.ToString() ?? string.Empty, o.Value))
+                    .ToList();
+            }
+            return _cachedDropDownOptions;
+        }
+    }
+
+    // Named method so the EventCallback reference stays stable across re-renders.
+    private void OnValueChanged(string v) => SelectedValue = v;
+
+    private record DropDownOption(string Key, string DisplayValue);
+}

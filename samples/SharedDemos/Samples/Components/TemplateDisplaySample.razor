@@ -1,0 +1,79 @@
+﻿@inherits SampleBasePage
+
+@page "/samples/components/templatecontent"
+
+
+<SampleDocumentation MarkDownFile="Samples.Components.TemplateDisplaySample.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel="@model" Components="@customComponents" Value="@data" ValueChanged="@update"></BDForm>
+</SampleDocumentation>
+
+
+@code {
+
+    private void update()
+    {
+        StateHasChanged();
+    }
+
+    public ComponentsList customComponents => GetCustomComponents();
+
+    public Person data = new Person
+        {
+            FirstName = "John",
+            LastName = "Demo",
+            BirthDate = new DateTime(1980,09,15), 
+            Address = new Address
+            {
+                StreetName = "Kabouterstraat",
+                Number = 45,
+                City = "Utrecht"
+            }
+        };
+
+    private DynamicFormModel model;
+
+    public ComponentsList GetCustomComponents()
+    {
+        var result = new ComponentsList(UserSettingsService.Components);
+        result.Add(new ComponentSelectionKey(ComponentType.TemplateContent, "intro"), typeof(SampleComponents.SampleTemplateComponent));
+        return result;
+    }
+
+    protected override void OnInitialized()
+    {
+
+        model = FormFactory.GroupLayout(
+                   FormFactory.StringComponent("First Name", "$.FirstName"),
+                   FormFactory.StringComponent("Last Name", "$.LastName"),
+                   CreateAddressForm(),
+                   FormFactory.GroupLayout(
+                       FormFactory.TemplateDisplay("intro","$")
+                   )
+               );
+    }
+
+    private DynamicFormModel CreateAddressForm()
+    {
+        return FormFactory.GroupLayout(
+            FormFactory.StringComponent("Street Name", "$.Address.StreetName"),
+            FormFactory.DropDownComponent("City", "$.Address.City",
+                new Dictionary<object, string>()
+                                {
+                                {
+                                  "Utrecht",
+                                  "Utrecht"
+                                },
+                                {
+                                  "Oradea",
+                                  "Oradea"
+                                },
+                                {
+                                  "Amsterdam",
+                                  "Amsterdam"
+                                }
+                            }
+            )
+        );
+    }
+
+}

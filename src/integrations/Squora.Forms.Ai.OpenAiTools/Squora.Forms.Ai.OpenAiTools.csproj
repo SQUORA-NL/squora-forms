@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>Squora.Forms.Ai.OpenAiTools</PackageId>
+    <Description>OpenAI and Anthropic tool definition generator for SquoraForms Hub forms. Auto-generates function-calling tool definitions from JSON Schema form contracts.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+</Project>

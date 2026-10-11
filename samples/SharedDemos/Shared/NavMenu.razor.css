@@ -1,0 +1,88 @@
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.25rem;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 0.75rem;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 0.75rem;
+    }
+
+    .nav-item ::deep a {
+        color: #0a0a0a;
+        border-radius: 8px;
+        height: 2.75rem;
+        display: flex;
+        align-items: center;
+        line-height: 2.75rem;
+        padding: 0 0.75rem;
+    }
+
+.nav-item ::deep a.active {
+    background-color: #eef2ff;
+    color: #4f46e5;
+}
+
+.nav-item ::deep a:hover {
+    background-color: #f3f4f6;
+    color: #0a0a0a;
+}
+
+@media (min-width: 641px) {
+    .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+
+    .nav-scrollable {
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}
+
+/* MudTreeView items inside the documentation drawer.
+   Styled to match the landing-page top app bar nav links — flat text, no boxes,
+   slate-700 default → slate-900 on hover. No background fill, no pill, no border. */
+
+::deep .mud-treeview {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+::deep .mud-treeview-item-content,
+::deep .mud-treeview-item .mud-treeview-item-content {
+    color: #525252;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    background-color: transparent !important;
+    border-radius: 0;
+    padding: 0.5rem 0.5rem;
+    transition: color 0.15s;
+}
+
+::deep .mud-treeview-item-content:hover,
+::deep .mud-treeview-item .mud-treeview-item-content:hover {
+    color: #0a0a0a;
+    background-color: transparent !important;
+}
+
+::deep .mud-treeview-item-content.mud-selected,
+::deep .mud-treeview-item-content[aria-selected="true"],
+::deep .mud-treeview-item .mud-selected.mud-treeview-item-content {
+    color: #0a0a0a;
+    font-weight: 600;
+    background-color: transparent !important;
+}
+
+::deep .mud-treeview-item-arrow,
+::deep .mud-treeview-item-icon {
+    color: #737373;
+}
+
+::deep .mud-treeview-item-content:hover .mud-treeview-item-arrow,
+::deep .mud-treeview-item-content:hover .mud-treeview-item-icon {
+    color: #0a0a0a;
+}

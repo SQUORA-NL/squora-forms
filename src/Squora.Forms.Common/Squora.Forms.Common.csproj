@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+      <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Models\**" />
+      <EmbeddedResource Remove="Models\**" />
+      <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
+    </ItemGroup>
+
+</Project>

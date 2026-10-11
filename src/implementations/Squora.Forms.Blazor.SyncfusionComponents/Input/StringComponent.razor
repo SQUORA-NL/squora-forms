@@ -1,0 +1,9 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.StringComponentBase
+
+<BDFormComponentWrapper Class="stringcomponent" FormComponent="@this" ShowValidation="false">
+    <SfTextBox @bind-Value="@StringValue"
+               Placeholder="@Label"
+               FloatLabelType="FloatLabelType.Auto"
+               Enabled="@(!IsDisabled)" />
+</BDFormComponentWrapper>

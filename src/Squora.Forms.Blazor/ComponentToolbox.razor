@@ -1,0 +1,142 @@
+@using Squora.Forms.Common.Enums
+@using Squora.Forms.Core.Models
+@using Squora.Forms.Core.Models.ParameterModels
+@using Squora.Forms.Blazor.Services
+@inject ComponentsList Components
+
+<div class="bd-component-toolbox">
+    <div class="bd-toolbox-header">
+        <h4>Components</h4>
+    </div>
+    <div class="bd-toolbox-content">
+        @foreach (var componentType in GetAvailableComponentTypes())
+        {
+            <div class="bd-toolbox-item"
+                 draggable="true"
+                 @ondragstart="@((e) => OnToolboxItemDragStart(e, componentType))"
+                 @ondragend="@OnToolboxItemDragEnd">
+                <div class="bd-toolbox-item-label">@GetComponentDisplayName(componentType)</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public DragStateService? DragState { get; set; }
+
+    private void OnToolboxItemDragStart(DragEventArgs e, ComponentType componentType)
+    {
+        if (DragState == null) return;
+        
+        // Create a new component model for dragging
+        var newComponent = CreateComponentModel(componentType);
+        DragState.StartToolboxDrag(newComponent);
+    }
+
+    private void OnToolboxItemDragEnd(DragEventArgs e)
+    {
+        if (DragState == null) return;
+        DragState.EndDrag();
+    }
+
+    private DynamicFormModel CreateComponentModel(ComponentType componentType)
+    {
+        return componentType switch
+        {
+            ComponentType.String => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.String),
+                Parameters = new ParameterList().Add("Label", "New Text Field").Add("Path", "$.newField")
+            },
+            ComponentType.Boolean => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.Boolean),
+                Parameters = new ParameterList().Add("Label", "New Checkbox").Add("Path", "$.newBool")
+            },
+            ComponentType.Int => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.Int),
+                Parameters = new ParameterList().Add("Label", "New Number").Add("Path", "$.newNumber")
+            },
+            ComponentType.Number => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.Number),
+                Parameters = new ParameterList().Add("Label", "New Decimal").Add("Path", "$.newDecimal")
+            },
+            ComponentType.DateTime => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.DateTime),
+                Parameters = new ParameterList().Add("Label", "New Date").Add("Path", "$.newDate")
+            },
+            ComponentType.Dropdown => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.Dropdown),
+                Parameters = new ParameterList().Add("Label", "New Dropdown").Add("Path", "$.newDropdown")
+                    .Add("Options", new Dictionary<object, string> { { "option1", "Option 1" } })
+            },
+            ComponentType.VerticalLayout => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.VerticalLayout),
+                Elements = new List<DynamicFormModel>()
+            },
+            ComponentType.HorizontalLayout => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.HorizontalLayout),
+                Elements = new List<DynamicFormModel>()
+            },
+            ComponentType.GroupLayout => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.GroupLayout),
+                Parameters = new ParameterList().Add("Label", "New Group"),
+                Elements = new List<DynamicFormModel>()
+            },
+            ComponentType.List => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.List),
+                Parameters = new ParameterList().Add("Label", "New List").Add("Path", "$.newList"),
+                Elements = new List<DynamicFormModel>()
+            },
+            _ => new DynamicFormModel
+            {
+                DynamicType = new ComponentSelectionKey(ComponentType.String),
+                Parameters = new ParameterList().Add("Label", "New Field").Add("Path", "$.newField")
+            }
+        };
+    }
+
+    private IEnumerable<ComponentType> GetAvailableComponentTypes()
+    {
+        return new[]
+        {
+            ComponentType.String,
+            ComponentType.Boolean,
+            ComponentType.Int,
+            ComponentType.Number,
+            ComponentType.DateTime,
+            ComponentType.Dropdown,
+            ComponentType.VerticalLayout,
+            ComponentType.HorizontalLayout,
+            ComponentType.GroupLayout,
+            ComponentType.List
+        };
+    }
+
+    private string GetComponentDisplayName(ComponentType componentType)
+    {
+        return componentType switch
+        {
+            ComponentType.String => "Text Field",
+            ComponentType.Boolean => "Checkbox",
+            ComponentType.Int => "Integer",
+            ComponentType.Number => "Number",
+            ComponentType.DateTime => "Date/Time",
+            ComponentType.Dropdown => "Dropdown",
+            ComponentType.VerticalLayout => "Vertical Layout",
+            ComponentType.HorizontalLayout => "Horizontal Layout",
+            ComponentType.GroupLayout => "Group Layout",
+            ComponentType.List => "List",
+            _ => "Unknown"
+        };
+    }
+}

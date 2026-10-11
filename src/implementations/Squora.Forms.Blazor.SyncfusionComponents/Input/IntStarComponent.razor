@@ -1,0 +1,16 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.IntComponentBase
+
+<BDFormComponentWrapper Class="intcomponent intcomponentstar" FormComponent="@this">
+    @Label
+    <SfRating Value="@RatingValue" ValueChanged="@OnRatingChanged" />
+</BDFormComponentWrapper>
+
+@code {
+    private double RatingValue => NumberValue;
+
+    private void OnRatingChanged(double value)
+    {
+        NumberValue = (int)Math.Round(value);
+    }
+}

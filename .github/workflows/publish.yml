@@ -1,0 +1,20 @@
+name: Publish NuGet packages
+# Create a GitHub release tagged vX.Y.Z (or vX.Y.Z-preview.N) to publish.
+on:
+  release:
+    types: [published]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Compute version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+      - run: dotnet build SquoraForms.sln -c Release /p:Version=$VERSION
+      - run: dotnet test SquoraForms.sln -c Release --no-build
+      - run: dotnet pack SquoraForms.sln -c Release --no-build /p:Version=$VERSION -o artifacts
+      - name: Push to nuget.org
+        run: dotnet nuget push "artifacts/*.nupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate

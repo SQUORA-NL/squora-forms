@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "username": { "type": "string", "minLength": 3 },
+    "displayName": { "type": "string" },
+    "email": { "type": "string" },
+    "dob": { "type": "string", "format": "date" },
+    "country": { "type": "string" },
+    "height": { "type": "number", "minimum": 0, "maximum": 300 },
+    "terms": { "type": "boolean" }
+  },
+  "required": ["username", "email"]
+}

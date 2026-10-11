@@ -1,0 +1,6 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.DeleteActionBase
+
+<BDFormComponentWrapper Class="deleteaction" FormComponent="@this">
+    <SfButton OnClick="@DeleteItem" CssClass="e-danger" Disabled="@IsDisabled">@Label</SfButton>
+</BDFormComponentWrapper>

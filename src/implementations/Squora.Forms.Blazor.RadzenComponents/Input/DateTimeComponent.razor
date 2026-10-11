@@ -1,0 +1,11 @@
+﻿@namespace Squora.Forms.Blazor.RadzenComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.DateTimeComponentBase
+
+<BDFormComponentWrapper Class="datetimecomponent" FormComponent="@this">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <RadzenText>@Label</RadzenText>
+    }
+
+    <RadzenDatePicker TValue="DateTime?" @bind-Value=@DateTimeValue Disabled="@IsDisabled" />
+</BDFormComponentWrapper>

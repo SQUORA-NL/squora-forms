@@ -1,0 +1,28 @@
+﻿@inherits Squora.Forms.Blazor.Components.Content.TemplateDisplayBase
+
+<h3>@GetValue("$.FirstName") @GetValue("$.LastName")</h3>
+
+<div class="samplecard">
+    <div class="personal-details">
+        <p><strong>Birth Date:</strong> @GetValue("$.BirthDate", "dd-MM-yy")</p>
+    </div>
+    <div class="address-details">
+        <p><strong>Address:</strong></p>
+        <p>@GetValue("$.Address.StreetName") @GetValue("$.Address.Number")</p>
+        <p>@GetValue("$.Address.City")</p>
+    </div>
+</div>
+
+<style>
+    .samplecard {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        background-color: #FF9800;
+    }
+
+    .personal-details, .address-details {
+        margin-bottom: 15px;
+    }
+</style>

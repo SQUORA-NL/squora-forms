@@ -1,0 +1,18 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.DateTimeComponentBase
+
+<BDFormComponentWrapper Class="datetimecomponent" FormComponent="@this" ShowValidation="false">
+    <SfDatePicker TValue="DateTime?"
+                  Value="@DateTimeValue"
+                  ValueChanged="@OnDateValueChanged"
+                  Placeholder="@Label"
+                  FloatLabelType="FloatLabelType.Auto"
+                  Enabled="@(!IsDisabled)" />
+</BDFormComponentWrapper>
+
+@code {
+    // Named method keeps the EventCallback reference stable across re-renders.
+    // Using an inline lambda (@bind-Value) creates a new delegate each render,
+    // which Syncfusion detects as a parameter change and may use to reset popup state.
+    private void OnDateValueChanged(DateTime? v) => DateTimeValue = v;
+}

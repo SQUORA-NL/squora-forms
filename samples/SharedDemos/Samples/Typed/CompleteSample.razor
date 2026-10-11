@@ -1,0 +1,8 @@
+﻿@inherits SampleBasePage
+@page "/samples/typed/complete"
+
+<SampleDocumentation MarkDownFile="Samples.Typed.CompleteSample.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel=@model Components=@UserSettingsService.Components Value="@data" ValueChanged="@update" ></BDForm>
+</SampleDocumentation>
+
+

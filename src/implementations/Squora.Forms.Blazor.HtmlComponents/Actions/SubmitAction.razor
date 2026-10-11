@@ -1,0 +1,6 @@
+﻿@namespace Squora.Forms.Blazor.HtmlComponents.Actions
+@inherits Squora.Forms.Blazor.Actions.SubmitActionBase
+
+<BDFormComponentWrapper Class="submitaction" FormComponent="@this">
+    <button type="submit" @onclick="@Submit" disabled="@IsDisabled">@Label</button>
+</BDFormComponentWrapper>

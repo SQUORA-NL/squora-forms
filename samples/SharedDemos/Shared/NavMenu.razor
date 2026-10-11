@@ -1,0 +1,102 @@
+﻿@using Microsoft.JSInterop
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <MudPaper Class="py-3" Style="width: 250px;" Elevation="0">
+        <MudTreeView T="string"  SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="OnSelectedValueChanged">
+            <MudTreeViewItem Value='"documentation"' Text="Documentation" CanExpand="true" Expanded="false">
+                <MudTreeViewItem Value='"/documentation/getting-started"' Text="Getting started" />
+                
+                <MudDivider Class="my-2" />
+                
+                <MudTreeViewItem Value='"/documentation/DynamicFormModel"' Text="DynamicFormModel" />
+                <MudTreeViewItem Value='"/documentation/Stringbuilder"' Text="String builder" />
+                <MudTreeViewItem Value='"/documentation/DropdownBuilder"' Text="DropDown builder" />
+                
+                <MudDivider Class="my-2" />
+                
+                <MudTreeViewItem Value='"/documentation/create-custom-component"' Text="Create custom component" />
+                
+                <MudDivider Class="my-2" />
+            </MudTreeViewItem>
+            
+            <MudTreeViewItem Value='"components"' Text="Components" CanExpand="true" Expanded="false">
+                <MudTreeViewItem Value='"/samples/components/string"' Text="String" />
+                <MudTreeViewItem Value='"/samples/components/int"' Text="Int" />
+                <MudTreeViewItem Value='"/samples/components/number"' Text="Number" />
+                <MudTreeViewItem Value='"/samples/components/boolean"' Text="Boolean" />
+                <MudTreeViewItem Value='"/samples/components/datetime"' Text="Datetime" />
+                <MudTreeViewItem Value='"/samples/components/dropdown"' Text="Dropdown" />
+                <MudTreeViewItem Value='"/samples/components/templatecontent"' Text="Template" />
+                
+                <MudDivider Class="my-2" />
+                
+                <MudTreeViewItem Value='"/samples/components/horizontal-layout"' Text="Horizontal-layout" />
+                <MudTreeViewItem Value='"/samples/components/vertical-layout"' Text="Vertical-layout" />
+                <MudTreeViewItem Value='"/samples/components/group"' Text="Group" />
+                
+                <MudDivider Class="my-2" />
+                
+                <MudTreeViewItem Value='"/samples/components/list"' Text="List" />
+                <MudTreeViewItem Value='"/samples/components/list-typed"' Text="List typed" />
+            </MudTreeViewItem>
+            
+            <MudDivider Class="my-2" />
+            
+            <MudTreeViewItem Value='"databinding"' Text="Databinding" CanExpand="true" Expanded="false">
+                <MudTreeViewItem Value='"/samples/typed/base"' Text="Basis" />
+                <MudTreeViewItem Value='"/samples/typed/list"' Text="List" />
+                <MudTreeViewItem Value='"/samples/typed/complete"' Text="Complete sample" />
+            </MudTreeViewItem>
+            
+            <MudDivider Class="my-2" />
+            
+            <MudTreeViewItem Value='"validation"' Text="Validation" CanExpand="true" Expanded="false">
+                <MudTreeViewItem Value='"/samples/components/validation"' Text="Field Validation" />
+                <MudTreeViewItem Value='"/samples/rules/rulesSample"' Text="Rules" />
+            </MudTreeViewItem>
+            
+            <MudTreeViewItem Value='"modelling"' Text="Modelling" CanExpand="true" Expanded="false">
+                <MudTreeViewItem Value='"/samples/playground/Editor"' Text="Editor" />
+                <MudTreeViewItem Value='"/samples/typed/UISchema-Sample"' Text="UISchema" />
+                <MudTreeViewItem Value='"/samples/playground/json"' Text="json-playground" />
+            </MudTreeViewItem>
+            
+            <MudTreeViewItem Value='"/documentation/limitations"' Text="Limitations" />
+
+            <MudDivider Class="my-2" />
+
+            <MudTreeViewItem Value='"_blank:/showcase/form"' Text="Showcase" Icon="@Icons.Material.Filled.OpenInNew" />
+            <MudTreeViewItem Value='"_blank:/editor/form"' Text="Form Editor" Icon="@Icons.Material.Filled.OpenInNew" />
+        </MudTreeView>
+    </MudPaper>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private string selectedValue = "";
+    
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    
+    private async Task OnSelectedValueChanged(string value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            if (value.StartsWith("_blank:"))
+            {
+                var url = value.Substring(7);
+                await JS.InvokeVoidAsync("open", url, "_blank");
+            }
+            else if (value.StartsWith("/"))
+            {
+                Navigation.NavigateTo(value);
+            }
+        }
+    }
+}

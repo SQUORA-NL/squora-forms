@@ -1,0 +1,289 @@
+/* ==========================================================================
+   SquoraForms Form Theme: Dark / MudBlazor Components
+
+   Inject via: <link href="_content/Squora.Forms.Blazor.MudBlazorComponents/themes/dark/squora-forms-mudblazor.css" rel="stylesheet" />
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Dark palette overrides (MudBlazor CSS variables)
+   -------------------------------------------------------------------------- */
+:root {
+    --mud-palette-black: #09090b;
+    --mud-palette-white: #fafafa;
+    --mud-palette-background: #09090b;
+    --mud-palette-background-grey: #18181b;
+    --mud-palette-surface: #18181b;
+    --mud-palette-drawer-background: #18181b;
+    --mud-palette-appbar-background: #09090b;
+    --mud-palette-lines-default: #27272a;
+    --mud-palette-text-primary: #fafafa;
+    --mud-palette-text-secondary: #a1a1aa;
+    --mud-palette-text-disabled: #52525b;
+    --mud-palette-action-default: #a1a1aa;
+    --mud-palette-divider: #27272a;
+    --mud-palette-error: #ef4444;
+    --mud-palette-primary: #fafafa;
+    --mud-palette-primary-text: #09090b;
+}
+
+/* --------------------------------------------------------------------------
+   2. Screen-reader only utility
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: Vertical Stack
+   -------------------------------------------------------------------------- */
+.mud-stack:not(.edit-mode) {
+    gap: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout: Horizontal Stack — children distribute equally
+   -------------------------------------------------------------------------- */
+.mud-stack[style*="row"]:not(.edit-mode) {
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.mud-stack[style*="row"]:not(.edit-mode) > * {
+    flex: 1 1 0;
+    min-width: 140px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Layout: Group (MudCard with role="group")
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-card {
+    margin-bottom: 16px;
+    background: var(--mud-palette-surface, #18181b);
+    border: 1px solid var(--mud-palette-lines-default, #27272a);
+}
+
+.groupcomponent .mud-card-header {
+    font-weight: 600;
+    font-size: 15px;
+    background: #1c1c1f;
+    border-bottom: 1px solid var(--mud-palette-lines-default, #27272a);
+    color: var(--mud-palette-text-primary, #fafafa);
+}
+
+/* --------------------------------------------------------------------------
+   5b. Component wrappers
+   -------------------------------------------------------------------------- */
+.submitaction {
+    display: block;
+    padding-top: 4px;
+}
+
+.addaction, .deleteaction { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   6. Form Fields: Label + Input wrapper
+   -------------------------------------------------------------------------- */
+.bd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bd-labels-inline .bd-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-labels-inline .bd-field > label,
+.bd-labels-inline .bd-field > .bd-label {
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. MudBlazor Input Spacing
+   -------------------------------------------------------------------------- */
+.groupcomponent .mud-input-control,
+.verticalcomponent .mud-input-control,
+.horizontalcomponent .mud-input-control {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Focus Indicators (WCAG 2.1 - 3:1 contrast)
+   -------------------------------------------------------------------------- */
+.mud-input-control .mud-input-slot:focus-visible,
+.mud-button-root:focus-visible,
+.mud-checkbox .mud-button-root:focus-visible,
+.mud-select .mud-input-slot:focus-visible {
+    outline: 2px solid #e4e4e7;
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Required Field Indicator
+   -------------------------------------------------------------------------- */
+.bd-required-indicator {
+    color: var(--mud-palette-error, #ef4444);
+    margin-left: 2px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Validation Messages
+   -------------------------------------------------------------------------- */
+.bd-validation {
+    color: var(--mud-palette-error, #ef4444);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive: Mobile breakpoint
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+    .mud-stack[style*="row"]:not(.edit-mode) {
+        flex-direction: column !important;
+    }
+
+    .mud-stack[style*="row"]:not(.edit-mode) > * {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+
+    .bd-labels-inline .bd-field {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Showcase overrides (dark)
+   -------------------------------------------------------------------------- */
+.showcase-page {
+    color: #fafafa;
+    background: #09090b;
+}
+
+/* --------------------------------------------------------------------------
+   13. Tabs + section description (dark) — missing from base showcase.css
+   -------------------------------------------------------------------------- */
+.showcase-tabs {
+    border-bottom-color: #27272a;
+}
+
+.showcase-tab {
+    color: #a1a1aa;
+}
+
+.showcase-tab:hover {
+    color: #fafafa;
+}
+
+.showcase-tab.active {
+    color: #fafafa;
+    border-bottom-color: #fafafa;
+}
+
+.showcase-section-desc {
+    color: #a1a1aa;
+}
+
+/* --------------------------------------------------------------------------
+   14. MudBlazor DatePicker popup fix for dark
+   -------------------------------------------------------------------------- */
+.mud-popover-open .mud-popover-cascading-value,
+.mud-popover-open .mud-picker,
+.mud-popover-open .mud-picker-container {
+    background-color: var(--mud-palette-surface, #18181b) !important;
+}
+
+.mud-picker-calendar-transition {
+    background-color: var(--mud-palette-surface, #18181b);
+}
+
+.mud-popover {
+    z-index: 1300;
+}
+
+/* MudSelect popup — use surface color */
+.mud-list {
+    background-color: var(--mud-palette-surface, #18181b);
+    color: var(--mud-palette-text-primary, #fafafa);
+}
+
+.mud-list-item-text {
+    color: var(--mud-palette-text-primary, #fafafa);
+}
+
+.mud-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.showcase-header h1 {
+    color: #fafafa;
+}
+
+.showcase-header p {
+    color: #a1a1aa;
+}
+
+.showcase-section h2 {
+    color: #fafafa;
+}
+
+.form-container {
+    background: #18181b;
+    border-color: #27272a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.showcase-controls {
+    background: #18181b;
+    border-color: #27272a;
+}
+
+.showcase-select-label {
+    color: #a1a1aa;
+}
+
+.showcase-select {
+    color: #fafafa;
+    background-color: #09090b;
+    border-color: #27272a;
+}
+
+.json-output {
+    border-color: #27272a;
+}
+
+.json-output summary {
+    color: #a1a1aa;
+    background: #18181b;
+}
+
+.json-output summary:hover {
+    background: #27272a;
+}
+
+.json-output pre {
+    background: #000000;
+    color: #a1a1aa;
+    border-top-color: #27272a;
+}
+
+body:has(.showcase-page) {
+    background: #09090b;
+    color-scheme: dark;
+}

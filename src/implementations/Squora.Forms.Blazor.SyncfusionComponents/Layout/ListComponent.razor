@@ -1,0 +1,15 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Layout
+@inherits Squora.Forms.Blazor.Components.Layout.ListComponentBase
+
+<BDFormComponentWrapper Class="listcomponent" FormComponent="@this">
+    @Label
+    <div class="sf-layout-stack">
+        @for (int i = 0; i < _listValue.Count; i++)
+        {
+            @foreach (var element in this.FormModel.Elements)
+            {
+                <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersFor(element, i) />
+            }
+        }
+    </div>
+</BDFormComponentWrapper>
