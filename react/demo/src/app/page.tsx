@@ -11,8 +11,10 @@ import registrationUiSchema from '@/samples/registration-ui-schema.json';
 import completeSchema from '@/samples/complete-schema.json';
 import completeUiSchema from '@/samples/complete-ui-schema.json';
 import completeData from '@/samples/complete-data.json';
+import filesSchema from '@/samples/files-schema.json';
+import filesUiSchema from '@/samples/files-ui-schema.json';
 
-type TabId = 'paste' | 'contact' | 'registration' | 'complete';
+type TabId = 'paste' | 'contact' | 'registration' | 'complete' | 'files';
 type ThemeId = 'default' | 'dark' | 'compact' | 'studio' | 'glass' | 'neu' | 'vintage' | 'card';
 
 const TABS: { id: TabId; label: string }[] = [
@@ -20,6 +22,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'contact', label: 'Contact' },
   { id: 'registration', label: 'Registration' },
   { id: 'complete', label: 'Complete' },
+  { id: 'files', label: 'Files' },
 ];
 
 const THEMES: { id: ThemeId; label: string }[] = [
@@ -104,6 +107,8 @@ export default function DemoPage() {
         return { schema: registrationSchema as JSONSchema, uiSchema: registrationUiSchema as unknown as DynamicFormModel };
       case 'complete':
         return { schema: completeSchema as JSONSchema, uiSchema: completeUiSchema as unknown as DynamicFormModel, initialValues: completeData as Record<string, unknown> };
+      case 'files':
+        return { schema: filesSchema as JSONSchema, uiSchema: filesUiSchema as unknown as DynamicFormModel };
       case 'paste':
         if (pastedSchema && pastedUiSchema) return { schema: pastedSchema, uiSchema: pastedUiSchema, initialValues: pastedData };
         return null;

@@ -18,6 +18,19 @@ Schema-driven dynamic forms. Describe a form once as JSON (JSON Schema + UI Sche
 
 Syncfusion components require your own Syncfusion license.
 
+## File uploads
+
+`FileUpload` is a field like any other, in Blazor (HTML, MudBlazor, Radzen, Syncfusion) and React. The user can pick one
+file, or several with `Multiple`, and the form data holds each file as JSON with its content Base64 encoded:
+
+```json
+{ "cv": { "name": "cv.pdf", "contentType": "application/pdf", "size": 5, "data": "aGVsbG8=" } }
+```
+
+In JSON Schema an object with `"format": "squora-file"` is one file and an array of those objects is several files
+(`maxItems`, `accept` and `maxFileSize` are read from it). In C#: `FormFactory.FileUploadComponent("CV", "$.cv", b => b.WithMultiple())`;
+typed models use `UploadedFile` or `List<UploadedFile>`. See the *File upload* sample.
+
 ## Quick start (Blazor)
 
 ```bash

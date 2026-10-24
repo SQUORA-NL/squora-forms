@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "cv": {
+      "type": "object",
+      "format": "squora-file",
+      "accept": ".pdf,.txt",
+      "maxFileSize": 102400,
+      "properties": {
+        "name": { "type": "string" },
+        "contentType": { "type": "string" },
+        "size": { "type": "integer" },
+        "data": { "type": "string", "contentEncoding": "base64" }
+      },
+      "required": ["name", "data"]
+    },
+    "attachments": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "format": "squora-file",
+        "maxFileSize": 102400,
+        "properties": {
+          "name": { "type": "string" },
+          "contentType": { "type": "string" },
+          "size": { "type": "integer" },
+          "data": { "type": "string", "contentEncoding": "base64" }
+        },
+        "required": ["name", "data"]
+      }
+    }
+  },
+  "required": ["cv"]
+}

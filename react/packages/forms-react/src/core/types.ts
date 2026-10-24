@@ -23,6 +23,7 @@ export const ComponentType = {
   NumberDisplay: 'NumberDisplay',
   StringDisplay: 'StringDisplay',
   TemplateContent: 'TemplateContent',
+  FileUpload: 'FileUpload',
 } as const;
 
 export type ComponentType = (typeof ComponentType)[keyof typeof ComponentType];
@@ -67,6 +68,9 @@ export interface JSONSchema {
   title?: string;
   description?: string;
   format?: string;
+  /** File upload ("format": "squora-file"): accepted file types and the largest file in bytes. */
+  accept?: string;
+  maxFileSize?: number;
   enum?: unknown[];
   const?: unknown;
   minimum?: number;

@@ -78,6 +78,33 @@
   font-size: 12px;
 }
 
+.sq-file-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  font-size: var(--sq-font-size);
+}
+
+.sq-file-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sq-file-size {
+  color: var(--sq-fg);
+  opacity: 0.7;
+}
+
+.sq-file-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--sq-error);
+  font-size: 16px;
+  line-height: 1;
+}
+
 .sq-submit-button {
   padding: 10px 20px;
   background-color: var(--sq-primary);

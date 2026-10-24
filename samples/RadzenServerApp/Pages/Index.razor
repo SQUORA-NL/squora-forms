@@ -32,6 +32,8 @@
             FormFactory.StringComponent("First Name", "$.FirstName"),
             FormFactory.StringComponent("Last Name", "$.LastName"),
             FormFactory.DateTimeComponent("Birth Date", "$.BirthDate"),
+            FormFactory.FileUploadComponent("Photo", "$.Photo", b => b.WithAccept("image/*")),
+            FormFactory.FileUploadComponent("Documents", "$.Documents", b => b.WithMultiple()),
             FormFactory.BooleanComponent("Is address Active", "$.Address.IsActive"),
             CreateAddressForm(),
             FormFactory.AddAction("+ car", "$.Cars", new Car()),

@@ -22,9 +22,9 @@ public static class JsonSchemaHelper
             case JSchemaType.Boolean:
                 return GetBoolean(token);
             case JSchemaType.Array:
-                return GetArray(token);
+                return IsFile(token["items"]) ? GetFile(token, token["items"], multiple: true) : GetArray(token);
             case JSchemaType.Object:
-                return GetObject(token);
+                return IsFile(token) ? GetFile(token, token, multiple: false) : GetObject(token);
                 default:
                     return new DefaultSchemaItem(token.Path);
         }
@@ -53,6 +53,28 @@ public static class JsonSchemaHelper
         };
     }
     
+    private static bool IsFile(JToken? token)
+    {
+        return token is JObject && token["type"]?.ToString() == "object"
+            && token[JsonSchemaConstants.Format]?.ToString() == JsonSchemaConstants.FileFormat;
+    }
+
+    // outer is the property itself (the array for several files), file is the schema of one file.
+    private static ISchemaItem GetFile(JToken outer, JToken file, bool multiple)
+    {
+        var item = new FileSchemaItem(outer.Path)
+        {
+            Multiple = multiple,
+            MinimumFiles = multiple ? outer[JsonSchemaConstants.MinimumItems]?.ToObject<int>() : null,
+            Accept = file[JsonSchemaConstants.Accept]?.ToObject<string>()
+        };
+        if (multiple && outer[JsonSchemaConstants.MaximumItems] != null)
+            item.MaximumFiles = outer[JsonSchemaConstants.MaximumItems].ToObject<int>();
+        if (file[JsonSchemaConstants.MaximumFileSize] != null)
+            item.MaximumFileSize = file[JsonSchemaConstants.MaximumFileSize].ToObject<long>();
+        return item;
+    }
+
     private static ISchemaItem GetBoolean(JToken token)
     {
         return new BoolSchemaItem(token.Path);

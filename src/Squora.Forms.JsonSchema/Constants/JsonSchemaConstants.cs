@@ -18,6 +18,11 @@ public static class JsonSchemaConstants
     public const string Pattern = "pattern";
     public const string Format = "format";
 
+    // For file uploads: an object (or array of objects) with this format holds { name, contentType, size, data (Base64) }
+    public const string FileFormat = "squora-file";
+    public const string Accept = "accept";
+    public const string MaximumFileSize = "maxFileSize";
+
     // For integer and number
     public const string Minimum = "minimum";
     public const string Maximum = "maximum";

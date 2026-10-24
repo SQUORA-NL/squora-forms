@@ -23,6 +23,8 @@ export { AddAction } from './actions/AddAction';
 export { DeleteAction } from './actions/DeleteAction';
 export { NumberDisplay } from './renderers/fields/NumberDisplay';
 export { StringDisplay } from './renderers/fields/StringDisplay';
+export { FileField, readFile } from './renderers/fields/FileField';
+export type { UploadedFile } from './renderers/fields/FileField';
 
 // Core types
 export {
