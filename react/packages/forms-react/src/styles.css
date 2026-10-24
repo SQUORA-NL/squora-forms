@@ -11,6 +11,11 @@
   gap: var(--sq-gap);
 }
 
+.sq-horizontal-layout {
+  /* buttons beside inputs (Delete, Add) line up with the input fields, not with the labels above them; a theme can override */
+  align-items: flex-end;
+}
+
 .sq-field {
   display: flex;
   flex-direction: column;
@@ -141,6 +146,7 @@
 .sq-delete-action {
   padding: 6px 14px;
   min-height: 36px; /* same height as the inputs beside it */
+  margin-bottom: var(--sq-field-offset, 0px); /* a theme that puts space under fields sets this, so the button stays level with the input */
   font-size: 13px;
   cursor: pointer;
   border-radius: var(--sq-radius);

@@ -830,8 +830,13 @@
 }
 
 /* Vintage: fields — underline only, uppercase, generous bottom margin */
+[data-theme="vintage"] {
+  /* space this theme puts under every field; buttons beside a field carry it too so they stay level with the input */
+  --sq-field-offset: 28px;
+}
+
 [data-theme="vintage"] .sq-field {
-  margin-bottom: 28px;
+  margin-bottom: var(--sq-field-offset);
   gap: 0;
 }
 
@@ -1098,8 +1103,12 @@
 }
 
 /* Card: fields — bordered, rounded, label above in grey */
+[data-theme="card"] {
+  --sq-field-offset: 10px;
+}
+
 [data-theme="card"] .sq-field {
-  margin-bottom: 10px;
+  margin-bottom: var(--sq-field-offset);
   gap: 0;
 }
 
@@ -1193,6 +1202,7 @@
 /* Card: horizontal — reduce to single column on this theme (axis flip) */
 [data-theme="card"] .sq-horizontal-layout {
   flex-direction: column !important;
+  align-items: stretch;
   gap: 10px !important;
 }
 

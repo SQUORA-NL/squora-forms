@@ -54,6 +54,12 @@ export default function DemoPage() {
 
   const [formKey, setFormKey] = useState(0);
 
+  // ?theme=vintage opens the demo in that theme (handy for sharing a link or taking a screenshot)
+  useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get('theme');
+    if (fromUrl && THEMES.some((t) => t.id === fromUrl)) setTheme(fromUrl as ThemeId);
+  }, []);
+
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
