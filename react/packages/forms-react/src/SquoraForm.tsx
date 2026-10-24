@@ -297,6 +297,13 @@ export function SquoraForm({
     [schema, setErrors]
   );
 
+  // Once errors are showing, keep them current as the user fixes things instead of leaving them until the next submit.
+  const errorsShowing = Object.keys(state.errors).length > 0;
+  useEffect(() => {
+    if (errorsShowing) revalidate(state.values);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-check when the values change
+  }, [state.values]);
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();

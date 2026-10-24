@@ -34,6 +34,10 @@
             }
         </ul>
     }
+    @if (Notice != null)
+    {
+        <div class="bd-file-notice" role="status">@Notice</div>
+    }
 </BDFormComponentWrapper>
 
 @code {

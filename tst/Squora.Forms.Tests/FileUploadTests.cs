@@ -33,7 +33,11 @@ public class FileUploadTests
     }
     """;
 
-    private sealed class TestUpload : FileUploadComponentBase { }
+    private sealed class TestUpload : FileUploadComponentBase
+    {
+        // Blazor calls this when the parameters arrive; there is no renderer here.
+        public void Refresh() => OnParametersSet();
+    }
 
     private static FileSource Source(string name, string text) =>
         new(name, "text/plain", Encoding.UTF8.GetByteCount(text), _ => new MemoryStream(Encoding.UTF8.GetBytes(text)));
@@ -127,7 +131,7 @@ public class FileUploadTests
     }
 
     [Test]
-    public async Task Files_over_the_limits_are_rejected_and_make_the_field_invalid()
+    public async Task Files_over_the_limits_are_turned_away_with_a_notice_and_do_not_block_the_form()
     {
         var data = new ExpandoObject();
         var upload = new TestUpload { Path = "$.docs", Value = data, Multiple = true, MaximumFileSize = 4, MaximumFiles = 1 };
@@ -135,13 +139,37 @@ public class FileUploadTests
         await upload.AddFilesAsync(new[] { Source("big.txt", "hello") });
 
         Assert.That(upload.Files, Is.Empty);
-        Assert.That(upload.IsValid, Is.False);
-        Assert.That(upload.ValidationString, Does.Contain("big.txt"));
+        Assert.That(upload.Notice, Does.Contain("big.txt"));
+        Assert.That(upload.IsValid, Is.True);
 
         await upload.AddFilesAsync(new[] { Source("a.txt", "hi"), Source("b.txt", "yo") });
 
         Assert.That(upload.Files.Select(f => f.Name), Is.EqualTo(new[] { "a.txt" }));
+        Assert.That(upload.Notice, Does.Contain("At most 1"));
+        upload.Validate();
+        Assert.That(upload.IsValid, Is.True);
+
+        upload.RemoveFile(0);
+        Assert.That(upload.Notice, Is.Null);
+    }
+
+    [Test]
+    public void Data_that_is_already_over_the_limits_is_invalid_until_it_is_fixed()
+    {
+        var data = new ExpandoObject();
+        var big = new List<UploadedFile> { UploadedFile.FromBytes("a", "t", new byte[2]), UploadedFile.FromBytes("b", "t", new byte[2]) };
+        ((IDictionary<string, object>)data)["docs"] = big;
+        var upload = new TestUpload { Path = "$.docs", Value = data, Multiple = true, MaximumFiles = 1 };
+        upload.Refresh();
+
+        upload.Validate();
         Assert.That(upload.IsValid, Is.False);
+        Assert.That(upload.ValidationString, Does.Contain("At most 1"));
+
+        big.RemoveAt(1);
+        upload.Refresh();
+        upload.Validate();
+        Assert.That(upload.IsValid, Is.True);
     }
 
     [Test]

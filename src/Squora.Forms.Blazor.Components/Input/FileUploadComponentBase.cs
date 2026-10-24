@@ -34,13 +34,17 @@ namespace Squora.Forms.Blazor.Components.Input
         public int MaximumFiles { get; set; }
 
         private List<UploadedFile> _files = new();
-        private string? _error;
+        private string? _notice;
 
         public IReadOnlyList<UploadedFile> Files => _files;
 
-        public string? Error => _error;
+        /// <summary>
+        /// What went wrong with the last pick (a file too large, too many files). Files that were turned away never reach the
+        /// data, so this is only a message; it does not make the field invalid and it clears on the next pick, removal or clear.
+        /// </summary>
+        public string? Notice => _notice;
 
-        public override string ValidationString => _error ?? InvalidMessage ?? (MissingRequiredFile ? "Select a file" : "Invalid file");
+        public override string ValidationString => InvalidMessage ?? ProblemWithFiles() ?? "Invalid file";
 
         protected override void OnParametersSet()
         {
@@ -62,14 +66,14 @@ namespace Squora.Forms.Blazor.Components.Input
         /// <summary>For pickers that do not hand out an <see cref="IBrowserFile"/>.</summary>
         public async Task AddFilesAsync(IEnumerable<FileSource> sources)
         {
-            _error = null;
+            _notice = null;
             var added = new List<UploadedFile>();
 
             foreach (var source in sources)
             {
                 if (source.Size > MaximumFileSize)
                 {
-                    _error = $"{source.Name} is larger than {FormatSize(MaximumFileSize)}.";
+                    _notice = $"{source.Name} is larger than {FormatSize(MaximumFileSize)}.";
                     continue;
                 }
 
@@ -82,20 +86,19 @@ namespace Squora.Forms.Blazor.Components.Input
                 }
                 catch (IOException)
                 {
-                    _error = $"{source.Name} could not be read.";
+                    _notice = $"{source.Name} could not be read.";
                 }
             }
 
             if (added.Count == 0)
             {
-                IsValid = _error == null;
                 return;
             }
 
             var result = Multiple ? _files.Concat(added).ToList() : new List<UploadedFile> { added[^1] };
             if (Multiple && MaximumFiles > 0 && result.Count > MaximumFiles)
             {
-                _error = $"At most {MaximumFiles} files are allowed.";
+                _notice = $"At most {MaximumFiles} files are allowed.";
                 result = result.Take(MaximumFiles).ToList();
             }
 
@@ -105,7 +108,7 @@ namespace Squora.Forms.Blazor.Components.Input
         public void RemoveFile(int index)
         {
             if (index < 0 || index >= _files.Count) return;
-            _error = null;
+            _notice = null;
             var result = _files.ToList();
             result.RemoveAt(index);
             SetFiles(result);
@@ -113,7 +116,7 @@ namespace Squora.Forms.Blazor.Components.Input
 
         public void Clear()
         {
-            _error = null;
+            _notice = null;
             SetFiles(new List<UploadedFile>());
         }
 
@@ -126,11 +129,18 @@ namespace Squora.Forms.Blazor.Components.Input
 
         public override void Validate()
         {
-            IsValid = _error == null && !MissingRequiredFile;
+            IsValid = ProblemWithFiles() == null;
             base.Validate();
         }
 
-        private bool MissingRequiredFile => Required && _files.Count == 0;
+        // Judged on the files in the data, so a form loaded with too many or too large files is invalid until that is fixed.
+        private string? ProblemWithFiles()
+        {
+            if (Required && _files.Count == 0) return "Select a file";
+            if (Multiple && MaximumFiles > 0 && _files.Count > MaximumFiles) return $"At most {MaximumFiles} files are allowed.";
+            var tooLarge = _files.FirstOrDefault(f => f.Size > MaximumFileSize);
+            return tooLarge != null ? $"{tooLarge.Name} is larger than {FormatSize(MaximumFileSize)}." : null;
+        }
 
         public static string FormatSize(long bytes) => bytes switch
         {

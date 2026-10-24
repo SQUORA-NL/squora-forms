@@ -33,6 +33,10 @@
     {
         <MudText Typo="Typo.caption" Color="Color.Error" role="alert">@ValidationString</MudText>
     }
+    @if (Notice != null)
+    {
+        <MudText Typo="Typo.caption" Color="Color.Warning" role="status">@Notice</MudText>
+    }
 </BDFormComponentWrapper>
 
 @code {
