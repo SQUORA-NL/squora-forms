@@ -22,5 +22,6 @@ public enum ComponentType
     DateTime,
     NumberDisplay,
     StringDisplay,
-    TemplateContent
+    TemplateContent,
+    FileUpload
 }

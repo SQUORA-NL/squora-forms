@@ -1,0 +1,50 @@
+@namespace Squora.Forms.Blazor.MudBlazorComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.FileUploadComponentBase
+@using Microsoft.AspNetCore.Components.Forms
+
+<BDFormComponentWrapper Class="fileuploadcomponent" FormComponent="@this" ShowValidation="false">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <MudText Typo="Typo.body2">@Label @(Required ? "*" : "")</MudText>
+    }
+
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="@OnFilesChanged" Accept="@Accept" MaximumFileCount="@MaxCount" Disabled="@IsDisabled">
+        <ActivatorContent>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="@IsDisabled">
+                @(Multiple ? "Choose files" : "Choose file")
+            </MudButton>
+        </ActivatorContent>
+    </MudFileUpload>
+
+    @if (Files.Count > 0)
+    {
+        <MudChipSet T="string" ReadOnly="true">
+            @for (var i = 0; i < Files.Count; i++)
+            {
+                var index = i;
+                <MudChip T="string" Size="Size.Small" OnClose="@(() => RemoveFile(index))" Disabled="@IsDisabled">
+                    @Files[index].Name (@FormatSize(Files[index].Size))
+                </MudChip>
+            }
+        </MudChipSet>
+    }
+
+    @if (IsInvalid)
+    {
+        <MudText Typo="Typo.caption" Color="Color.Error" role="alert">@ValidationString</MudText>
+    }
+    @if (Notice != null)
+    {
+        <MudText Typo="Typo.caption" Color="Color.Warning" role="status">@Notice</MudText>
+    }
+</BDFormComponentWrapper>
+
+@code {
+    private int MaxCount => Multiple ? (MaximumFiles > 0 ? MaximumFiles : int.MaxValue) : 1;
+
+    private async Task OnFilesChanged(IReadOnlyList<IBrowserFile> files)
+    {
+        if (files == null) { return; }
+        await AddFilesAsync(files);
+    }
+}

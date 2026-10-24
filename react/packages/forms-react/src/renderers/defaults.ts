@@ -9,6 +9,7 @@ import { NumberField } from './fields/NumberField';
 import { BooleanField } from './fields/BooleanField';
 import { SelectField } from './fields/SelectField';
 import { DateField } from './fields/DateField';
+import { FileField } from './fields/FileField';
 import { UnknownField } from './fields/UnknownField';
 import { HorizontalLayout } from './layouts/HorizontalLayout';
 import { VerticalLayout } from './layouts/VerticalLayout';
@@ -24,6 +25,7 @@ export function createDefaultRegistry() {
   registry.register(ComponentType.Boolean, BooleanField);
   registry.register(ComponentType.Dropdown, SelectField);
   registry.register(ComponentType.DateTime, DateField);
+  registry.register(ComponentType.FileUpload, FileField);
 
   // Display renderers (read-only variants — use same components for MVP)
   registry.register(ComponentType.StringDisplay, TextField);

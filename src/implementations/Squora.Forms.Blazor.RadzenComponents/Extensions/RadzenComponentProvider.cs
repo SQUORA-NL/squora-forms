@@ -15,6 +15,7 @@ namespace Squora.Forms.Blazor.RadzenComponents.Extensions
             return new ComponentsList {
                 {new ComponentSelectionKey(ComponentType.String) , typeof(StringComponent) },
                 {new ComponentSelectionKey(ComponentType.DateTime) , typeof(DateTimeComponent) },
+                {new ComponentSelectionKey(ComponentType.FileUpload) , typeof(FileUploadComponent) },
                 {new ComponentSelectionKey(ComponentType.HorizontalLayout), typeof(HorizontalLayout) },
                 {new ComponentSelectionKey(ComponentType.VerticalLayout), typeof(VerticalLayout) },
                 {new ComponentSelectionKey(ComponentType.Number), typeof(NumberComponent) },

@@ -1,0 +1,17 @@
+{
+  "dynamicType": { "componentType": "VerticalLayout" },
+  "elements": [
+    {
+      "dynamicType": { "componentType": "FileUpload" },
+      "parameters": { "scope": "$.cv", "label": "CV (one file)" }
+    },
+    {
+      "dynamicType": { "componentType": "FileUpload" },
+      "parameters": { "scope": "$.attachments", "label": "Attachments (up to 3 files)", "multiple": true }
+    },
+    {
+      "dynamicType": { "componentType": "SubmitAction" },
+      "parameters": { "label": "Submit" }
+    }
+  ]
+}

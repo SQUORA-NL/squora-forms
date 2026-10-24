@@ -1,0 +1,48 @@
+@namespace Squora.Forms.Blazor.SyncfusionComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.FileUploadComponentBase
+@using Microsoft.AspNetCore.Components.Forms
+
+<BDFormComponentWrapper Class="fileuploadcomponent" FormComponent="@this">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@ComponentId" class="bd-label">
+            @Label
+            @if (Required)
+            {
+                <span class="bd-required-indicator" aria-hidden="true">*</span>
+                <span class="sr-only">required</span>
+            }
+        </label>
+    }
+    <InputFile id="@ComponentId" OnChange="@OnFilesSelected" multiple="@Multiple" accept="@Accept" class="form-control"
+               disabled="@IsDisabled"
+               aria-invalid="@(IsInvalid ? "true" : null)"
+               aria-required="@(Required ? "true" : null)"
+               aria-describedby="@ErrorMessageId" />
+    @if (Files.Count > 0)
+    {
+        <ul class="bd-file-list">
+            @for (var i = 0; i < Files.Count; i++)
+            {
+                var index = i;
+                <li>
+                    <span class="bd-file-name">@Files[index].Name</span>
+                    <span class="bd-file-size">(@FormatSize(Files[index].Size))</span>
+                    <button type="button" class="bd-file-remove" disabled="@IsDisabled" aria-label="Remove @Files[index].Name"
+                            @onclick="() => RemoveFile(index)">&times;</button>
+                </li>
+            }
+        </ul>
+    }
+    @if (Notice != null)
+    {
+        <div class="bd-file-notice" role="status">@Notice</div>
+    }
+</BDFormComponentWrapper>
+
+@code {
+    private async Task OnFilesSelected(InputFileChangeEventArgs e)
+    {
+        await AddFilesAsync(e.GetMultipleFiles(Multiple ? int.MaxValue : 1));
+    }
+}

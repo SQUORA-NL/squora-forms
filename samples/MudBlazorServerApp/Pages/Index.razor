@@ -64,7 +64,8 @@
     {
         return FormFactory.VerticalLayout(
             FormFactory.StringComponent("Name", "$.name"),
-            FormFactory.StringComponent("City", "$.city")
+            FormFactory.StringComponent("City", "$.city"),
+            FormFactory.FileUploadComponent("Documents", "$.documents", b => b.WithMultiple())
             );
     }
 }

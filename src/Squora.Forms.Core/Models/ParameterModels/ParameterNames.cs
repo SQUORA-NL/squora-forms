@@ -30,5 +30,9 @@
         public const string EditMode = "EditMode";
         public const string TreePosition = "TreePosition";
         public const string Required = "Required";
+        public const string Multiple = "Multiple";
+        public const string Accept = "Accept";
+        public const string MaximumFileSize = "MaximumFileSize";
+        public const string MaximumFiles = "MaximumFiles";
     }
 }

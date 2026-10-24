@@ -116,3 +116,8 @@
 .sf-horizontal-layout.edit-mode.dragging-active .bd-drop-zone {
     display: flex;
 }
+
+/* Buttons next to inputs line up with the input fields, not with the labels above them. */
+.sf-horizontal-layout:not(.edit-mode) {
+    align-items: flex-end;
+}

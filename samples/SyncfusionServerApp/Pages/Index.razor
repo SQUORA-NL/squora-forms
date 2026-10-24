@@ -81,6 +81,7 @@
         ),
         FormFactory.DateTimeComponent("Start Date", "$.startDate"),
         FormFactory.BooleanComponent("Active", "$.isActive"),
+        FormFactory.FileUploadComponent("Documents", "$.documents", b => b.WithMultiple()),
         FormFactory.GroupLayout(
             FormFactory.StringComponent("Street", "$.address.street"),
             FormFactory.StringComponent("City", "$.address.city")

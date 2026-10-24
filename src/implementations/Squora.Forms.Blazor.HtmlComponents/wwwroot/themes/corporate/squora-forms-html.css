@@ -128,3 +128,6 @@
 .json-output code { font-family: inherit; }
 
 body:has(.showcase-page) { margin: 0; padding: 0; background: #eef2f7; font-family: var(--bd-font); }
+
+/* Buttons next to inputs (Delete, Add) line up with the input fields, not with the labels above them. */
+.horizontalcomponent > .horizontal-stack:not(.edit-mode) { align-items: flex-end; }

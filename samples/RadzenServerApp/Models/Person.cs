@@ -8,6 +8,9 @@
         public DateTime BirthDate { get; set; }
         public Address Address { get; set; }
 
+        public Squora.Forms.Core.Models.UploadedFile? Photo { get; set; }
+        public List<Squora.Forms.Core.Models.UploadedFile> Documents { get; set; } = new();
+
         public List<Car> Cars { get; set; }
     }
 }

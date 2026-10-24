@@ -1,0 +1,24 @@
+@inherits SampleBasePage
+@page "/samples/components/fileupload"
+
+<SampleDocumentation MarkDownFile="Samples.Components.FileUploadSample.razor.md" Data="@data" FormModel="@model">
+    <BDForm FormModel="@model" Components="@UserSettingsService.Components" Value="@data" ValueChanged="@update"></BDForm>
+</SampleDocumentation>
+
+
+@code {
+
+    private void update()
+    {
+        StateHasChanged();
+    }
+
+    public ExpandoObject data = new ExpandoObject();
+
+    // Small limits keep the "Resulting data" panel readable: the files are shown there as Base64.
+    public DynamicFormModel model = FormFactory.VerticalLayout(
+        FormFactory.FileUploadComponent("CV (one file)", "$.cv", b => b.WithAccept(".pdf,.txt").WithMaximumFileSize(100 * 1024)),
+        FormFactory.FileUploadComponent("Attachments (several files)", "$.attachments",
+            b => b.WithMultiple().WithMaximumFiles(3).WithMaximumFileSize(100 * 1024))
+    );
+}

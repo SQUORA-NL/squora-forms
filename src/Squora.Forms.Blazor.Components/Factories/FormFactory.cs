@@ -272,6 +272,21 @@ namespace Squora.Forms.Blazor.Components.Factories
             return new DateTimeComponentBuilder();
         }
 
+        // FileUpload Component Methods
+        public static DynamicFormModel FileUploadComponent(string label, string path, Action<FileUploadComponentBuilder>? configure = null)
+        {
+            var builder = new FileUploadComponentBuilder();
+            if (configure != null) { configure(builder); }
+            builder.WithPath(path);
+            builder.WithLabel(label);
+            return builder.Build();
+        }
+
+        public static FileUploadComponentBuilder FileUploadComponentBuilder()
+        {
+            return new FileUploadComponentBuilder();
+        }
+
         // Number Component Methods
         public static DynamicFormModel NumberComponent()
         {

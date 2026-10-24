@@ -11,6 +11,11 @@
   gap: var(--sq-gap);
 }
 
+.sq-horizontal-layout {
+  /* buttons beside inputs (Delete, Add) line up with the input fields, not with the labels above them; a theme can override */
+  align-items: flex-end;
+}
+
 .sq-field {
   display: flex;
   flex-direction: column;
@@ -78,6 +83,33 @@
   font-size: 12px;
 }
 
+.sq-file-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  font-size: var(--sq-font-size);
+}
+
+.sq-file-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sq-file-size {
+  color: var(--sq-fg);
+  opacity: 0.7;
+}
+
+.sq-file-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--sq-error);
+  font-size: 16px;
+  line-height: 1;
+}
+
 .sq-submit-button {
   padding: 10px 20px;
   background-color: var(--sq-primary);
@@ -113,13 +145,14 @@
 
 .sq-delete-action {
   padding: 6px 14px;
+  min-height: 36px; /* same height as the inputs beside it */
+  margin-bottom: var(--sq-field-offset, 0px); /* a theme that puts space under fields sets this, so the button stays level with the input */
   font-size: 13px;
   cursor: pointer;
   border-radius: var(--sq-radius);
   border: 1px solid var(--sq-del-border);
   background-color: var(--sq-del-bg);
   color: var(--sq-del-color);
-  align-self: center;
 }
 
 /* ── Layouts ── */

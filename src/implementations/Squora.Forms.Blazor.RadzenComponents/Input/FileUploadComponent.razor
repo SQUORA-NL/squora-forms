@@ -1,0 +1,41 @@
+@namespace Squora.Forms.Blazor.RadzenComponents.Input
+@inherits Squora.Forms.Blazor.Components.Input.FileUploadComponentBase
+@using Squora.Forms.Blazor.Components.Input
+
+<BDFormComponentWrapper Class="fileuploadcomponent" FormComponent="@this">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <RadzenText>@Label</RadzenText>
+    }
+
+    @* Auto="false" and no Url: the browser only picks the files, they are read here and stored as Base64 in the form value. *@
+    <RadzenUpload Auto="false" Multiple="@Multiple" Accept="@Accept" Disabled="@IsDisabled" ChooseText="@(Multiple ? "Choose files" : "Choose file")"
+                  Change="@OnChange" />
+
+    @if (Files.Count > 0)
+    {
+        <ul class="bd-file-list">
+            @for (var i = 0; i < Files.Count; i++)
+            {
+                var index = i;
+                <li>
+                    <span class="bd-file-name">@Files[index].Name</span>
+                    <span class="bd-file-size">(@FormatSize(Files[index].Size))</span>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.ExtraSmall" Disabled="@IsDisabled"
+                                  Click="@(() => RemoveFile(index))" aria-label="@($"Remove {Files[index].Name}")" />
+                </li>
+            }
+        </ul>
+    }
+    @if (Notice != null)
+    {
+        <div class="bd-file-notice" role="status">@Notice</div>
+    }
+</BDFormComponentWrapper>
+
+@code {
+    private async Task OnChange(UploadChangeEventArgs args)
+    {
+        await AddFilesAsync(args.Files.Select(f => new FileSource(f.Name, f.ContentType, f.Size, max => f.OpenReadStream(max))));
+    }
+}
