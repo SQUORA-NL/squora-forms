@@ -33,7 +33,9 @@ namespace Squora.Forms.Blazor.Components.Input
         public override void Validate()
         {
 
-            if (!_booleanValue?? false && (NeedsToBeChecked ?? false))
+            // Invalid only when the box must be checked and is not. (Without the parentheses this parsed as
+            // (!x) ?? (false && needsToBeChecked), which made every unchecked box invalid.)
+            if (!(_booleanValue ?? false) && (NeedsToBeChecked ?? false))
             {
                 IsValid = false;
 
