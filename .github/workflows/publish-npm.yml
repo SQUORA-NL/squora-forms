@@ -1,11 +1,12 @@
 name: Publish npm package
-# Create a GitHub release tagged react-vX.Y.Z (e.g. react-v1.0.0, react-v1.1.0-beta.1) to publish @squora/forms-react.
+# A release tagged vX.Y.Z publishes the NuGet packages (publish.yml) AND @squora/forms-react at the same version.
+# A release tagged react-vX.Y.Z (e.g. react-v1.1.1, react-v1.2.0-beta.1) publishes only the React package.
 on:
   release:
     types: [published]
 jobs:
   publish:
-    if: startsWith(github.event.release.tag_name, 'react-v')
+    if: startsWith(github.event.release.tag_name, 'v') || startsWith(github.event.release.tag_name, 'react-v')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,9 +27,11 @@ jobs:
       - run: npm ci
       - name: Set version from tag
         run: |
-          VERSION="${GITHUB_REF_NAME#react-v}"
+          VERSION="${GITHUB_REF_NAME#react-}"
+          VERSION="${VERSION#v}"
           npm version "$VERSION" --no-git-tag-version -w @squora/forms-react
           if [[ "$VERSION" == *-* ]]; then echo "NPM_TAG=next" >> "$GITHUB_ENV"; else echo "NPM_TAG=latest" >> "$GITHUB_ENV"; fi
+      - run: npm test
       - run: npm run build
       - name: Publish
         run: npm publish -w @squora/forms-react --access public --tag "$NPM_TAG"
