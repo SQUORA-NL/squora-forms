@@ -11,7 +11,8 @@ export function HorizontalLayout({
   return (
     <div
       className="sq-layout sq-horizontal-layout"
-      style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}
+      // flex-end: buttons beside inputs (Delete, Add) line up with the input fields, not with the labels above them
+      style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'flex-end' }}
     >
       {children}
     </div>

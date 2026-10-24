@@ -140,13 +140,13 @@
 
 .sq-delete-action {
   padding: 6px 14px;
+  min-height: 36px; /* same height as the inputs beside it */
   font-size: 13px;
   cursor: pointer;
   border-radius: var(--sq-radius);
   border: 1px solid var(--sq-del-border);
   background-color: var(--sq-del-bg);
   color: var(--sq-del-color);
-  align-self: center;
 }
 
 /* ── Layouts ── */

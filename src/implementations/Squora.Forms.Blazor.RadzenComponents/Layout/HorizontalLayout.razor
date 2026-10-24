@@ -3,7 +3,7 @@
 @using Squora.Forms.Common.Enums;
 
 <BDFormComponentWrapper Class="horizontalcomponent" FormComponent="@this">
-    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" class="@($"{(EditMode ? "edit-mode" : "")} {(isDragging ? "dragging-active" : "")}".Trim())">
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" AlignItems="@(EditMode ? AlignItems.Start : AlignItems.End)" class="@($"{(EditMode ? "edit-mode" : "")} {(isDragging ? "dragging-active" : "")}".Trim())">
         @if (EditMode)
         {
             @for (int i = 0; i < this.FormModel.Elements.Count; i++)
