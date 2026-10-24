@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": ["packages/*", "demo"],
   "scripts": {
+    "test": "npm test -w @squora/forms-react",
     "build:lib": "npm run build -w @squora/forms-react",
     "build": "npm run build:lib && npm run build -w squora-forms-react-demo",
     "dev": "npm run build:lib && npm run dev -w squora-forms-react-demo"
