@@ -149,32 +149,7 @@ namespace Squora.Forms.Blazor.Components
 
         protected void EvaluateRules()
         {
-            if (FormModel.Rules == null || FormModel.Rules.Count == 0) { RuleEffect = RuleEffect.SHOW; return; }
-            var result = RuleEffect.SHOW;
-            foreach (var item in FormModel.Rules)
-            {
-                var ruleEvaluationResult = EvaluateRule(item);
-                if(result == RuleEffect.SHOW && ruleEvaluationResult == RuleEffect.DISABLE) {  result = RuleEffect.DISABLE; }
-                if(ruleEvaluationResult == RuleEffect.HIDE) { result = RuleEffect.HIDE; break; }
-            }
-            RuleEffect = result;
-        }
-
-        private RuleEffect EvaluateRule(DynamicFormModelRule rule)
-        {
-            var dataJson = JsonConvert.SerializeObject(Value);
-            var jsonObject = JObject.Parse(dataJson);
-            var value = jsonObject.SelectToken(JsonSchemaPathHelpers.ConvertSchemaPathToJsonPath(rule.Condition.Scope));
-            if(value == null) { return RuleEffect.SHOW; }
-            var isValid = value.IsValid(JSchema.Parse(rule.Condition.Schema.ToString()), out IList<string> errors);
-            if (!isValid)
-            {
-                return rule.Effect;
-            }
-            else
-            {
-                return RuleEffect.SHOW;
-            }
+            RuleEffect = RuleEvaluator.Resolve(FormModel.Rules, Value);
         }
 
         internal List<KeyValuePair<string, object>> IncludeDynamicOptionsInParameters(Dictionary<string, object> parameters)
