@@ -18,6 +18,12 @@
     <link href="_content/Squora.Forms.Blazor.HtmlComponents/themes/default/squora-forms-html.css" rel="stylesheet" />
     <link href="_content/Squora.Forms.Blazor.MudBlazorComponents/themes/default/squora-forms-mudblazor.css" rel="stylesheet" />
     <link href="_content/Squora.Forms.Blazor.RadzenComponents/themes/default/squora-forms-radzen.css" rel="stylesheet" />
+    <style>
+        /* the editor's property pane covers the right edge of the screen: keep the page's own content clear of it */
+        @@media (min-width: 900px) {
+            body:has(.bd-property-sidebar:not(.collapsed)) .data-card { margin-right: 352px; }
+        }
+    </style>
 </head>
 <body>
     <component type="typeof(App)" render-mode="Server" />
@@ -35,5 +41,11 @@
 
     <script src="_framework/blazor.server.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/BlazorMonaco/jsInterop.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
+    <script>require.config({ paths: { 'vs': '_content/BlazorMonaco/lib/monaco-editor/min/vs' } });</script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script>window.downloadText = (name, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name; a.click(); URL.revokeObjectURL(a.href); };</script>
+    <script>window.waitForMonaco = () => new Promise(resolve => { const check = () => window.monaco ? resolve() : setTimeout(check, 50); check(); });</script>
 </body>
 </html>

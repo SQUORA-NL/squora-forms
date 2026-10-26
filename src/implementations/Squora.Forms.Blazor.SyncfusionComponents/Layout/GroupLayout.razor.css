@@ -7,19 +7,6 @@
     padding: 8px 0;
 }
 
-.sf-layout-stack.edit-mode {
-    position: relative;
-    padding: 8px;
-    background-color: rgba(0, 0, 0, 0.02);
-    border-radius: 4px;
-    border: 2px dashed transparent;
-}
-
-.sf-layout-stack.edit-mode.dragging-active {
-    border-color: #1976d2;
-    background-color: rgba(25, 118, 210, 0.04);
-}
-
 /* Syncfusion card overrides for GroupLayout */
 .e-card {
     border-radius: 6px;
@@ -29,91 +16,4 @@
 .e-card-header {
     font-weight: 600;
     font-size: 14px;
-}
-
-/* Drag-and-drop zones */
-.bd-drop-zone {
-    min-height: 24px;
-    margin: 4px 0;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-}
-
-.bd-drop-zone.drag-over {
-    border-color: #1976d2;
-    background-color: rgba(25, 118, 210, 0.06);
-}
-
-.bd-drop-indicator {
-    font-size: 12px;
-    color: #666;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.bd-drop-zone.drag-over .bd-drop-indicator {
-    opacity: 1;
-    color: #1976d2;
-}
-
-/* Draggable element wrapper */
-.bd-draggable-element {
-    display: flex;
-    align-items: stretch;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: #fff;
-    transition: box-shadow 0.2s ease;
-}
-
-.bd-draggable-element:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.bd-draggable-element.dragging {
-    opacity: 0.6;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-.bd-drag-handle {
-    width: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f5f5f5;
-    border-right: 1px solid #e0e0e0;
-    cursor: grab;
-    color: #999;
-    font-size: 11px;
-    user-select: none;
-    flex-shrink: 0;
-}
-
-.bd-drag-handle:active {
-    cursor: grabbing;
-    background: #eeeeee;
-}
-
-.bd-element-content {
-    flex: 1;
-    padding: 10px 14px;
-    min-width: 0;
-}
-
-/* Hide drop zones when not in drag mode */
-.sf-layout-stack:not(.edit-mode) .bd-drop-zone,
-.sf-layout-stack.edit-mode:not(.dragging-active) .bd-drop-zone .bd-drop-indicator {
-    display: none;
-}
-
-.sf-layout-stack.edit-mode.dragging-active .bd-drop-zone {
-    display: flex;
 }

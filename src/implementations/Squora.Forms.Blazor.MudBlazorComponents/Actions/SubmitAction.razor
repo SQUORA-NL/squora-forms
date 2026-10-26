@@ -2,5 +2,5 @@
 @inherits Squora.Forms.Blazor.Actions.SubmitActionBase
 
 <BDFormComponentWrapper Class="submitaction" FormComponent="@this">
-    <MudButton OnClick="@Submit" ButtonType="ButtonType.Submit" Disabled="@IsDisabled">@Label</MudButton>
+    <MudButton OnClick="@Submit" ButtonType="ButtonType.Submit" Disabled="@IsDisabled" Variant="Variant.Filled" Color="Color.Primary">@Label</MudButton>
 </BDFormComponentWrapper>

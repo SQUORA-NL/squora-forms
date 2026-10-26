@@ -2,5 +2,5 @@
 @inherits Squora.Forms.Blazor.Actions.DeleteActionBase
 
 <BDFormComponentWrapper Class="deleteaction" FormComponent="@this">
-    <RadzenButton Click="@DeleteItem" Disabled="@IsDisabled">@Label</RadzenButton>
+    <RadzenButton Click="@DeleteItem" ButtonStyle="ButtonStyle.Danger" Disabled="@IsDisabled">@Label</RadzenButton>
 </BDFormComponentWrapper>

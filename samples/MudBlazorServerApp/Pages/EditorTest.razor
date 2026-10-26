@@ -4,6 +4,8 @@
 @using Squora.Forms.Blazor
 @using System.Dynamic
 
+@inject ComponentsList DynamicComponentList
+
 <PageTitle>Editor Test</PageTitle>
 
 <h1>Form Editor Test</h1>
@@ -24,7 +26,7 @@
     }
 </div>
 
-<BDForm FormModel=@model Value="@data" ValueChanged="@update" EditMode=@EditModeIndicator></BDForm>
+<BDForm FormModel=@model Components=@DynamicComponentList Value="@data" ValueChanged="@update" EditMode=@EditModeIndicator></BDForm>
 
 @code {
     private bool EditModeIndicator = true;

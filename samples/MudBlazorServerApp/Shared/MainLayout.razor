@@ -1,7 +1,8 @@
 ﻿@using MudBlazor;
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@theme" />
+<MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -15,7 +16,7 @@
         <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -23,6 +24,12 @@
 
 @code {
     bool _drawerOpen = true;
+
+    // the same blue as the editor's own buttons
+    private readonly MudTheme theme = new()
+    {
+        PaletteLight = new PaletteLight { Primary = "#007bff" }
+    };
 
     void DrawerToggle()
     {

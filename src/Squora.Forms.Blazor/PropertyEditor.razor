@@ -1,3 +1,4 @@
+@implements IDisposable
 @using Squora.Forms.Common.Enums
 @using Squora.Forms.Core.Models
 @using Squora.Forms.Core.Models.ParameterModels
@@ -7,128 +8,223 @@
 <div class="bd-property-editor">
     @if (SelectionState?.SelectedElement != null)
     {
+        var element = SelectionState.SelectedElement;
+        var componentType = element.DynamicType.ComponentType;
+        var isRoot = element == RootModel;
+        var typeName = element.DynamicType.TypeDefinitionName;
+
         <div class="bd-property-editor-header">
-            <h4>Properties</h4>
-            <div class="bd-header-buttons">
-                <button class="bd-delete-button" @onclick="DeleteSelectedElement" title="Delete Element">Delete</button>
-                <button class="bd-json-toggle-button" @onclick="ToggleJsonView" title="Toggle JSON View">@(showJsonView ? "Properties" : "JSON")</button>
-                @if (showJsonView)
-                {
-                    <button class="bd-json-mode-button @(isFullFormJsonMode ? "active" : "")" @onclick="ToggleJsonMode" title="Toggle JSON Mode">
-                        @(isFullFormJsonMode ? "Form" : "Element")
-                    </button>
-                }
-                <button class="bd-close-button" @onclick="ClearSelection">Close</button>
+            <div class="bd-pe-title">
+                <h4>Properties</h4>
+                <span class="bd-pe-subtitle">@(isRoot ? "Whole form · " : "")@GetComponentDisplayName(componentType)@(string.IsNullOrEmpty(typeName) ? "" : $" · {typeName}")</span>
             </div>
+            <button class="bd-close-button" @onclick="ClearSelection" title="Deselect" aria-label="Deselect">&times;</button>
         </div>
+        <div class="bd-pe-actions">
+            @if (FindParent(RootModel, element) != null)
+            {
+                <button class="bd-parent-button" @onclick="SelectParent" title="Select the layout this element is in">&uarr; Parent</button>
+            }
+            @if (!isRoot)
+            {
+                <button class="bd-delete-button" @onclick="DeleteSelectedElement" title="Delete Element">Delete</button>
+            }
+        </div>
+        <div class="bd-pe-tabs" role="tablist">
+            <button role="tab" aria-selected="@(activeTab == EditorTab.Properties)" class="bd-tab @(activeTab == EditorTab.Properties ? "active" : "")" @onclick="@(() => SetTab(EditorTab.Properties))">Properties</button>
+            <button role="tab" aria-selected="@(activeTab == EditorTab.Rules)" class="bd-tab bd-rules-tab @(activeTab == EditorTab.Rules ? "active" : "")" @onclick="@(() => SetTab(EditorTab.Rules))">Rules@(element.Rules?.Count > 0 ? $" ({element.Rules.Count})" : "")</button>
+            <button role="tab" aria-selected="@(activeTab == EditorTab.Json)" class="bd-tab bd-json-toggle-button @(activeTab == EditorTab.Json ? "active" : "")" @onclick="ToggleJsonView" title="Toggle JSON View">JSON</button>
+        </div>
+
         <div class="bd-property-editor-content">
-            @{
-                var element = SelectionState.SelectedElement;
-                var componentType = element.DynamicType.ComponentType;
-            }
-            
-            <div class="bd-property-group">
-                <label class="bd-property-label">Component Type</label>
-                <div class="bd-property-value">@GetComponentDisplayName(componentType)</div>
-            </div>
-
-            @if (HasLabelProperty(componentType))
+            @if (activeTab == EditorTab.Properties)
             {
                 <div class="bd-property-group">
-                    <label class="bd-property-label">Label</label>
-                    <input class="bd-property-input" 
-                           type="text" 
-                           value="@GetParameterValue(element, "Label")" 
-                           @onchange="@((e) => UpdateParameter(element, "Label", e.Value?.ToString()))" />
+                    <label class="bd-property-label">Component Type</label>
+                    <div class="bd-property-value">@GetComponentDisplayName(componentType)@(string.IsNullOrEmpty(typeName) ? "" : $" ({typeName})")</div>
                 </div>
-            }
 
-            @if (HasPathProperty(componentType))
-            {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">Path</label>
-                    <input class="bd-property-input" 
-                           type="text" 
-                           value="@GetParameterValue(element, "Path")" 
-                           @onchange="@((e) => UpdateParameter(element, "Path", e.Value?.ToString()))" />
-                </div>
-            }
-
-            @if (componentType == ComponentType.Dropdown)
-            {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">Options</label>
-                    <div class="bd-options-editor">
-                        @{
-                            var options = GetDropdownOptions(element);
-                        }
-                        @foreach (var option in options)
-                        {
-                            <div class="bd-option-row">
-                                <input class="bd-option-key" 
-                                       type="text" 
-                                       placeholder="Value"
-                                       value="@option.Key?.ToString()" 
-                                       @onchange="@((e) => UpdateOptionKey(element, option.Key, e.Value?.ToString()))" />
-                                <input class="bd-option-label" 
-                                       type="text" 
-                                       placeholder="Display Text"
-                                       value="@option.Value" 
-                                       @onchange="@((e) => UpdateOptionValue(element, option.Key, e.Value?.ToString()))" />
-                                <button class="bd-remove-option" @onclick="@(() => RemoveOption(element, option.Key))">Remove</button>
-                            </div>
-                        }
-                        <button class="bd-add-option" @onclick="@(() => AddOption(element))">+ Add Option</button>
+                @if (HasLabelProperty(componentType))
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Label</label>
+                        <input class="bd-property-input"
+                               type="text"
+                               value="@GetParameterValue(element, "Label")"
+                               @onchange="@((e) => UpdateParameter(element, "Label", e.Value?.ToString()))" />
                     </div>
-                </div>
-            }
+                }
 
-            @if (componentType == ComponentType.Boolean)
-            {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">
-                        <input type="checkbox" 
-                               checked="@GetBooleanParameter(element, "Required")" 
-                               @onchange="@((e) => UpdateParameter(element, "Required", (bool?)e.Value))" />
-                        Required
-                    </label>
-                </div>
-            }
+                @if (HasPathProperty(componentType))
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Path</label>
+                        <input class="bd-property-input"
+                               type="text"
+                               value="@GetParameterValue(element, "Path")"
+                               @onchange="@((e) => UpdateParameter(element, "Path", e.Value?.ToString()))" />
+                    </div>
+                }
 
-            @if (IsNumberComponent(componentType))
-            {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">Min Value</label>
-                    <input class="bd-property-input" 
-                           type="number" 
-                           value="@GetParameterValue(element, "Min")" 
-                           @onchange="@((e) => UpdateNumericParameter(element, "Min", e.Value?.ToString()))" />
-                </div>
-                <div class="bd-property-group">
-                    <label class="bd-property-label">Max Value</label>
-                    <input class="bd-property-input" 
-                           type="number" 
-                           value="@GetParameterValue(element, "Max")" 
-                           @onchange="@((e) => UpdateNumericParameter(element, "Max", e.Value?.ToString()))" />
-                </div>
-            }
-            
-            @if (showJsonView)
-            {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">
-                        @if (isFullFormJsonMode)
+                @if (componentType == ComponentType.Dropdown)
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Options</label>
+                        <div class="bd-options-editor">
+                            @{
+                                var options = GetDropdownOptions(element);
+                            }
+                            @foreach (var option in options)
+                            {
+                                <div class="bd-option-row">
+                                    <input class="bd-option-key"
+                                           type="text"
+                                           placeholder="Value"
+                                           value="@option.Key?.ToString()"
+                                           @onchange="@((e) => UpdateOptionKey(element, option.Key, e.Value?.ToString()))" />
+                                    <input class="bd-option-label"
+                                           type="text"
+                                           placeholder="Display Text"
+                                           value="@option.Value"
+                                           @onchange="@((e) => UpdateOptionValue(element, option.Key, e.Value?.ToString()))" />
+                                    <button class="bd-remove-option" @onclick="@(() => RemoveOption(element, option.Key))">Remove</button>
+                                </div>
+                            }
+                            <button class="bd-add-option" @onclick="@(() => AddOption(element))">+ Add Option</button>
+                        </div>
+                    </div>
+                }
+
+                @if (componentType == ComponentType.Boolean)
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">
+                            <input type="checkbox"
+                                   checked="@GetBooleanParameter(element, "Required")"
+                                   @onchange="@((e) => UpdateParameter(element, "Required", (bool?)e.Value))" />
+                            Required
+                        </label>
+                    </div>
+                }
+
+                @if (IsNumberComponent(componentType))
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Min Value</label>
+                        <input class="bd-property-input"
+                               type="number"
+                               value="@GetParameterValue(element, "Min")"
+                               @onchange="@((e) => UpdateNumericParameter(element, "Min", e.Value?.ToString()))" />
+                    </div>
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Max Value</label>
+                        <input class="bd-property-input"
+                               type="number"
+                               value="@GetParameterValue(element, "Max")"
+                               @onchange="@((e) => UpdateNumericParameter(element, "Max", e.Value?.ToString()))" />
+                    </div>
+                }
+
+                @* the other settings a component has (a custom component type brings its own) *@
+                @foreach (var setting in OtherSettings(element))
+                {
+                    var name = setting.Key;
+                    <div class="bd-property-group bd-setting">
+                        <label class="bd-property-label">
+                            @if (setting.Value is bool flag)
+                            {
+                                <input type="checkbox" checked="@flag" @onchange="@((e) => UpdateParameter(element, name, (bool?)e.Value))" />
+                            }
+                            @Humanize(name)
+                        </label>
+                        @if (setting.Value is null or string)
                         {
-                            <span>Full Form JSON</span>
+                            <input class="bd-property-input" type="text" value="@(setting.Value as string)" @onchange="@((e) => UpdateParameter(element, name, e.Value?.ToString()))" />
+                        }
+                        else if (IsNumber(setting.Value))
+                        {
+                            <input class="bd-property-input" type="number" value="@Convert.ToString(setting.Value, System.Globalization.CultureInfo.InvariantCulture)" @onchange="@((e) => UpdateSettingNumber(element, name, e.Value?.ToString()))" />
+                        }
+                        else if (setting.Value is not bool)
+                        {
+                            <div class="bd-help">Edit this one in the JSON tab.</div>
+                        }
+                    </div>
+                }
+            }
+            else if (activeTab == EditorTab.Rules)
+            {
+                <div class="bd-help">
+                    A rule changes this component while the form data matches a condition. The condition looks at a path in the data and checks that it equals a value (or matches a JSON schema).
+                </div>
+                var rules = element.Rules ?? new List<DynamicFormModelRule>();
+                @for (var i = 0; i < rules.Count; i++)
+                {
+                    var index = i;
+                    var rule = rules[i];
+                    <div class="bd-rule">
+                        <div class="bd-rule-head">
+                            <select class="bd-property-input bd-rule-effect" value="@rule.Effect" @onchange="@((e) => UpdateRuleEffect(element, index, e.Value?.ToString()))">
+                                @foreach (var effect in Enum.GetValues<RuleEffect>())
+                                {
+                                    <option value="@effect" selected="@(effect == rule.Effect)">@EffectLabel(effect)</option>
+                                }
+                            </select>
+                            <button class="bd-remove-option bd-remove-rule" @onclick="@(() => RemoveRule(element, index))" title="Remove this rule">Remove</button>
+                        </div>
+                        <div class="bd-help">@EffectHelp(rule.Effect)</div>
+                        <label class="bd-property-label">Path in the data</label>
+                        <input class="bd-property-input bd-rule-scope" type="text" placeholder="$.country" value="@rule.Condition.Scope"
+                               @onchange="@((e) => UpdateRuleScope(element, index, e.Value?.ToString()))" />
+                        @if (IsSimpleRule(rule, out var simpleValue) && !ruleAdvanced.Contains(index))
+                        {
+                            <label class="bd-property-label">Equals</label>
+                            <input class="bd-property-input bd-rule-value" type="text" placeholder="true" value="@simpleValue"
+                                   @onchange="@((e) => UpdateRuleValue(element, index, e.Value?.ToString()))" />
+                            <div class="bd-help">true, false, a number or text.
+                                <button class="bd-link-button bd-rule-advanced" @onclick="@(() => ruleAdvanced.Add(index))">Use a JSON schema instead</button>
+                            </div>
                         }
                         else
                         {
-                            <span>Element JSON</span>
+                            <label class="bd-property-label">Must match this JSON schema</label>
+                            <textarea class="bd-rule-schema" rows="3" spellcheck="false" placeholder='{ "const": "nl" }'
+                                      value="@(ruleDrafts.TryGetValue(index, out var draft) ? draft : rule.Condition.Schema?.ToString(Newtonsoft.Json.Formatting.None))"
+                                      @onchange="@((e) => UpdateRuleSchema(element, index, e.Value?.ToString()))"></textarea>
                         }
-                    </label>
-                    <textarea class="bd-json-editor" 
-                              rows="15" 
-                              @bind="currentJsonContent" 
+                        @if (ruleErrors.TryGetValue(index, out var error))
+                        {
+                            <div class="bd-json-error">@error</div>
+                        }
+                    </div>
+                }
+                <button class="bd-add-option bd-add-rule" @onclick="@(() => AddRule(element))">+ Add Rule</button>
+            }
+            else
+            {
+                <div class="bd-property-group">
+                    <div class="bd-json-head">
+                        <label class="bd-property-label">
+                            @if (isFullFormJsonMode || isRoot)
+                            {
+                                <span>Full Form JSON</span>
+                            }
+                            else
+                            {
+                                <span>Element JSON</span>
+                            }
+                        </label>
+                        @if (!isRoot)
+                        {
+                            <button class="bd-json-mode-button @(isFullFormJsonMode ? "active" : "")" @onclick="ToggleJsonMode" title="Toggle JSON Mode">
+                                @(isFullFormJsonMode ? "Form" : "Element")
+                            </button>
+                        }
+                    </div>
+                    <textarea class="bd-json-editor"
+                              rows="15"
+                              spellcheck="false"
+                              @bind="currentJsonContent"
                               @oninput="OnJsonChanged"></textarea>
                     <div class="bd-json-buttons">
                         <button class="bd-apply-json-button" @onclick="ApplyJsonChanges">Apply Changes</button>
@@ -145,6 +241,10 @@
     {
         <div class="bd-property-editor-empty">
             <p>Select a component to edit its properties</p>
+            @if (RootModel != null)
+            {
+                <button class="bd-select-form-button" @onclick="SelectForm">Edit the whole form</button>
+            }
         </div>
     }
 </div>
@@ -156,8 +256,15 @@
     [CascadingParameter]
     public DynamicFormModel? RootModel { get; set; }
     
-    private bool showJsonView = false;
+    private enum EditorTab { Properties, Rules, Json }
+
+    private EditorTab activeTab = EditorTab.Properties;
+    private bool showJsonView => activeTab == EditorTab.Json;
     private bool isFullFormJsonMode = false;
+
+    // text of a rule's schema that does not parse yet, and why, by rule index
+    private readonly Dictionary<int, string> ruleDrafts = new();
+    private readonly Dictionary<int, string> ruleErrors = new();
     private string selectedElementJson = "";
     private string fullFormJson = "";
     private string currentJsonContent = "";
@@ -174,6 +281,8 @@
     
     private void OnSelectionChanged()
     {
+        ruleDrafts.Clear(); ruleAdvanced.Clear();
+        ruleErrors.Clear();
         if (showJsonView)
         {
             UpdateJsonContent();
@@ -192,6 +301,39 @@
     private void ClearSelection()
     {
         SelectionState?.ClearSelection();
+    }
+
+    // The parent of a direct child is the root, which stands for the whole form; the root itself has none.
+    private static DynamicFormModel? FindParent(DynamicFormModel? root, DynamicFormModel? element)
+    {
+        if (root == null || element == null) return null;
+        foreach (var child in root.Elements)
+        {
+            if (child == element) return root;
+            var found = FindParentBelow(child, element);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private static DynamicFormModel? FindParentBelow(DynamicFormModel node, DynamicFormModel element)
+    {
+        if (node.Elements.Contains(element)) return node;
+        foreach (var child in node.Elements)
+        {
+            var found = FindParentBelow(child, element);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private void SelectParent()
+    {
+        var parent = FindParent(RootModel, SelectionState?.SelectedElement);
+        if (parent != null)
+        {
+            SelectionState?.SelectElement(parent);
+        }
     }
 
     private string GetParameterValue(DynamicFormModel element, string parameterName)
@@ -217,7 +359,7 @@
         if (newValue != null)
         {
             element.Parameters.Add(parameterName, newValue);
-            StateHasChanged();
+            ModelEdited();
         }
     }
 
@@ -226,7 +368,7 @@
         if (newValue.HasValue)
         {
             element.Parameters.Add(parameterName, newValue.Value);
-            StateHasChanged();
+            ModelEdited();
         }
     }
 
@@ -242,9 +384,18 @@
         }
         else if (double.TryParse(newValue, out var numValue))
         {
+            // Min may not exceed Max; an impossible range is refused (the input snaps back on re-render)
+            var otherName = parameterName == "Min" ? "Max" : "Min";
+            if (element.Parameters.Entries.TryGetValue(otherName, out var other) && other != null
+                && double.TryParse(Convert.ToString(other, System.Globalization.CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var otherValue)
+                && (parameterName == "Min" ? numValue > otherValue : numValue < otherValue))
+            {
+                StateHasChanged();
+                return;
+            }
             element.Parameters.Add(parameterName, numValue);
         }
-        StateHasChanged();
+        ModelEdited();
     }
 
     private Dictionary<object, string> GetDropdownOptions(DynamicFormModel element)
@@ -259,16 +410,24 @@
 
     private void UpdateOptionKey(DynamicFormModel element, object oldKey, string? newKey)
     {
-        if (string.IsNullOrWhiteSpace(newKey)) return;
+        if (string.IsNullOrWhiteSpace(newKey) || Equals(oldKey?.ToString(), newKey)) return;
 
         var options = GetDropdownOptions(element);
-        if (options.TryGetValue(oldKey, out var displayText))
+        // a key that is already in use would overwrite that option, so the rename is refused (the input snaps back on re-render)
+        if (options.Keys.Any(k => k?.ToString() == newKey))
         {
-            options.Remove(oldKey);
-            options[newKey] = displayText;
-            element.Parameters.Add("Options", options);
             StateHasChanged();
+            return;
         }
+
+        // rebuild so the renamed option keeps its place in the list
+        var renamed = new Dictionary<object, string>();
+        foreach (var option in options)
+        {
+            renamed[Equals(option.Key, oldKey) ? newKey : option.Key] = option.Value;
+        }
+        element.Parameters.Add("Options", renamed);
+        ModelEdited();
     }
 
     private void UpdateOptionValue(DynamicFormModel element, object key, string? newValue)
@@ -278,7 +437,7 @@
         {
             options[key] = newValue ?? "";
             element.Parameters.Add("Options", options);
-            StateHasChanged();
+            ModelEdited();
         }
     }
 
@@ -288,7 +447,7 @@
         if (options.Remove(key))
         {
             element.Parameters.Add("Options", options);
-            StateHasChanged();
+            ModelEdited();
         }
     }
 
@@ -296,8 +455,18 @@
     {
         var options = GetDropdownOptions(element);
         var optionCount = options.Count + 1;
+        while (options.Keys.Any(k => k?.ToString() == $"option{optionCount}"))
+        {
+            optionCount++;
+        }
         options[$"option{optionCount}"] = $"Option {optionCount}";
         element.Parameters.Add("Options", options);
+        ModelEdited();
+    }
+
+    private void ModelEdited()
+    {
+        SelectionState?.NotifyModelChanged();
         StateHasChanged();
     }
 
@@ -311,7 +480,7 @@
         if (RemoveElementFromParent(RootModel, elementToDelete))
         {
             SelectionState.ClearSelection();
-            StateHasChanged();
+            ModelEdited();
         }
     }
     
@@ -336,14 +505,165 @@
         return false;
     }
     
-    private void ToggleJsonView()
+    private void ToggleJsonView() => SetTab(showJsonView ? EditorTab.Properties : EditorTab.Json);
+
+    private void SetTab(EditorTab tab)
     {
-        showJsonView = !showJsonView;
+        activeTab = tab;
         if (showJsonView)
         {
             UpdateJsonContent();
         }
         StateHasChanged();
+    }
+
+    private void SelectForm() => SelectionState?.SelectElement(RootModel);
+
+    // the whole form is what the JSON of the root element is
+    private bool JsonIsFullForm => isFullFormJsonMode || (SelectionState?.SelectedElement != null && SelectionState.SelectedElement == RootModel);
+
+    // parameters that have their own input above, or that only the editor's own JSON can show
+    private static readonly HashSet<string> HandledSettings = new() { "Label", "Path", "Options", "Required", "Min", "Max" };
+
+    private IEnumerable<KeyValuePair<string, object?>> OtherSettings(DynamicFormModel element) =>
+        element.Parameters.Entries.Where(e => !HandledSettings.Contains(e.Key)).ToList();
+
+    private static bool IsNumber(object? value) =>
+        value is int or long or short or byte or float or double or decimal;
+
+    private static string Humanize(string name)
+    {
+        var text = System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z])(?=[A-Z])", " ");
+        return text.Length == 0 ? text : char.ToUpper(text[0]) + text[1..].ToLower();
+    }
+
+    private void UpdateSettingNumber(DynamicFormModel element, string name, string? text)
+    {
+        if (!double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var number)) return;
+
+        // a whole number stays a whole number
+        var wasWhole = element.Parameters.Entries.TryGetValue(name, out var old) && old is int or long or short or byte;
+        element.Parameters.Add(name, wasWhole && number == Math.Floor(number) ? (object)(long)number : number);
+        ModelEdited();
+    }
+
+    private static string EffectLabel(RuleEffect effect) => effect switch
+    {
+        RuleEffect.HIDE => "Hide",
+        RuleEffect.SHOW => "Show",
+        RuleEffect.DISABLE => "Disable",
+        RuleEffect.ENABLE => "Enable",
+        _ => effect.ToString()
+    };
+
+    private static string EffectHelp(RuleEffect effect) => effect switch
+    {
+        RuleEffect.HIDE => "Hidden while the condition matches.",
+        RuleEffect.SHOW => "Only shown while the condition matches.",
+        RuleEffect.DISABLE => "Disabled while the condition matches.",
+        RuleEffect.ENABLE => "Only enabled while the condition matches.",
+        _ => ""
+    };
+
+    private void AddRule(DynamicFormModel element)
+    {
+        element.Rules ??= new List<DynamicFormModelRule>();
+        element.Rules.Add(new DynamicFormModelRule(RuleEffect.HIDE,
+            new DynamicFormModelRuleCondition("$.isChecked", Newtonsoft.Json.Linq.JToken.Parse("{ \"const\": true }"))));
+        ModelEdited();
+    }
+
+    private void RemoveRule(DynamicFormModel element, int index)
+    {
+        if (element.Rules == null || index >= element.Rules.Count) return;
+
+        element.Rules.RemoveAt(index);
+        // no rules left reads the same as never having had any
+        if (element.Rules.Count == 0) element.Rules = null;
+        ruleDrafts.Clear(); ruleAdvanced.Clear();
+        ruleErrors.Clear();
+        ModelEdited();
+    }
+
+    // a rule is read-only once made, so an edit replaces it
+    private void ReplaceRule(DynamicFormModel element, int index, Func<DynamicFormModelRule, DynamicFormModelRule> change)
+    {
+        if (element.Rules == null || index >= element.Rules.Count) return;
+
+        element.Rules[index] = change(element.Rules[index]);
+        ModelEdited();
+    }
+
+    private void UpdateRuleEffect(DynamicFormModel element, int index, string? effect)
+    {
+        if (!Enum.TryParse<RuleEffect>(effect, out var parsed)) return;
+        ReplaceRule(element, index, rule => new DynamicFormModelRule(parsed, rule.Condition));
+    }
+
+    private void UpdateRuleScope(DynamicFormModel element, int index, string? scope)
+    {
+        ReplaceRule(element, index, rule => new DynamicFormModelRule(rule.Effect,
+            new DynamicFormModelRuleCondition(scope ?? "", rule.Condition.Schema)));
+    }
+
+    private readonly HashSet<int> ruleAdvanced = new();
+
+    // a rule that only compares one value ({ "const": x }) is edited as that value
+    private static bool IsSimpleRule(DynamicFormModelRule rule, out string text)
+    {
+        text = "";
+        if (rule.Condition.Schema is Newtonsoft.Json.Linq.JObject obj && obj.Count == 1
+            && obj["const"] is Newtonsoft.Json.Linq.JValue value && value.Type != Newtonsoft.Json.Linq.JTokenType.Null)
+        {
+            text = value.Type == Newtonsoft.Json.Linq.JTokenType.Boolean ? ((bool)value.Value! ? "true" : "false")
+                : value.Type == Newtonsoft.Json.Linq.JTokenType.String ? QuoteIfAmbiguous((string?)value.Value ?? "")
+                : Convert.ToString(value.Value, System.Globalization.CultureInfo.InvariantCulture) ?? "";
+            return true;
+        }
+        return false;
+    }
+
+    // the text "true" or "5" would read back as a boolean or number, so it is shown in quotes
+    private static string QuoteIfAmbiguous(string s) =>
+        ParseSimpleValue(s) is Newtonsoft.Json.Linq.JValue v && v.Type != Newtonsoft.Json.Linq.JTokenType.String ? $"\"{s}\"" : s;
+
+    private static Newtonsoft.Json.Linq.JToken ParseSimpleValue(string? text)
+    {
+        text = (text ?? "").Trim();
+        if (bool.TryParse(text, out var b)) return new Newtonsoft.Json.Linq.JValue(b);
+        if (long.TryParse(text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var l)) return new Newtonsoft.Json.Linq.JValue(l);
+        if (double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var d)) return new Newtonsoft.Json.Linq.JValue(d);
+        if (text.Length >= 2 && text.StartsWith('"') && text.EndsWith('"')) text = text[1..^1];
+        return new Newtonsoft.Json.Linq.JValue(text);
+    }
+
+    private void UpdateRuleValue(DynamicFormModel element, int index, string? text)
+    {
+        var schema = new Newtonsoft.Json.Linq.JObject { ["const"] = ParseSimpleValue(text) };
+        ReplaceRule(element, index, rule => new DynamicFormModelRule(rule.Effect,
+            new DynamicFormModelRuleCondition(rule.Condition.Scope, schema)));
+    }
+
+    private void UpdateRuleSchema(DynamicFormModel element, int index, string? text)
+    {
+        Newtonsoft.Json.Linq.JToken schema;
+        try
+        {
+            schema = Newtonsoft.Json.Linq.JToken.Parse(text ?? "");
+        }
+        catch (Newtonsoft.Json.JsonException ex)
+        {
+            // keep what was typed and say what is wrong; the rule stays as it was
+            ruleDrafts[index] = text ?? "";
+            ruleErrors[index] = "Not valid JSON: " + ex.Message;
+            StateHasChanged();
+            return;
+        }
+
+        ruleDrafts.Remove(index);
+        ruleErrors.Remove(index);
+        ReplaceRule(element, index, rule => new DynamicFormModelRule(rule.Effect,
+            new DynamicFormModelRuleCondition(rule.Condition.Scope, schema)));
     }
     
     private void ToggleJsonMode()
@@ -355,7 +675,7 @@
     
     private void UpdateJsonContent()
     {
-        if (isFullFormJsonMode && RootModel != null)
+        if (JsonIsFullForm && RootModel != null)
         {
             UpdateJsonFromFullForm();
         }
@@ -411,7 +731,7 @@
         
         try
         {
-            if (isFullFormJsonMode && RootModel != null)
+            if (JsonIsFullForm && RootModel != null)
             {
                 ApplyFullFormJsonChanges();
             }
@@ -444,7 +764,7 @@
                 
                 // Clear selection as the structure may have changed
                 SelectionState?.ClearSelection();
-                StateHasChanged();
+                ModelEdited();
             }
             else
             {
@@ -470,7 +790,7 @@
                     SelectionState.SelectElement(newElement);
                     selectedElementJson = currentJsonContent;
                     hasJsonError = false;
-                    StateHasChanged();
+                    ModelEdited();
                 }
             }
             else
@@ -538,6 +858,7 @@
             ComponentType.HorizontalLayout => "Horizontal Layout",
             ComponentType.GroupLayout => "Group Layout",
             ComponentType.List => "List",
+            ComponentType.FileUpload => "File Upload",
             _ => "Unknown"
         };
     }

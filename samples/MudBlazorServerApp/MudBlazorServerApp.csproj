@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorMonaco" Version="3.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.HtmlComponents\Squora.Forms.Blazor.HtmlComponents.csproj" />
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.MudBlazorComponents\Squora.Forms.Blazor.MudBlazorComponents.csproj" />
   </ItemGroup>

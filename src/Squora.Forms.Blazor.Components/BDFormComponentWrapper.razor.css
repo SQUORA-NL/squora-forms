@@ -2,9 +2,27 @@
     position: relative;
 }
 
-.bd-editable:hover {
+/* only the innermost hovered element is outlined, otherwise every layout around it lights up too */
+.bd-editable:hover:not(:has(.bd-editable:hover)) {
     outline: 2px dashed #80bdff;
     outline-offset: 2px;
+}
+
+/* the drag handle (drawn by BDEditChrome) shows on the hovered or selected element */
+.bd-editable:hover:not(:has(.bd-editable:hover)) > ::deep .bd-handle,
+.bd-selected > ::deep .bd-handle {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* the element being moved fades, and can't be dropped onto itself */
+/* dim the content, not the wrapper: opacity on the wrapper would make a stacking context and the drag shield (z-index) would stop working */
+.bd-dragging > ::deep :not(.bd-handle):not(.bd-shield):not(.bd-zone) {
+    opacity: 0.45;
+}
+
+.bd-dragging ::deep .bd-zone {
+    display: none;
 }
 
 .bd-selected {
@@ -30,4 +48,18 @@
 .bd-disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+/* marks a component a rule hides in the finished form, which stays visible while editing */
+.bd-rule-badge {
+    position: absolute;
+    top: -9px;
+    right: 8px;
+    z-index: 5;
+    padding: 1px 8px;
+    border-radius: 9px;
+    background: #6c757d;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: none;
 }

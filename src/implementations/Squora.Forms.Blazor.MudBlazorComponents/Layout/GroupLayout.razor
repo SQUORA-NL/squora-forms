@@ -10,53 +10,15 @@
             </MudCardHeader>
         }
         <MudCardContent>
-            <MudStack Class="@($"{(EditMode ? "edit-mode" : "")} {(isDragging ? "dragging-active" : "")}".Trim())">
-                @if (EditMode)
+            <MudStack>
+                @for (int i = 0; i < this.FormModel.Elements.Count; i++)
                 {
-                    @for (int i = 0; i < this.FormModel.Elements.Count; i++)
-                    {
-                        var index = i;
-                        var element = this.FormModel.Elements[i];
-                        
-                        <!-- Drop zone before element -->
-                        <div class="bd-drop-zone @(dragOverIndex == index ? "drag-over" : "")" 
-                             @ondragover="@((e) => OnDragOver(e, index))"
-                             @ondragover:preventDefault="true"
-                             @ondragleave="@OnDragLeave"
-                             @ondrop="@((e) => OnDrop(e, index))">
-                            <div class="bd-drop-indicator">Drop here</div>
-                        </div>
-                        
-                        <!-- Draggable element wrapper -->
-                        <MudPaper Class="@($"bd-draggable-element {(isDragging && draggedIndex == index ? "dragging" : "")}".Trim())"
-                                  Elevation="1">
-                            <div class="bd-drag-handle"
-                                 draggable="true"
-                                 @ondragstart="@((e) => OnDragStart(e, index))"
-                                 @ondragstart:stopPropagation="true"
-                                 @ondragend="@OnDragEnd">⋮⋮</div>
-                            <div class="bd-element-content">
-                                <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersForChild(element, index) />
-                            </div>
-                        </MudPaper>
-                    }
-
-                    <!-- Drop zone after last element -->
-                    <div class="bd-drop-zone @(dragOverIndex == this.FormModel.Elements.Count ? "drag-over" : "")"
-                         @ondragover="@((e) => OnDragOver(e, this.FormModel.Elements.Count))"
-                         @ondragover:preventDefault="true"
-                         @ondragleave="@OnDragLeave"
-                         @ondrop="@((e) => OnDrop(e, this.FormModel.Elements.Count))">
-                        <div class="bd-drop-indicator">Drop here</div>
-                    </div>
+                    var element = this.FormModel.Elements[i];
+                    <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersForChild(element, i) />
                 }
-                else
+                @if (EditMode && this.FormModel.Elements.Count == 0)
                 {
-                    @for (int i = 0; i < this.FormModel.Elements.Count; i++)
-                    {
-                        var element = this.FormModel.Elements[i];
-                        <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersForChild(element, i) />
-                    }
+                    <BDEmptyDropZone Container="@this" />
                 }
             </MudStack>
         </MudCardContent>

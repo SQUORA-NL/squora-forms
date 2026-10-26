@@ -22,10 +22,19 @@ namespace Squora.Forms.Blazor.Components
         [CascadingParameter]
         public ValidationStateService? ValidationState { get; set; }
 
+        [CascadingParameter]
+        public DragStateService? DragState { get; set; }
+
         public bool IsSelected => SelectionState?.IsSelected(FormComponent?.FormModel) ?? false;
+
+        public bool IsDragSource => DragState?.IsDragging == true && DragState.DraggedElement == FormComponent?.FormModel;
 
         protected override void OnInitialized()
         {
+            if (DragState != null)
+            {
+                DragState.StateChanged += OnDragStateChanged;
+            }
             if (SelectionState != null)
             {
                 SelectionState.StateChanged += StateHasChanged;
@@ -79,8 +88,14 @@ namespace Squora.Forms.Blazor.Components
             StateHasChanged();
         }
 
+        private void OnDragStateChanged() => InvokeAsync(StateHasChanged);
+
         public void Dispose()
         {
+            if (DragState != null)
+            {
+                DragState.StateChanged -= OnDragStateChanged;
+            }
             if (SelectionState != null)
             {
                 SelectionState.StateChanged -= StateHasChanged;

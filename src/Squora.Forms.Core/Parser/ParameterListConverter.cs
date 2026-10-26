@@ -44,6 +44,11 @@ namespace Squora.Forms.Core.Parser
                 {
                     parameters.Add(property.Name, ConvertJTokenToExpando(property.Value));
                 }
+                else if (property.Value is JObject nested && nested.ContainsKey("DynamicType"))
+                {
+                    // a parameter that holds a form model of its own (like a group's HeaderModel) is written as a nested model
+                    parameters.Add(property.Name, nested.ToObject<Models.DynamicFormModel>(serializer));
+                }
                 else
                 {
                     parameters.Add(property.Name, property.Value.ToObject<object>(serializer));

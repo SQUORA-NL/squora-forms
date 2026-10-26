@@ -1,4 +1,5 @@
 ﻿using Squora.Forms.Core.Helpers;
+using Squora.Forms.Core.Models;
 using Squora.Forms.Blazor.Components;
 using Squora.Forms.Blazor.Services;
 using Microsoft.AspNetCore.Components;
@@ -7,7 +8,7 @@ using System;
 
 namespace Squora.Forms.Blazor.Components.Layout
 {
-    public class VerticalLayoutBase : InputFormComponent, IDisposable
+    public class VerticalLayoutBase : InputFormComponent, IDisposable, IDragContainer
     {
         [CascadingParameter]
         protected DragStateService? DragState { get; set; }
@@ -43,6 +44,13 @@ namespace Squora.Forms.Blazor.Components.Layout
         {
             StateHasChanged();
         }
+
+        // IDragContainer: lets BDEditChrome (drawn over each child) start drags and drop onto this layout
+        bool IDragContainer.IsHorizontal => false;
+        int IDragContainer.IndexOf(DynamicFormModel child) => FormModel.Elements.IndexOf(child);
+        void IDragContainer.BeginDrag(int index) => OnDragStart(new DragEventArgs(), index);
+        void IDragContainer.EndDrag() => OnDragEnd(new DragEventArgs());
+        void IDragContainer.Drop(int index) => OnDrop(new DragEventArgs(), index);
 
         protected void OnDragStart(DragEventArgs e, int index)
         {
