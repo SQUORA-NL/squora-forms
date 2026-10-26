@@ -68,12 +68,64 @@
     min-width: 0;
 }
 
+/* The properties sit in a pane over the right edge of the whole screen, so they get its full height. The form
+   leaves room for it while it is open. */
 .bd-property-sidebar {
-    flex-shrink: 0;
-    width: 300px;
-    position: sticky;
-    top: 20px;
-    z-index: 10;
-    max-height: 80vh;
-    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(340px, calc(100vw - 40px));
+    /* over an app bar (MudBlazor's is 1300), under dialogs (1400) */
+    z-index: 1350;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+    border-left: 1px solid #dee2e6;
+    box-shadow: -4px 0 14px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.bd-property-sidebar.collapsed {
+    transform: translateX(100%);
+    box-shadow: none;
+}
+
+/* the tab on the pane's left edge that opens and closes it */
+.bd-pane-toggle {
+    position: absolute;
+    left: -34px;
+    top: 88px;
+    width: 34px;
+    padding: 10px 0;
+    border: 1px solid #dee2e6;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    background: #fff;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.bd-property-sidebar.collapsed .bd-pane-toggle {
+    writing-mode: vertical-rl;
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.bd-pane-toggle:hover {
+    background: #e9ecef;
+}
+
+.bd-property-sidebar.collapsed .bd-pane-toggle:hover {
+    background: #0056b3;
+}
+
+@media (min-width: 900px) {
+    .bd-form-editor.bd-pane-open {
+        padding-right: 352px;
+    }
 }

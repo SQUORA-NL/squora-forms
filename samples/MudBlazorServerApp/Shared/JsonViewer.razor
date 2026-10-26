@@ -1,0 +1,89 @@
+@using BlazorMonaco
+@using BlazorMonaco.Editor
+@using System.Text.Json
+@using Microsoft.JSInterop
+
+@* A read-only Monaco editor that shows a value as formatted JSON. *@
+<div class="json-viewer" style="height:@Height; border:1px solid #ddd">
+    @if (monacoLoaded)
+    {
+        <StandaloneCodeEditor @ref="editor" Id="@EditorId" ConstructionOptions="ConstructionOptions" OnDidInit="OnInit" />
+    }
+</div>
+
+@inject IJSRuntime JS
+
+@code {
+    private bool monacoLoaded;
+
+    // Monaco loads its own scripts asynchronously, so it may not be there yet when the page first renders
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("waitForMonaco");
+            monacoLoaded = true;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter] public object? Value { get; set; }
+
+    [Parameter] public string Height { get; set; } = "300px";
+
+    private static readonly JsonSerializerOptions Format = new() { WriteIndented = true };
+
+    private StandaloneCodeEditor? editor;
+    private bool initialised;
+    private string? shown;
+
+    private string EditorId { get; } = $"json-viewer-{Guid.NewGuid():N}";
+
+    private StandaloneEditorConstructionOptions ConstructionOptions(StandaloneCodeEditor _) => new()
+    {
+        Language = "json",
+        ReadOnly = true,
+        AutomaticLayout = true,
+        Minimap = new EditorMinimapOptions { Enabled = false },
+        ScrollBeyondLastLine = false,
+        LineNumbers = "off",
+        FontSize = 13,
+        Value = shown = Text(),
+    };
+
+    private string Text() => Value == null ? "{}" : JsonSerializer.Serialize(Value, Format);
+
+    // the text the editor starts with is passed in its options; it is only changed from here on
+    private async Task OnInit()
+    {
+        initialised = true;
+        // a value that arrived while the editor was starting
+        await Sync(retries: 5);
+    }
+
+    protected override Task OnParametersSetAsync() => Sync(retries: 0);
+
+    // The editor reports itself ready slightly before it can be addressed, so a failed update is retried shortly after.
+    private async Task Sync(int retries)
+    {
+        if (!initialised || editor == null) return;
+
+        var text = Text();
+        if (text == shown) return;
+
+        try
+        {
+            await editor.SetValue(text);
+            shown = text;
+        }
+        catch (JSException) when (retries > 0)
+        {
+            await Task.Delay(100);
+            await Sync(retries - 1);
+        }
+        catch (JSException)
+        {
+            // the next change of the value tries again
+        }
+    }
+}

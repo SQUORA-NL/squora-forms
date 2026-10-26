@@ -22,6 +22,7 @@ namespace Squora.Forms.Blazor.Components.Input
         public double NumberValue { get { return _numberValue; } set { _numberValue = value; ComponentLogic.UpdateValue(this, _numberValue); } }
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
             try
             {
                 _numberValue = Convert.ToDouble(GetValue());

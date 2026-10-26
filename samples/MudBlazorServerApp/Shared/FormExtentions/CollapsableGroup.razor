@@ -1,53 +1,55 @@
 ﻿@inherits Squora.Forms.Blazor.Components.Layout.GroupLayoutBase
 
-<div class="groupcomponent @Class" style="@Style">
-    @if (RuleEffect != Squora.Forms.Common.Enums.RuleEffect.HIDE)
+<BDFormComponentWrapper Class="groupcomponent" FormComponent="@this">
+    @* while editing, the content is always shown: a collapsed group has nowhere to drop into *@
+    @if (collapsed && !EditMode)
     {
-        @if (collapsed)
-        {
-            <MudCard>
-                <MudCardHeader>
-                    <MudStack AlignItems="AlignItems.Stretch" Row=true>
-                        @if (!string.IsNullOrEmpty(Label))
-                        {
-                            <MudText>@Label</MudText>
-                        }
-                        <MudButton OnClick="@Toggle">Expand</MudButton>
-                    </MudStack>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudStack>
-                            <DynamicComponent Type=@GetComponentTypeFor(HeaderModel) Parameters=@GetValidParametersFor(HeaderModel) />
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        }
-        else
-        {
-            <MudCard>
-
-                <MudCardHeader>
-                    <MudStack AlignItems="AlignItems.Stretch" Row=true>
-                        @if (!string.IsNullOrEmpty(Label))
-                        {
-                            <MudText>@Label</MudText>
-                        }
-                        <MudButton OnClick="@Toggle">Collapse</MudButton>
-                    </MudStack>
-                </MudCardHeader>
-
-                <MudCardContent>
-                    <MudStack>
-                        @foreach (var element in this.FormModel.Elements)
-                        {
-                            <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersFor(element) />
-                        }
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        }
+        <MudCard>
+            <MudCardHeader>
+                <MudStack AlignItems="AlignItems.Stretch" Row=true>
+                    @if (!string.IsNullOrEmpty(Label))
+                    {
+                        <MudText>@Label</MudText>
+                    }
+                    <MudButton OnClick="@Toggle" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ExpandMore">Expand</MudButton>
+                </MudStack>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudStack>
+                    <DynamicComponent Type=@GetComponentTypeFor(HeaderModel) Parameters=@GetValidParametersFor(HeaderModel) />
+                </MudStack>
+            </MudCardContent>
+        </MudCard>
     }
-</div>
+    else
+    {
+        <MudCard>
+            <MudCardHeader>
+                <MudStack AlignItems="AlignItems.Stretch" Row=true>
+                    @if (!string.IsNullOrEmpty(Label))
+                    {
+                        <MudText>@Label</MudText>
+                    }
+                    <MudButton OnClick="@Toggle" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ExpandLess">Collapse</MudButton>
+                </MudStack>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudStack>
+                    @for (int i = 0; i < this.FormModel.Elements.Count; i++)
+                    {
+                        var element = this.FormModel.Elements[i];
+                        <DynamicComponent Type=@GetComponentTypeFor(element) Parameters=@GetValidParametersForChild(element, i) />
+                    }
+                    @if (EditMode && this.FormModel.Elements.Count == 0)
+                    {
+                        <BDEmptyDropZone Container="@this" />
+                    }
+                </MudStack>
+            </MudCardContent>
+        </MudCard>
+    }
+</BDFormComponentWrapper>
 
 @code {
     private bool collapsed;
@@ -60,6 +62,12 @@
     protected override void OnInitialized()
     {
         collapsed = StartCollapsed; // Set the initial state only once
+    }
+
+    protected override void OnParametersSet()
+    {
+        // the group is open while editing, and stays open when editing stops
+        if (EditMode) collapsed = false;
     }
 
     private void Toggle()

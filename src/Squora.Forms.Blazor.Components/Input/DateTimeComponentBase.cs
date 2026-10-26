@@ -24,6 +24,9 @@ namespace Squora.Forms.Blazor.Components.Input
 
         protected override void OnParametersSet()
         {
+
+
+            base.OnParametersSet();
             var rawValue = GetValue();
             if (rawValue == null)
             {

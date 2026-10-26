@@ -66,7 +66,10 @@ namespace Squora.Forms.Blazor.Services
             if (_sourceContainer == null)
                 return false;
 
-            // Prevent dropping an element into itself (circular reference)
+            // Prevent dropping an element into itself (circular reference); an empty layout has no children to be found in below
+            if (_draggedElement == targetContainer.FormModel)
+                return false;
+
             if (IsElementAncestorOfContainer(_draggedElement, targetContainer))
                 return false;
 

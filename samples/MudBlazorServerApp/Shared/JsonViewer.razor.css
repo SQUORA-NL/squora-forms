@@ -1,0 +1,4 @@
+/* the editor takes the height of the box around it */
+.json-viewer ::deep .monaco-editor-container {
+    height: 100%;
+}

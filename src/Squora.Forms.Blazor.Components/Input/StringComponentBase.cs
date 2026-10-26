@@ -28,6 +28,8 @@ namespace Squora.Forms.Blazor.Components.Input
 
         protected override void OnParametersSet()
         {
+
+            base.OnParametersSet();
             _localString = Convert.ToString(GetValue() ?? "");
         }
 

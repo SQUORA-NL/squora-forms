@@ -2,6 +2,6 @@
 @inherits Squora.Forms.Blazor.Actions.AddActionBase
 
 <BDFormComponentWrapper Class="addaction" FormComponent="@this">
-    <MudButton OnClick="@AddItem" Disabled="@IsDisabled">@Label</MudButton>
+    <MudButton OnClick="@AddItem" Disabled="@IsDisabled" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">@Label</MudButton>
 </BDFormComponentWrapper>
 

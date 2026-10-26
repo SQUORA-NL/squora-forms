@@ -1,0 +1,7 @@
+{
+  "name": "editor-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node battle.mjs" },
+  "devDependencies": { "playwright": "^1.49.0" }
+}

@@ -10,9 +10,12 @@
         <CascadingValue Value="selectionStateService" IsFixed="true">
             <CascadingValue Value="validationStateService" IsFixed="true">
             <CascadingValue Value="FormModel" IsFixed="true">
-                @if (EditMode && ShowToolbox)
-                {
-                    <div class="bd-form-editor" @onclick:stopPropagation="true">
+                @* The form sits at the same place in the render tree in both modes, so turning edit mode on or off
+                   does not recreate it (which would reset the state of the components in it). *@
+                @{ var editing = EditMode && ShowToolbox; }
+                <div class="@(editing ? (isPaneCollapsed ? "bd-form-editor" : "bd-form-editor bd-pane-open") : null)" @onclick:stopPropagation="@editing">
+                    @if (editing)
+                    {
                         <div class="bd-toolbox-top-container">
                             <div class="bd-toolbox-header">
                                 <h4>Components</h4>
@@ -25,20 +28,25 @@
                                 </div>
                             }
                         </div>
-                        <div class="bd-editor-main">
-                            <div class="bd-form-container-fullwidth">
-                                <DynamicComponent Type=@componentType Parameters=@validParameters />
-                            </div>
-                            <div class="bd-property-sidebar">
-                                <PropertyEditor />
-                            </div>
+                    }
+                    <div class="@(editing ? "bd-editor-main" : null)">
+                        <div class="@(editing ? "bd-form-container-fullwidth" : null)" @onclick="@OnBackgroundClick">
+                            <DynamicComponent Type=@componentType Parameters=@validParameters />
                         </div>
+                        @if (editing)
+                        {
+                            <aside class="bd-property-sidebar @(isPaneCollapsed ? "collapsed" : null)" aria-label="Properties">
+                                <button class="bd-pane-toggle" @onclick="TogglePane" title="@(isPaneCollapsed ? "Show the properties" : "Hide the properties")">
+                                    @(isPaneCollapsed ? "\u2039 Properties" : "\u203a")
+                                </button>
+                                @if (!isPaneCollapsed)
+                                {
+                                    <PropertyEditor />
+                                }
+                            </aside>
+                        }
                     </div>
-                }
-                else
-                {
-                    <DynamicComponent Type=@componentType Parameters=@validParameters />
-                }
+                </div>
             </CascadingValue>
             </CascadingValue>
         </CascadingValue>

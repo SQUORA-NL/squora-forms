@@ -1,0 +1,54 @@
+@namespace Squora.Forms.Blazor.Components
+@using Squora.Forms.Blazor.Services
+@implements IDisposable
+
+<div class="bd-empty @(over ? "over" : "")"
+     @ondragenter="@(() => over = true)"
+     @ondragleave="@(() => over = false)"
+     @ondragover="@KeepDropTarget"
+     @ondragover:preventDefault="true"
+     @ondrop:preventDefault="true"
+     @ondrop="@OnDrop">Drop components here</div>
+
+@code {
+    // Blazor only listens for dragover on elements that also have a handler, and the default (no drop allowed) must be prevented for drop to fire.
+    private void KeepDropTarget() { }
+
+    private bool over;
+
+    // The container this placeholder stands in for (only shown while the container has no elements).
+    [Parameter, EditorRequired] public IDragContainer Container { get; set; } = null!;
+
+    [CascadingParameter] public DragStateService? DragState { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (DragState != null)
+        {
+            DragState.StateChanged += OnDragStateChanged;
+        }
+    }
+
+    private void OnDragStateChanged()
+    {
+        if (DragState?.IsDragging != true)
+        {
+            over = false;
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnDrop()
+    {
+        over = false;
+        Container.Drop(0);
+    }
+
+    public void Dispose()
+    {
+        if (DragState != null)
+        {
+            DragState.StateChanged -= OnDragStateChanged;
+        }
+    }
+}

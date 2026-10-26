@@ -1,0 +1,109 @@
+@namespace Squora.Forms.Blazor.Components
+@using Squora.Forms.Blazor.Services
+@implements IDisposable
+
+@if (Container != null && Index >= 0)
+{
+    <div class="bd-handle" role="button" aria-label="Drag to move @TypeName" title="Drag to move this @TypeName"
+         style="z-index:@(100 + Depth)"
+         draggable="true"
+         @ondragstart="@(() => Container.BeginDrag(Index))"
+         @ondragstart:stopPropagation="true"
+         @ondragend="@(() => Container.EndDrag())"><span class="bd-grip">⋮⋮</span>@TypeName</div>
+
+    @if (IsSource)
+    {
+        @* The element being moved covers its own area, so dropping on it does nothing instead of falling through to the layout around it. *@
+        <div class="bd-shield"
+             style="z-index:@(10 + Depth)"
+             @ondragover="@KeepDropTarget"
+             @ondragover:preventDefault="true"
+             @ondrop:preventDefault="true"></div>
+    }
+
+    @if (ShowZones)
+    {
+        @foreach (var side in sides)
+        {
+            <div class="bd-zone @(Container.IsHorizontal ? "h" : "v") @(side == 0 ? "before" : "after") @(over == side ? "over" : "")"
+                 style="z-index:@(10 + Depth)"
+                 @ondragenter="@(() => over = side)"
+                 @ondragleave="@(() => { if (over == side) over = -1; })"
+                 @ondragover="@KeepDropTarget"
+                 @ondragover:preventDefault="true"
+                 @ondrop:preventDefault="true"
+                 @ondrop="@(() => OnDrop(side))"></div>
+        }
+    }
+}
+
+@code {
+    // Blazor only listens for dragover on elements that also have a handler, and the default (no drop allowed) must be prevented for drop to fire.
+    private void KeepDropTarget() { }
+
+    private static readonly int[] sides = { 0, 1 };
+
+    // 0 = the drop target before this element is hovered, 1 = the one after it, -1 = none
+    private int over = -1;
+
+    [Parameter, EditorRequired] public FormComponentBase FormComponent { get; set; } = null!;
+
+    [CascadingParameter] public DragStateService? DragState { get; set; }
+
+    private IDragContainer? Container => FormComponent.Parent as IDragContainer;
+
+    // "VerticalLayout" -> "Vertical Layout"
+    private string TypeName => System.Text.RegularExpressions.Regex.Replace(FormComponent.FormModel.DynamicType.ComponentType.ToString(), "(?<=[a-z])(?=[A-Z])", " ");
+
+    private int Index => Container?.IndexOf(FormComponent.FormModel) ?? -1;
+
+    // Deeper elements get a higher z-index so their targets win over those of the layouts around them.
+    // (counted through Parent: custom layouts don't necessarily hand out a TreePosition)
+    private int Depth
+    {
+        get
+        {
+            var depth = 1;
+            for (var parent = FormComponent.Parent; parent != null; parent = parent.Parent)
+            {
+                depth++;
+            }
+            return depth;
+        }
+    }
+
+    private bool IsSource => DragState?.IsDragging == true && DragState.DraggedElement == FormComponent.FormModel;
+
+    private bool ShowZones => DragState?.IsDragging == true && !IsSource;
+
+    protected override void OnInitialized()
+    {
+        if (DragState != null)
+        {
+            DragState.StateChanged += OnDragStateChanged;
+        }
+    }
+
+    private void OnDragStateChanged()
+    {
+        if (DragState?.IsDragging != true)
+        {
+            over = -1;
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnDrop(int side)
+    {
+        over = -1;
+        Container?.Drop(side == 0 ? Index : Index + 1);
+    }
+
+    public void Dispose()
+    {
+        if (DragState != null)
+        {
+            DragState.StateChanged -= OnDragStateChanged;
+        }
+    }
+}

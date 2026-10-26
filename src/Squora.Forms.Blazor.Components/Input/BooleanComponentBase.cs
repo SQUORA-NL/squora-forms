@@ -18,6 +18,7 @@ namespace Squora.Forms.Blazor.Components.Input
         public bool? BooleanValue { get { return _booleanValue; } set { _booleanValue = value; ComponentLogic.UpdateValue(this,_booleanValue); } }
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
             try
             {
                 _booleanValue = Convert.ToBoolean(GetValue());

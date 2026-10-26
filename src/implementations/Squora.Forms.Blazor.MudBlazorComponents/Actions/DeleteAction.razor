@@ -2,5 +2,5 @@
 @inherits Squora.Forms.Blazor.Actions.DeleteActionBase
 
 <BDFormComponentWrapper Class="deleteaction" FormComponent="@this">
-    <MudButton OnClick="@DeleteItem" Disabled="@IsDisabled">@Label</MudButton>
+    <MudButton OnClick="@DeleteItem" Disabled="@IsDisabled" Variant="Variant.Text" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">@Label</MudButton>
 </BDFormComponentWrapper>

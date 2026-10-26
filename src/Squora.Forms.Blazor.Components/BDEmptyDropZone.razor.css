@@ -1,0 +1,24 @@
+/* An empty layout has no content to select or drop onto, so it shows a placeholder in edit mode. */
+.bd-empty {
+    /* above the drop targets of the layouts around it (BDEditChrome), so a drop lands in this layout */
+    position: relative;
+    z-index: 500;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: 2px dashed #7f9ec0;
+    border-radius: 6px;
+    color: #6b7c8f;
+    font-size: 14px;
+    user-select: none;
+}
+
+.bd-empty.over {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.16);
+    border-style: solid;
+    font-weight: 600;
+    color: #007bff;
+}

@@ -25,6 +25,7 @@ namespace Squora.Forms.Blazor.Components.Layout
         }
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
             var value = GetValue();
 
             // Check if the value is already a list.

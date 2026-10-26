@@ -1,41 +1,102 @@
 ﻿@page "/"
 @using Squora.Forms.Core.Models
+@using Squora.Forms.Core.Parser
 @using Squora.Forms.Blazor
 @using Squora.Forms.Blazor.Components.Factories
-@using Squora.Forms.Common.Enums;
-@using System.Text.Json;
-@using Squora.Forms.Blazor.MudBlazorComponents.Extensions;
+@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazorServerApp.Shared
 @using System.Dynamic
 
 @inject ComponentsList DynamicComponentList
+@inject IJSRuntime JS
 
-<PageTitle></PageTitle>
+<PageTitle>Form editor</PageTitle>
 
-<BDForm FormModel=@model 
-        Components=@DynamicComponentList 
-        Value="@data" 
-        ValueChanged="@update" 
-        EditMode="@editMode" 
+<MudStack Row="true" Spacing="2" Class="mb-3" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap">
+    <MudMenu Label="Templates" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+        @foreach (var template in FormTemplates.All)
+        {
+            var t = template;
+            <MudMenuItem OnClick="@(() => Load(t.Create()))">
+                <MudText>@t.Name</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@t.Description</MudText>
+            </MudMenuItem>
+        }
+    </MudMenu>
+    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ContentCopy" OnClick="CopyJson">Copy JSON</MudButton>
+    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ContentPaste" OnClick="PasteJson">Paste JSON</MudButton>
+    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Download" OnClick="DownloadJson">Download</MudButton>
+    <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="OpenFile">
+        <ActivatorContent>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.UploadFile">Open file</MudButton>
+        </ActivatorContent>
+    </MudFileUpload>
+    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Code" OnClick="@(() => ToggleJsonEditor())">@(showJsonEditor ? "Hide JSON" : "Edit JSON")</MudButton>
+    @if (!string.IsNullOrEmpty(status))
+    {
+        <MudText Typo="Typo.caption" Color="@(statusIsError ? Color.Error : Color.Success)">@status</MudText>
+    }
+</MudStack>
+
+@if (showJsonEditor)
+{
+    <MudPaper Class="pa-3 mb-3" Outlined="true">
+        <MudTextField @bind-Value="jsonText" Lines="12" Variant="Variant.Outlined" Immediate="true"
+                      Label="Form JSON" Placeholder="Paste a form here" Style="font-family: monospace; font-size: 12px;" />
+        <MudStack Row="true" Class="mt-2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ApplyJson">Apply</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="@(() => showJsonEditor = false)">Close</MudButton>
+        </MudStack>
+    </MudPaper>
+}
+
+@* a new key gives a new editor, so nothing of the previous form (selection, state) is carried over *@
+<BDForm @key="formVersion"
+        FormModel=@model
+        Components=@DynamicComponentList
+        Value="@data"
+        ValueChanged="@update"
+        EditMode="@editMode"
         ShowEditModeToggle="true"
         EditModeChanged="@OnEditModeChanged"></BDForm>
 
-<MudCard>
-    <MudCardHeader>
-        Data
+<MudCard Class="mt-3 data-card">
+    <MudCardHeader Style="cursor: pointer;" @onclick="@(() => showData = !showData)">
+        <CardHeaderContent>
+            <MudText Typo="Typo.subtitle1">Data</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@(showData ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                           Color="Color.Default" aria-label="@(showData ? "Hide the data" : "Show the data")" />
+        </CardHeaderActions>
     </MudCardHeader>
-    <MudCardContent>
-        @result
-    </MudCardContent>
+    @if (showData)
+    {
+        <MudCardContent>
+            <JsonViewer Value="@data" />
+        </MudCardContent>
+    }
 </MudCard>
 
 @code
 {
-    private string result = string.Empty;
+    private static readonly DynamicFormModelParser parser = new();
+
     private bool editMode = true;
+    private bool showData = true;
+    private int formVersion;
+    private bool showJsonEditor;
+    private string jsonText = "";
+    private string? status;
+    private bool statusIsError;
+
+    public ExpandoObject data = new ExpandoObject();
+
+    // the form starts empty
+    public DynamicFormModel model = FormTemplates.Empty();
 
     private void update()
     {
-        result = JsonSerializer.Serialize(data);
         StateHasChanged();
     }
 
@@ -45,27 +106,89 @@
         StateHasChanged();
     }
 
-    public ExpandoObject data = new ExpandoObject();
-
-    public DynamicFormModel model = FormFactory.GroupLayout(group =>
-        group
-           .WithParameter("Collapsed", false)
-           .WithParameter("HeaderModel", HeaderForm())
-           .WithElements(DetailForm())
-        ).WithTypeDefinionName("Collapsable");
-
-
-    private static DynamicFormModel HeaderForm()
+    private void Load(DynamicFormModel newModel)
     {
-        return FormFactory.StringDisplay("Name", "$.name");
+        model = newModel;
+        data = new ExpandoObject();
+        formVersion++;
+        editMode = true;
     }
 
-    private static DynamicFormModel DetailForm()
+    private void Report(string message, bool error = false)
     {
-        return FormFactory.VerticalLayout(
-            FormFactory.StringComponent("Name", "$.name"),
-            FormFactory.StringComponent("City", "$.city"),
-            FormFactory.FileUploadComponent("Documents", "$.documents", b => b.WithMultiple())
-            );
+        status = message;
+        statusIsError = error;
+    }
+
+    private async Task CopyJson()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", parser.Serialize(model));
+            Report("Copied the form JSON");
+        }
+        catch (JSException)
+        {
+            // the browser refuses clipboard access (not a secure page, or not allowed): show it to copy by hand
+            ToggleJsonEditor(true);
+            Report("The browser did not allow copying: select the text below and copy it", true);
+        }
+    }
+
+    private async Task PasteJson()
+    {
+        string? text = null;
+        try
+        {
+            text = await JS.InvokeAsync<string>("navigator.clipboard.readText");
+        }
+        catch (JSException)
+        {
+            // reading the clipboard is not allowed here: paste into the box instead
+        }
+
+        if (!string.IsNullOrWhiteSpace(text) && TryLoadJson(text)) return;
+
+        showJsonEditor = true;
+        jsonText = text ?? "";
+        if (string.IsNullOrWhiteSpace(text)) Report("Paste the form JSON in the box and press Apply");
+    }
+
+    private async Task DownloadJson()
+    {
+        await JS.InvokeVoidAsync("downloadText", "form.json", parser.Serialize(model));
+        Report("Downloaded form.json");
+    }
+
+    private async Task OpenFile(IBrowserFile? file)
+    {
+        if (file == null) return;
+        using var reader = new StreamReader(file.OpenReadStream(1024 * 1024));
+        TryLoadJson(await reader.ReadToEndAsync());
+    }
+
+    private void ToggleJsonEditor(bool? show = null)
+    {
+        showJsonEditor = show ?? !showJsonEditor;
+        if (showJsonEditor) jsonText = parser.Serialize(model);
+    }
+
+    private void ApplyJson()
+    {
+        if (TryLoadJson(jsonText)) showJsonEditor = false;
+    }
+
+    private bool TryLoadJson(string json)
+    {
+        var loaded = parser.Deserialize(json);
+        if (loaded == null)
+        {
+            Report("That is not a valid form JSON", true);
+            return false;
+        }
+
+        Load(loaded);
+        Report("Loaded the form");
+        return true;
     }
 }

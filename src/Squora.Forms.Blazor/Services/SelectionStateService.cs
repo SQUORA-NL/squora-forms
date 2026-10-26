@@ -9,6 +9,11 @@ namespace Squora.Forms.Blazor.Services
 
         public event Action? StateChanged;
 
+        /// <summary>Raised when the form model itself was edited (a property, an element removed, the whole form replaced), so the rendered form must refresh.</summary>
+        public event Action? ModelChanged;
+
+        public void NotifyModelChanged() => ModelChanged?.Invoke();
+
         public DynamicFormModel? SelectedElement => _selectedElement;
 
         public void SelectElement(DynamicFormModel? element)

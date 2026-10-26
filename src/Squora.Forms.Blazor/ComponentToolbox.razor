@@ -25,12 +25,16 @@
     [CascadingParameter] 
     public DragStateService? DragState { get; set; }
 
+    [CascadingParameter]
+    public DynamicFormModel? RootModel { get; set; }
+
     private void OnToolboxItemDragStart(DragEventArgs e, ComponentType componentType)
     {
         if (DragState == null) return;
         
         // Create a new component model for dragging
         var newComponent = CreateComponentModel(componentType);
+        MakePathUnique(newComponent);
         DragState.StartToolboxDrag(newComponent);
     }
 
@@ -103,6 +107,14 @@
                 Parameters = new ParameterList().Add("Label", "New Field").Add("Path", "$.newField")
             }
         };
+    }
+
+    // New fields would all bind to the same default path (and so share one value), so a number is added when it is taken.
+    private void MakePathUnique(DynamicFormModel component)
+    {
+        if (RootModel == null || !component.Parameters.Entries.TryGetValue("Path", out var path) || path is not string basePath) return;
+
+        component.Parameters.Add("Path", Utillities.UniquePath.For(RootModel, basePath));
     }
 
     private IEnumerable<ComponentType> GetAvailableComponentTypes()

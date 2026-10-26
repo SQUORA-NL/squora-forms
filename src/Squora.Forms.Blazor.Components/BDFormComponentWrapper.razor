@@ -4,15 +4,24 @@
 @using Squora.Forms.Common.Enums
 @namespace Squora.Forms.Blazor.Components
 
-<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
+<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(IsDragSource ? "bd-dragging" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
      aria-live="polite"
      aria-disabled="@(FormComponent?.IsDisabled == true ? "true" : null)"
      @onclick="@OnElementClick"
      @onclick:stopPropagation="true"
      @onfocusout="OnFocusOut">
-    @if ((FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)
+    @* while editing, a component a rule hides stays in view (otherwise it could not be selected again) *@
+    @if (EditMode || (FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)
     {
         @ChildContent
+    }
+    @if (EditMode && FormComponent?.RuleEffect == RuleEffect.HIDE)
+    {
+        <span class="bd-rule-badge" title="A rule hides this while the form is filled in">Hidden by a rule</span>
+    }
+    @if (EditMode && FormComponent?.Parent is IDragContainer)
+    {
+        <BDEditChrome FormComponent="FormComponent" />
     }
     @if (ShowValidation && (!FormComponent?.IsValid ?? true))
     {

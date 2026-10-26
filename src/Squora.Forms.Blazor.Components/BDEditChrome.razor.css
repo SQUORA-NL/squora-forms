@@ -1,0 +1,98 @@
+/* Edit-mode overlay. Everything here is absolutely positioned on top of the element, so it takes no
+   room in the layout: the form looks the same as it does outside edit mode. */
+
+.bd-handle {
+    position: absolute;
+    top: -12px;
+    left: 6px;
+    height: 20px;
+    padding: 0 7px;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 12px;
+    color: #fff;
+    background: #007bff;
+    border-radius: 4px;
+    cursor: grab;
+    user-select: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+}
+
+.bd-grip {
+    font-size: 14px;
+    letter-spacing: -2px;
+    margin-right: 6px;
+}
+
+.bd-handle:active {
+    cursor: grabbing;
+}
+
+.bd-shield {
+    position: absolute;
+    inset: 0;
+}
+
+/* Drop targets: the top and bottom half (left and right half in a row) of the element. They only exist while something is being dragged. */
+.bd-zone {
+    position: absolute;
+}
+
+.bd-zone.v { left: 0; right: 0; }
+.bd-zone.v.before { top: -8px; height: calc(50% + 8px); }
+.bd-zone.v.after { bottom: -8px; height: calc(50% + 8px); }
+
+.bd-zone.h { top: 0; bottom: 0; }
+.bd-zone.h.before { left: -8px; width: calc(50% + 8px); }
+.bd-zone.h.after { right: -8px; width: calc(50% + 8px); }
+
+/* the insertion line: faint on every possible spot while dragging, solid on the one you are over */
+.bd-zone::after {
+    content: "";
+    position: absolute;
+    background: #007bff;
+    border-radius: 2px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.bd-zone.over {
+    background: rgba(0, 123, 255, 0.16);
+    outline: 2px dashed #007bff;
+    outline-offset: -2px;
+    border-radius: 4px;
+}
+
+.bd-zone.over::after {
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+/* a label on the spot you are over, so it is clear where the element will land */
+.bd-zone.over::before {
+    content: "Drop here";
+    position: absolute;
+    z-index: 1;
+    padding: 2px 10px;
+    font: 600 12px/18px sans-serif;
+    color: #fff;
+    background: #007bff;
+    border-radius: 10px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.bd-zone.v.over.before::before { top: 6px; left: 50%; transform: translateX(-50%); }
+.bd-zone.v.over.after::before { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.bd-zone.h.over.before::before { top: 50%; left: 6px; transform: translateY(-50%); }
+.bd-zone.h.over.after::before { top: 50%; right: 6px; transform: translateY(-50%); }
+
+.bd-zone.v.before::after { left: 0; right: 0; top: 0; height: 4px; }
+.bd-zone.v.after::after { left: 0; right: 0; bottom: 0; height: 4px; }
+.bd-zone.h.before::after { top: 0; bottom: 0; left: 0; width: 4px; }
+.bd-zone.h.after::after { top: 0; bottom: 0; right: 0; width: 4px; }
