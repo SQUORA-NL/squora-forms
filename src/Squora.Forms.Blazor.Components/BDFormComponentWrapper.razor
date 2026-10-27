@@ -4,11 +4,14 @@
 @using Squora.Forms.Common.Enums
 @namespace Squora.Forms.Blazor.Components
 
-<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(IsDragSource ? "bd-dragging" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
+<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(EditMode && FormComponent is IDragContainer ? "bd-container" : "")} {(EditMode && IsDragging ? "bd-drag-active" : "")} {(IsDragSource ? "bd-dragging" : "")} {(IsDropTarget ? "bd-drop-target" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
+     data-drop-label="@(IsDropTarget ? DropLabel : null)"
      aria-live="polite"
      aria-disabled="@(FormComponent?.IsDisabled == true ? "true" : null)"
      @onclick="@OnElementClick"
      @onclick:stopPropagation="true"
+     @ondblclick="@OnElementDoubleClick"
+     @ondblclick:stopPropagation="true"
      @onfocusout="OnFocusOut">
     @* while editing, a component a rule hides stays in view (otherwise it could not be selected again) *@
     @if (EditMode || (FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)

@@ -50,6 +50,7 @@ namespace Squora.Forms.Blazor.Components.Layout
 
         // IDragContainer: lets BDEditChrome (drawn over each child) start drags and drop onto this layout
         bool IDragContainer.IsHorizontal => false;
+        DynamicFormModel? IDragContainer.ContainerModel => FormModel;
         int IDragContainer.IndexOf(DynamicFormModel child) => FormModel.Elements.IndexOf(child);
         void IDragContainer.BeginDrag(int index) => OnDragStart(new DragEventArgs(), index);
         void IDragContainer.EndDrag() => OnDragEnd(new DragEventArgs());

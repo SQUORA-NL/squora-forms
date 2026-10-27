@@ -11,6 +11,9 @@ namespace Squora.Forms.Blazor.Components
     {
         bool IsHorizontal { get; }
 
+        /// <summary>The layout itself, so the editor can show which one a drop would land in. Optional: without it only the spot is shown.</summary>
+        DynamicFormModel? ContainerModel => null;
+
         int IndexOf(DynamicFormModel child);
 
         void BeginDrag(int index);

@@ -11,4 +11,11 @@ ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://localhost:5199 dotnet 
 cd tst/editor-e2e && npm install && npx playwright install chromium && npm test
 ```
 
-`APP_URL`, `APP_LOG` and `OUT_DIR` override the defaults; `ONLY=<regex>` runs the tests whose name matches. Screenshots of failures land in `out/`.
+Two suites:
+
+- `battle.mjs` (`npm run battle`): the property editor, JSON editing, every component type, drag and drop, on MudBlazor.
+- `frameworks.mjs` (`npm run frameworks`): what the editor itself does (drop targets and what they say, selection, the action bar, the properties pane, click to add, switching library) once for each of MudBlazor, HTML and Radzen. `FRAMEWORKS=HTML,Radzen` picks which.
+
+`npm test` runs both. `APP_URL`, `APP_LOG` and `OUT_DIR` override the defaults; `ONLY=<regex>` runs the tests whose name matches. Screenshots of failures land in `out/`.
+
+Make sure the port is yours: another app already listening on it answers the tests instead of the one you just built.
