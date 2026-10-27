@@ -1,36 +1,97 @@
 /* Edit-mode overlay. Everything here is absolutely positioned on top of the element, so it takes no
-   room in the layout: the form looks the same as it does outside edit mode. */
+   room in the layout: the form looks the same as it does outside edit mode.
+   Colours come from --sq-accent (and friends), so a host can theme the whole editor from one place. */
+
+/* The tag above an element: what it is, the handle to move it by and, once selected, its actions.
+   Shown (by the wrapper) on the hovered or selected element. */
+.bd-tag {
+    position: absolute;
+    /* above the element, not over its top edge, where outlined inputs keep their label */
+    top: -27px;
+    left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease;
+}
 
 .bd-handle {
-    position: absolute;
-    top: -12px;
-    left: 6px;
-    height: 20px;
-    padding: 0 7px;
+    height: 22px;
+    padding: 0 9px 0 6px;
     display: flex;
     align-items: center;
     line-height: 1;
     white-space: nowrap;
-    font-weight: 600;
-    font-size: 12px;
+    font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: 0.01em;
     color: #fff;
-    background: #007bff;
-    border-radius: 4px;
+    background: var(--sq-accent, #2563eb);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
     cursor: grab;
     user-select: none;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.1s ease;
 }
 
-.bd-grip {
-    font-size: 14px;
-    letter-spacing: -2px;
-    margin-right: 6px;
+.bd-handle:hover {
+    background: var(--sq-accent-strong, color-mix(in srgb, var(--sq-accent, #2563eb) 82%, #000));
 }
 
 .bd-handle:active {
     cursor: grabbing;
+}
+
+.bd-grip {
+    font-size: 13px;
+    letter-spacing: -2px;
+    margin-right: 5px;
+    opacity: 0.85;
+}
+
+/* what can be done with the selected element */
+.bd-actions {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 2px;
+    gap: 1px;
+    background: var(--sq-surface, #fff);
+    border: 1px solid var(--sq-border, #d5dbe5);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
+}
+
+.bd-act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--sq-muted, #475569);
+    cursor: pointer;
+}
+
+.bd-act ::deep .bd-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.bd-act:hover,
+.bd-act:focus-visible {
+    background: color-mix(in srgb, var(--sq-accent, #2563eb) 12%, transparent);
+    color: var(--sq-accent, #2563eb);
+    outline: none;
+}
+
+.bd-act-delete:hover,
+.bd-act-delete:focus-visible {
+    background: color-mix(in srgb, var(--sq-danger, #dc2626) 12%, transparent);
+    color: var(--sq-danger, #dc2626);
 }
 
 .bd-shield {
@@ -51,48 +112,58 @@
 .bd-zone.h.before { left: -8px; width: calc(50% + 8px); }
 .bd-zone.h.after { right: -8px; width: calc(50% + 8px); }
 
-/* the insertion line: faint on every possible spot while dragging, solid on the one you are over */
+/* The insertion line: shown on every spot a drop is possible while dragging, so you can see the choices;
+   the spot you are over is thick, solid and labelled. */
 .bd-zone::after {
     content: "";
     position: absolute;
-    background: #007bff;
-    border-radius: 2px;
-    opacity: 0.5;
+    background: var(--sq-accent, #2563eb);
+    border-radius: 3px;
+    opacity: 0.55;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.75);
     pointer-events: none;
+    transition: opacity 0.1s ease;
 }
 
+.bd-zone.v.before::after { left: 0; right: 0; top: 0; height: 3px; }
+.bd-zone.v.after::after { left: 0; right: 0; bottom: 0; height: 3px; }
+.bd-zone.h.before::after { top: 0; bottom: 0; left: 0; width: 3px; }
+.bd-zone.h.after::after { top: 0; bottom: 0; right: 0; width: 3px; }
+
 .bd-zone.over {
-    background: rgba(0, 123, 255, 0.16);
-    outline: 2px dashed #007bff;
-    outline-offset: -2px;
-    border-radius: 4px;
+    background: color-mix(in srgb, var(--sq-accent, #2563eb) 9%, transparent);
+    border-radius: 6px;
 }
 
 .bd-zone.over::after {
     opacity: 1;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sq-accent, #2563eb) 30%, transparent);
 }
 
-/* a label on the spot you are over, so it is clear where the element will land */
+.bd-zone.v.over.before::after { height: 4px; }
+.bd-zone.v.over.after::after { height: 4px; }
+.bd-zone.h.over.before::after { width: 4px; }
+.bd-zone.h.over.after::after { width: 4px; }
+
+/* the label on the spot you are over, so it is clear where the element will land */
 .bd-zone.over::before {
-    content: "Drop here";
+    content: attr(data-hint);
     position: absolute;
     z-index: 1;
-    padding: 2px 10px;
-    font: 600 12px/18px sans-serif;
+    max-width: 260px;
+    padding: 3px 11px;
+    font: 600 12px/16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: #fff;
-    background: #007bff;
-    border-radius: 10px;
+    background: var(--sq-accent, #2563eb);
+    border-radius: 11px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.3);
     pointer-events: none;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.bd-zone.v.over.before::before { top: 6px; left: 50%; transform: translateX(-50%); }
-.bd-zone.v.over.after::before { bottom: 6px; left: 50%; transform: translateX(-50%); }
-.bd-zone.h.over.before::before { top: 50%; left: 6px; transform: translateY(-50%); }
-.bd-zone.h.over.after::before { top: 50%; right: 6px; transform: translateY(-50%); }
-
-.bd-zone.v.before::after { left: 0; right: 0; top: 0; height: 4px; }
-.bd-zone.v.after::after { left: 0; right: 0; bottom: 0; height: 4px; }
-.bd-zone.h.before::after { top: 0; bottom: 0; left: 0; width: 4px; }
-.bd-zone.h.after::after { top: 0; bottom: 0; right: 0; width: 4px; }
+.bd-zone.v.over.before::before { top: -10px; left: 50%; transform: translateX(-50%); }
+.bd-zone.v.over.after::before { bottom: -10px; left: 50%; transform: translateX(-50%); }
+.bd-zone.h.over.before::before { top: 50%; left: 0; transform: translate(-50%, -50%); }
+.bd-zone.h.over.after::before { top: 50%; right: 0; transform: translate(50%, -50%); }

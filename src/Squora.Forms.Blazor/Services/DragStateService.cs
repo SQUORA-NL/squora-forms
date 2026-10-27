@@ -16,6 +16,37 @@ namespace Squora.Forms.Blazor.Services
 
         public event Action? StateChanged;
 
+        /// <summary>Raised when the spot the pointer is over changes. Separate from <see cref="StateChanged"/> so only what shows the target has to redraw.</summary>
+        public event Action? HoverChanged;
+
+        private object? _hoverOwner;
+
+        /// <summary>The layout a drop at the spot under the pointer would land in.</summary>
+        public DynamicFormModel? HoverContainer { get; private set; }
+
+        /// <summary>Says where a drop under the pointer would land, e.g. "above City".</summary>
+        public string? HoverHint { get; private set; }
+
+        /// <summary>The spot (<paramref name="owner"/>) under the pointer, and what dropping there does.</summary>
+        public void SetHover(object owner, DynamicFormModel? container, string? hint)
+        {
+            if (_hoverOwner == owner && HoverContainer == container && HoverHint == hint) return;
+            _hoverOwner = owner;
+            HoverContainer = container;
+            HoverHint = hint;
+            HoverChanged?.Invoke();
+        }
+
+        /// <summary>The pointer left <paramref name="owner"/>. Ignored when it already moved on to another spot (enter of the next arrives before leave of the last).</summary>
+        public void ClearHover(object owner)
+        {
+            if (_hoverOwner != owner) return;
+            _hoverOwner = null;
+            HoverContainer = null;
+            HoverHint = null;
+            HoverChanged?.Invoke();
+        }
+
         public bool IsDragging => _isDragging;
         public bool IsFromToolbox => _isFromToolbox;
         public DynamicFormModel? DraggedElement => _draggedElement;
@@ -44,6 +75,9 @@ namespace Squora.Forms.Blazor.Services
 
         public void EndDrag()
         {
+            _hoverOwner = null;
+            HoverContainer = null;
+            HoverHint = null;
             _isDragging = false;
             _isFromToolbox = false;
             _draggedElement = null;

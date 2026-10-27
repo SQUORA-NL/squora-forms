@@ -7,10 +7,17 @@
 @using MudBlazorServerApp.Shared
 @using System.Dynamic
 
-@inject ComponentsList DynamicComponentList
 @inject IJSRuntime JS
 
 <PageTitle>Form editor</PageTitle>
+
+<div class="demo-intro">
+    <MudText Typo="Typo.h5">Form editor</MudText>
+    <MudText Typo="Typo.body2" Style="color:#64748b">
+        Pick a template, then drag components onto the form (or click them to add). Click an element to edit its properties.
+        The same form renders with any of the UI libraries below.
+    </MudText>
+</div>
 
 <MudStack Row="true" Spacing="2" Class="mb-3" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap">
     <MudMenu Label="Templates" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
@@ -38,6 +45,40 @@
     }
 </MudStack>
 
+<div class="demo-style-bar">
+    <div class="demo-style-group">
+        <span class="demo-style-label">UI library</span>
+        <MudToggleGroup T="string" Value="@frameworkKey" ValueChanged="@OnFrameworkChanged" Color="Color.Primary" Size="Size.Small"
+                        SelectionMode="SelectionMode.SingleSelection" CheckMark="true" Class="demo-framework">
+            @foreach (var f in FormFrameworks.All)
+            {
+                <MudToggleItem Value="@f.Key" Text="@f.Name" />
+            }
+        </MudToggleGroup>
+        <span class="demo-style-note">@framework.Description</span>
+    </div>
+    <div class="demo-style-group">
+        <span class="demo-style-label">Theme</span>
+        <select class="demo-theme-select" aria-label="Form theme" value="@themeKey" @onchange="@(e => themeKey = e.Value?.ToString() ?? "default")">
+            @foreach (var t in Themes)
+            {
+                <option value="@t.Key" selected="@(t.Key == themeKey)">@t.Name</option>
+            }
+        </select>
+    </div>
+    <div class="demo-style-group">
+        <span class="demo-style-label">Editor accent</span>
+        <div class="demo-swatches" role="radiogroup" aria-label="Editor accent colour">
+            @foreach (var a in Accents)
+            {
+                var accentOption = a;
+                <button type="button" role="radio" class="demo-swatch" style="--swatch:@accentOption.Color" title="@accentOption.Name" aria-label="@accentOption.Name"
+                        aria-checked="@((accent == accentOption.Color).ToString().ToLower())" @onclick="@(() => accent = accentOption.Color)"></button>
+            }
+        </div>
+    </div>
+</div>
+
 @if (showJsonEditor)
 {
     <MudPaper Class="pa-3 mb-3" Outlined="true">
@@ -51,14 +92,17 @@
 }
 
 @* a new key gives a new editor, so nothing of the previous form (selection, state) is carried over *@
-<BDForm @key="formVersion"
-        FormModel=@model
-        Components=@DynamicComponentList
-        Value="@data"
-        ValueChanged="@update"
-        EditMode="@editMode"
-        ShowEditModeToggle="true"
-        EditModeChanged="@OnEditModeChanged"></BDForm>
+@* the editor takes its colours from --sq-*; --sq-sticky-top keeps its side panels clear of the app bar *@
+<div class="editor-stage" data-form-theme="@themeKey" style="--sq-accent:@accent; --sq-sticky-top:72px;">
+    <BDForm @key="@($"{formVersion}-{framework.Key}")"
+            FormModel=@model
+            Components=@framework.Components
+            Value="@data"
+            ValueChanged="@update"
+            EditMode="@editMode"
+            ShowEditModeToggle="true"
+            EditModeChanged="@OnEditModeChanged"></BDForm>
+</div>
 
 <MudCard Class="mt-3 data-card">
     <MudCardHeader Style="cursor: pointer;" @onclick="@(() => showData = !showData)">
@@ -82,6 +126,27 @@
 {
     private static readonly DynamicFormModelParser parser = new();
 
+    private sealed record Accent(string Name, string Color);
+
+    private static readonly Accent[] Accents =
+    {
+        new("Blue", "#2563eb"), new("Violet", "#7c3aed"), new("Teal", "#0d9488"), new("Rose", "#e11d48"), new("Slate", "#334155"),
+    };
+
+    private sealed record FormTheme(string Key, string Name);
+
+    // the looks of the React demo; see wwwroot/css/form-themes.css
+    private static readonly FormTheme[] Themes =
+    {
+        new("default", "Default"), new("dark", "Dark"), new("compact", "Compact"), new("studio", "Studio"),
+        new("glass", "Glass"), new("neu", "Neu"), new("vintage", "Vintage"), new("card", "Card"),
+    };
+
+    private string themeKey = "default";
+    private string accent = Accents[0].Color;
+    private string frameworkKey = FormFrameworks.Default.Key;
+    private FormFramework framework => FormFrameworks.Find(frameworkKey);
+
     private bool editMode = true;
     private bool showData = true;
     private int formVersion;
@@ -98,6 +163,15 @@
     private void update()
     {
         StateHasChanged();
+    }
+
+    // the form and what was filled in stay: only the components that show them change
+    private async Task OnFrameworkChanged(string? key)
+    {
+        if (key == null || key == frameworkKey) return;
+        // the theme is in place before the form is shown with the new components
+        await JS.InvokeVoidAsync("useRadzenTheme", key == "radzen");
+        frameworkKey = key;
     }
 
     private void OnEditModeChanged(bool newEditMode)

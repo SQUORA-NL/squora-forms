@@ -3,7 +3,9 @@
 @using Squora.Forms.Core.Models
 @using Squora.Forms.Core.Models.ParameterModels
 @using Squora.Forms.Core.Parser
+@using Squora.Forms.Blazor
 @using Squora.Forms.Blazor.Services
+@using Squora.Forms.Blazor.Utillities
 
 <div class="bd-property-editor">
     @if (SelectionState?.SelectedElement != null)
@@ -14,21 +16,23 @@
         var typeName = element.DynamicType.TypeDefinitionName;
 
         <div class="bd-property-editor-header">
+            <span class="bd-pe-badge" aria-hidden="true">@EditorIcons.For(componentType)</span>
             <div class="bd-pe-title">
-                <h4>Properties</h4>
-                <span class="bd-pe-subtitle">@(isRoot ? "Whole form · " : "")@GetComponentDisplayName(componentType)@(string.IsNullOrEmpty(typeName) ? "" : $" · {typeName}")</span>
+                <h4>@(isRoot ? "Whole form" : FormTree.Describe(element))</h4>
+                <span class="bd-pe-subtitle">@(isRoot ? "The form itself · " : "")@GetComponentDisplayName(componentType)@(string.IsNullOrEmpty(typeName) ? "" : $" · {typeName}")</span>
             </div>
-            <button class="bd-close-button" @onclick="ClearSelection" title="Deselect" aria-label="Deselect">&times;</button>
-        </div>
-        <div class="bd-pe-actions">
-            @if (FindParent(RootModel, element) != null)
-            {
-                <button class="bd-parent-button" @onclick="SelectParent" title="Select the layout this element is in">&uarr; Parent</button>
-            }
-            @if (!isRoot)
-            {
-                <button class="bd-delete-button" @onclick="DeleteSelectedElement" title="Delete Element">Delete</button>
-            }
+            <div class="bd-pe-header-actions">
+                @if (SelectionState != null && SelectionState.CanSelectParent)
+                {
+                    <button type="button" class="bd-icon-button bd-parent-button" @onclick="SelectParent" title="Select the layout this element is in" aria-label="Select parent">@EditorIcons.Parent</button>
+                }
+                @if (!isRoot)
+                {
+                    <button type="button" class="bd-icon-button bd-copy-button" @onclick="Duplicate" title="Duplicate this element" aria-label="Duplicate">@EditorIcons.Copy</button>
+                    <button type="button" class="bd-icon-button bd-delete-button" @onclick="DeleteSelectedElement" title="Delete this element" aria-label="Delete">@EditorIcons.Trash</button>
+                }
+                <button type="button" class="bd-icon-button bd-close-button" @onclick="Close" title="Hide the properties" aria-label="Hide the properties">@EditorIcons.Close</button>
+            </div>
         </div>
         <div class="bd-pe-tabs" role="tablist">
             <button role="tab" aria-selected="@(activeTab == EditorTab.Properties)" class="bd-tab @(activeTab == EditorTab.Properties ? "active" : "")" @onclick="@(() => SetTab(EditorTab.Properties))">Properties</button>
@@ -39,16 +43,12 @@
         <div class="bd-property-editor-content">
             @if (activeTab == EditorTab.Properties)
             {
-                <div class="bd-property-group">
-                    <label class="bd-property-label">Component Type</label>
-                    <div class="bd-property-value">@GetComponentDisplayName(componentType)@(string.IsNullOrEmpty(typeName) ? "" : $" ({typeName})")</div>
-                </div>
-
                 @if (HasLabelProperty(componentType))
                 {
                     <div class="bd-property-group">
                         <label class="bd-property-label">Label</label>
                         <input class="bd-property-input"
+                               @ref="labelInput"
                                type="text"
                                value="@GetParameterValue(element, "Label")"
                                @onchange="@((e) => UpdateParameter(element, "Label", e.Value?.ToString()))" />
@@ -239,8 +239,18 @@
     }
     else
     {
+        <div class="bd-property-editor-header bd-pe-plain">
+            <div class="bd-pe-title">
+                <h4>Properties</h4>
+            </div>
+            <div class="bd-pe-header-actions">
+                <button type="button" class="bd-icon-button bd-close-button" @onclick="Close" title="Hide the properties" aria-label="Hide the properties">@EditorIcons.Close</button>
+            </div>
+        </div>
         <div class="bd-property-editor-empty">
-            <p>Select a component to edit its properties</p>
+            <span class="bd-empty-badge" aria-hidden="true">@EditorIcons.Pointer</span>
+            <p class="bd-empty-title">Nothing selected</p>
+            <p>Click an element in the form to change its label, path, validation and rules.</p>
             @if (RootModel != null)
             {
                 <button class="bd-select-form-button" @onclick="SelectForm">Edit the whole form</button>
@@ -255,6 +265,11 @@
     
     [CascadingParameter]
     public DynamicFormModel? RootModel { get; set; }
+
+    /// <summary>The pane's close button was pressed.</summary>
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference labelInput;
     
     private enum EditorTab { Properties, Rules, Json }
 
@@ -276,8 +291,30 @@
         if (SelectionState != null)
         {
             SelectionState.StateChanged += OnSelectionChanged;
+            SelectionState.PropertiesRequested += OnPropertiesRequested;
         }
     }
+
+    // someone asked to edit the properties (a button on the element, a double click): the first input is where to start typing
+    private void OnPropertiesRequested()
+    {
+        activeTab = EditorTab.Properties;
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (SelectionState?.FocusRequested != true || SelectionState.SelectedElement == null) return;
+
+        SelectionState.FocusRequested = false;
+        if (labelInput.Id != null)
+        {
+            try { await labelInput.FocusAsync(); }
+            catch (InvalidOperationException) { /* the input is gone again: nothing to focus */ }
+        }
+    }
+
+    private Task Close() => OnClose.InvokeAsync();
     
     private void OnSelectionChanged()
     {
@@ -295,46 +332,13 @@
         if (SelectionState != null)
         {
             SelectionState.StateChanged -= OnSelectionChanged;
+            SelectionState.PropertiesRequested -= OnPropertiesRequested;
         }
     }
 
-    private void ClearSelection()
-    {
-        SelectionState?.ClearSelection();
-    }
+    private void SelectParent() => SelectionState?.SelectParent();
 
-    // The parent of a direct child is the root, which stands for the whole form; the root itself has none.
-    private static DynamicFormModel? FindParent(DynamicFormModel? root, DynamicFormModel? element)
-    {
-        if (root == null || element == null) return null;
-        foreach (var child in root.Elements)
-        {
-            if (child == element) return root;
-            var found = FindParentBelow(child, element);
-            if (found != null) return found;
-        }
-        return null;
-    }
-
-    private static DynamicFormModel? FindParentBelow(DynamicFormModel node, DynamicFormModel element)
-    {
-        if (node.Elements.Contains(element)) return node;
-        foreach (var child in node.Elements)
-        {
-            var found = FindParentBelow(child, element);
-            if (found != null) return found;
-        }
-        return null;
-    }
-
-    private void SelectParent()
-    {
-        var parent = FindParent(RootModel, SelectionState?.SelectedElement);
-        if (parent != null)
-        {
-            SelectionState?.SelectElement(parent);
-        }
-    }
+    private void Duplicate() => SelectionState?.DuplicateSelected();
 
     private string GetParameterValue(DynamicFormModel element, string parameterName)
     {
@@ -470,41 +474,8 @@
         StateHasChanged();
     }
 
-    private void DeleteSelectedElement()
-    {
-        if (SelectionState?.SelectedElement == null || RootModel == null) return;
-        
-        var elementToDelete = SelectionState.SelectedElement;
-        
-        // Find and remove from parent
-        if (RemoveElementFromParent(RootModel, elementToDelete))
-        {
-            SelectionState.ClearSelection();
-            ModelEdited();
-        }
-    }
-    
-    private bool RemoveElementFromParent(DynamicFormModel parent, DynamicFormModel elementToRemove)
-    {
-        // Check if the element is a direct child
-        if (parent.Elements.Contains(elementToRemove))
-        {
-            parent.Elements.Remove(elementToRemove);
-            return true;
-        }
-        
-        // Recursively check children
-        foreach (var child in parent.Elements)
-        {
-            if (RemoveElementFromParent(child, elementToRemove))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
+    private void DeleteSelectedElement() => SelectionState?.DeleteSelected();
+
     private void ToggleJsonView() => SetTab(showJsonView ? EditorTab.Properties : EditorTab.Json);
 
     private void SetTab(EditorTab tab)
@@ -844,22 +815,5 @@
         return componentType == ComponentType.Int || componentType == ComponentType.Number;
     }
 
-    private string GetComponentDisplayName(ComponentType componentType)
-    {
-        return componentType switch
-        {
-            ComponentType.String => "Text Field",
-            ComponentType.Boolean => "Checkbox",
-            ComponentType.Int => "Integer",
-            ComponentType.Number => "Number",
-            ComponentType.DateTime => "Date/Time",
-            ComponentType.Dropdown => "Dropdown",
-            ComponentType.VerticalLayout => "Vertical Layout",
-            ComponentType.HorizontalLayout => "Horizontal Layout",
-            ComponentType.GroupLayout => "Group Layout",
-            ComponentType.List => "List",
-            ComponentType.FileUpload => "File Upload",
-            _ => "Unknown"
-        };
-    }
+    private static string GetComponentDisplayName(ComponentType componentType) => FormTree.DisplayName(componentType);
 }

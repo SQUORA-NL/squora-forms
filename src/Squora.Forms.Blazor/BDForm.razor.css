@@ -1,131 +1,198 @@
-﻿.my-component {
-    border: 2px dashed red;
-    padding: 1em;
-    margin: 1em 0;
-    background-image: url('background.png');
+﻿/* The editor shell: a bar on top, and below it three columns that sit next to each other: the components, the form, the properties.
+   Everything takes its colours from the --sq-* variables (with the defaults below), so a host can theme it from one place:
+     --sq-accent        the highlight colour (selection, drop targets, buttons)
+     --sq-surface       panels, --sq-surface-2 the canvas behind the form, --sq-paper the form's own page
+     --sq-border, --sq-text, --sq-muted, --sq-danger
+     --sq-sticky-top    how far from the top of the screen the side panels stay (clear a fixed app bar with it)
+     --sq-toolbox-width, --sq-pane-width */
+
+.bd-editor-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 4px;
 }
 
-/* Form editor layout - new vertical layout */
-.bd-form-editor {
+.bd-editor {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    gap: 8px;
-}
-
-/* Top collapsible toolbox */
-.bd-toolbox-top-container {
-    width: 100%;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.bd-toolbox-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.bd-toolbox-header h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #495057;
-}
-
-.bd-toolbox-toggle {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.bd-toolbox-toggle:hover {
-    background: #0056b3;
-}
-
-.bd-toolbox-content-top {
-    padding: 12px;
-}
-
-/* Main editor area with full-width form and sidebar */
-.bd-editor-main {
-    display: flex;
     gap: 12px;
     width: 100%;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-.bd-form-container-fullwidth {
-    flex: 1;
+.bd-editor .bd-editor-bar {
+    margin: 0;
+    padding: 6px 10px;
+    background: var(--sq-surface, #fff);
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.bd-editor-hint {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
     min-width: 0;
+    color: var(--sq-muted, #64748b);
+    font-size: 12.5px;
 }
 
-/* The properties sit in a pane over the right edge of the whole screen, so they get its full height. The form
-   leaves room for it while it is open. */
+.bd-hint-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.bd-hint-step ::deep .bd-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.bd-grip-sample {
+    font-weight: 700;
+    letter-spacing: -2px;
+}
+
+.bd-editor-bar-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.bd-bar-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 8px;
+    background: var(--sq-surface, #fff);
+    color: var(--sq-text, #1e293b);
+    font: 500 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.bd-bar-button:hover {
+    background: var(--sq-surface-2, #f1f5f9);
+}
+
+.bd-bar-button:focus-visible {
+    outline: 2px solid var(--sq-accent, #2563eb);
+    outline-offset: 2px;
+}
+
+.bd-bar-button[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--sq-accent, #2563eb) 10%, var(--sq-surface, #fff));
+    border-color: color-mix(in srgb, var(--sq-accent, #2563eb) 45%, var(--sq-border, #dbe1ea));
+    color: var(--sq-accent, #2563eb);
+}
+
+.bd-bar-button ::deep .bd-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.bd-editor-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
+/* the side panels stay in view while a long form scrolls */
+.bd-toolbox-rail,
 .bd-property-sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: min(340px, calc(100vw - 40px));
-    /* over an app bar (MudBlazor's is 1300), under dialogs (1400) */
-    z-index: 1350;
+    position: sticky;
+    top: var(--sq-sticky-top, 8px);
+    max-height: calc(100vh - var(--sq-sticky-top, 8px) - 8px);
+}
+
+.bd-toolbox-rail {
+    flex: 0 0 var(--sq-toolbox-width, 224px);
+    overflow-y: auto;
+}
+
+/* the form sits on a canvas, like a page on a desk: there is room around it for the handles and drop targets */
+.bd-canvas {
+    flex: 1 1 0;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 28px 24px 24px;
+    background-color: var(--sq-surface-2, #f1f5f9);
+    background-image: radial-gradient(color-mix(in srgb, var(--sq-text, #0f172a) 9%, transparent) 1px, transparent 1px);
+    background-size: 16px 16px;
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 14px;
+    outline: none;
+}
+
+.bd-paper {
+    box-sizing: border-box;
+    padding: 28px 24px 24px;
+    background: var(--sq-paper, #fff);
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* the properties of the selected element; docked next to the form, so the form is never covered */
+.bd-property-sidebar {
+    flex: 0 0 var(--sq-pane-width, 332px);
+    box-sizing: border-box;
+    height: calc(100vh - var(--sq-sticky-top, 8px) - 8px);
+    min-height: 320px;
     display: flex;
     flex-direction: column;
-    background: #f8f9fa;
-    border-left: 1px solid #dee2e6;
-    box-shadow: -4px 0 14px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease;
+    background: var(--sq-surface, #fff);
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
 }
 
-.bd-property-sidebar.collapsed {
-    transform: translateX(100%);
-    box-shadow: none;
+@media (max-width: 1100px) {
+    .bd-toolbox-rail { flex-basis: var(--sq-toolbox-width, 192px); }
+    .bd-property-sidebar { flex-basis: var(--sq-pane-width, 296px); }
+    .bd-canvas { padding: 24px 14px 16px; }
+    .bd-paper { padding: 24px 16px 18px; }
 }
 
-/* the tab on the pane's left edge that opens and closes it */
-.bd-pane-toggle {
-    position: absolute;
-    left: -34px;
-    top: 88px;
-    width: 34px;
-    padding: 10px 0;
-    border: 1px solid #dee2e6;
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    background: #fff;
-    color: #495057;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.08);
-}
+/* narrow screens: the components go above the form, and the properties slide up over its lower part */
+@media (max-width: 899px) {
+    .bd-editor-hint { display: none; }
 
-.bd-property-sidebar.collapsed .bd-pane-toggle {
-    writing-mode: vertical-rl;
-    background: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
+    .bd-editor-body { flex-direction: column; }
 
-.bd-pane-toggle:hover {
-    background: #e9ecef;
-}
+    .bd-toolbox-rail {
+        position: static;
+        flex: none;
+        width: 100%;
+        max-height: none;
+    }
 
-.bd-property-sidebar.collapsed .bd-pane-toggle:hover {
-    background: #0056b3;
-}
+    .bd-property-sidebar {
+        position: fixed;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        top: auto;
+        width: auto;
+        height: min(64vh, 560px);
+        max-height: none;
+        /* over an app bar (MudBlazor's is 1300), under dialogs (1400) */
+        z-index: 1350;
+        box-shadow: 0 -4px 30px rgba(15, 23, 42, 0.25);
+    }
 
-@media (min-width: 900px) {
-    .bd-form-editor.bd-pane-open {
-        padding-right: 352px;
+    /* a sheet over the form with nothing in it would only be in the way: it comes up when something is selected */
+    .bd-property-sidebar:has(.bd-pe-plain) {
+        display: none;
     }
 }

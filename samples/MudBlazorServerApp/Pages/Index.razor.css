@@ -1,0 +1,83 @@
+.demo-intro {
+    margin: 4px 0 16px;
+}
+
+.demo-intro ::deep p {
+    max-width: 72ch;
+}
+
+.demo-style-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 28px;
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    background: var(--mud-palette-surface, #fff);
+    border: 1px solid #dbe1ea;
+    border-radius: 12px;
+}
+
+.demo-style-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.demo-style-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.demo-style-note {
+    font-size: 12.5px;
+    color: #64748b;
+}
+
+.demo-theme-select {
+    padding: 4px 28px 4px 10px;
+    font: inherit;
+    font-size: 13px;
+    color: #0f172a;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+.demo-swatches {
+    display: flex;
+    gap: 8px;
+}
+
+.demo-swatch {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: var(--swatch);
+    box-shadow: 0 0 0 1px #cbd5e1;
+    cursor: pointer;
+}
+
+.demo-swatch:hover {
+    transform: scale(1.1);
+}
+
+.demo-swatch[aria-checked="true"] {
+    box-shadow: 0 0 0 2px var(--swatch);
+}
+
+.demo-swatch:focus-visible {
+    outline: 2px solid var(--swatch);
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .demo-style-note {
+        display: none;
+    }
+}

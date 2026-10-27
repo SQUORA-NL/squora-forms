@@ -1,14 +1,19 @@
 @namespace Squora.Forms.Blazor.Components
+@using Squora.Forms.Blazor
 @using Squora.Forms.Blazor.Services
 @implements IDisposable
 
-<div class="bd-empty @(over ? "over" : "")"
-     @ondragenter="@(() => over = true)"
-     @ondragleave="@(() => over = false)"
+<div class="bd-empty @(over ? "over" : "") @(dragging ? "ready" : "")"
+     @ondragenter="@Enter"
+     @ondragleave="@Leave"
      @ondragover="@KeepDropTarget"
      @ondragover:preventDefault="true"
      @ondrop:preventDefault="true"
-     @ondrop="@OnDrop">Drop components here</div>
+     @ondrop="@OnDrop">
+    <span class="bd-empty-icon">@EditorIcons.Plus</span>
+    <span class="bd-empty-title">@(over ? "Release to drop it here" : "Drop a component here")</span>
+    <span class="bd-empty-sub">or click a component in the Components panel to add it</span>
+</div>
 
 @code {
     // Blazor only listens for dragover on elements that also have a handler, and the default (no drop allowed) must be prevented for drop to fire.
@@ -21,12 +26,26 @@
 
     [CascadingParameter] public DragStateService? DragState { get; set; }
 
+    private bool dragging => DragState?.IsDragging == true;
+
     protected override void OnInitialized()
     {
         if (DragState != null)
         {
             DragState.StateChanged += OnDragStateChanged;
         }
+    }
+
+    private void Enter()
+    {
+        over = true;
+        DragState?.SetHover(this, Container.ContainerModel, "Drop here");
+    }
+
+    private void Leave()
+    {
+        over = false;
+        DragState?.ClearHover(this);
     }
 
     private void OnDragStateChanged()

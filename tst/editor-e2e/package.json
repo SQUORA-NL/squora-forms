@@ -2,6 +2,10 @@
   "name": "editor-e2e",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node battle.mjs" },
+  "scripts": {
+    "test": "node battle.mjs && node frameworks.mjs",
+    "battle": "node battle.mjs",
+    "frameworks": "node frameworks.mjs"
+  },
   "devDependencies": { "playwright": "^1.49.0" }
 }

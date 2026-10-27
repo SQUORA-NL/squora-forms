@@ -1,83 +1,135 @@
 .bd-component-toolbox {
+    box-sizing: border-box;
     width: 100%;
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    margin: 0;
-    height: fit-content;
-    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+    background: var(--sq-surface, #fff);
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-.bd-toolbox-header {
-    display: none; /* Header is handled by parent component now */
+.bd-toolbox-title h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sq-text, #0f172a);
+}
+
+.bd-toolbox-title p {
+    margin: 3px 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--sq-muted, #64748b);
+}
+
+.bd-toolbox-group-title {
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sq-muted, #64748b);
 }
 
 .bd-toolbox-content {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .bd-toolbox-item {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
+    gap: 10px;
+    height: 36px;
+    padding: 0 8px 0 6px;
+    background-color: var(--sq-surface, #fff);
+    border: 1px solid var(--sq-border, #dbe1ea);
+    border-radius: 8px;
     cursor: grab;
-    transition: all 0.2s ease;
     user-select: none;
-    min-width: 120px;
-    justify-content: center;
+    transition: border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
 }
 
-.bd-toolbox-item:hover {
-    background-color: #e9ecef;
-    border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+.bd-toolbox-item:hover,
+.bd-toolbox-item:focus-visible {
+    background-color: color-mix(in srgb, var(--sq-accent, #2563eb) 6%, var(--sq-surface, #fff));
+    border-color: color-mix(in srgb, var(--sq-accent, #2563eb) 60%, var(--sq-border, #dbe1ea));
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+    outline: none;
 }
 
 .bd-toolbox-item:active {
     cursor: grabbing;
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.bd-toolbox-item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--sq-accent, #2563eb) 10%, transparent);
+    color: var(--sq-accent, #2563eb);
 }
 
 .bd-toolbox-item-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #495057;
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sq-text, #1e293b);
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .bd-component-toolbox {
-        background-color: #2d3748;
-        border-color: #4a5568;
+/* shows a click adds it, on top of a drag */
+.bd-toolbox-item-add {
+    display: inline-flex;
+    opacity: 0;
+    color: var(--sq-accent, #2563eb);
+    transition: opacity 0.12s ease;
+}
+
+.bd-toolbox-item:hover .bd-toolbox-item-add,
+.bd-toolbox-item:focus-visible .bd-toolbox-item-add {
+    opacity: 1;
+}
+
+.bd-component-toolbox ::deep .bd-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.bd-toolbox-target {
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--sq-border, #dbe1ea);
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--sq-muted, #64748b);
+}
+
+.bd-toolbox-target span {
+    font-weight: 600;
+    color: var(--sq-text, #1e293b);
+}
+
+/* above the form (narrow screens) the items sit side by side */
+@media (max-width: 899px) {
+    .bd-toolbox-content {
+        flex-direction: row;
+        flex-wrap: wrap;
     }
-    
-    .bd-toolbox-header h4 {
-        color: #e2e8f0;
-        border-bottom-color: #4a5568;
-    }
-    
+
     .bd-toolbox-item {
-        background-color: #1a202c;
-        border-color: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .bd-toolbox-item:hover {
-        background-color: #2d3748;
-        border-color: #718096;
-    }
-    
-    .bd-toolbox-item-label {
-        color: #e2e8f0;
+        flex: 0 1 auto;
     }
 }

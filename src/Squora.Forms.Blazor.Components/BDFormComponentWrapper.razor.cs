@@ -27,6 +27,15 @@ namespace Squora.Forms.Blazor.Components
 
         public bool IsSelected => SelectionState?.IsSelected(FormComponent?.FormModel) ?? false;
 
+        public bool IsDragging => DragState?.IsDragging == true;
+
+        // a drop at the spot under the pointer would land in this layout
+        public bool IsDropTarget => IsDragging && DragState?.HoverContainer != null && DragState.HoverContainer == FormComponent?.FormModel;
+
+        public string DropLabel => SelectionState?.RootModel == FormComponent?.FormModel
+            ? "Into the form"
+            : $"Into {Squora.Forms.Blazor.Utillities.FormTree.Describe(FormComponent!.FormModel)}";
+
         public bool IsDragSource => DragState?.IsDragging == true && DragState.DraggedElement == FormComponent?.FormModel;
 
         protected override void OnInitialized()
@@ -34,6 +43,7 @@ namespace Squora.Forms.Blazor.Components
             if (DragState != null)
             {
                 DragState.StateChanged += OnDragStateChanged;
+                DragState.HoverChanged += OnHoverChanged;
             }
             if (SelectionState != null)
             {
@@ -53,6 +63,14 @@ namespace Squora.Forms.Blazor.Components
         {
             base.OnParametersSet();
             EditMode = FormComponent?.EditMode ?? false; 
+        }
+
+        private void OnElementDoubleClick(MouseEventArgs e)
+        {
+            if (EditMode && SelectionState != null && FormComponent?.FormModel != null)
+            {
+                SelectionState.EditProperties(FormComponent.FormModel);
+            }
         }
 
         private void OnElementClick(MouseEventArgs e)
@@ -88,13 +106,29 @@ namespace Squora.Forms.Blazor.Components
             StateHasChanged();
         }
 
-        private void OnDragStateChanged() => InvokeAsync(StateHasChanged);
+        private void OnDragStateChanged()
+        {
+            wasDropTarget = IsDropTarget;
+            InvokeAsync(StateHasChanged);
+        }
+
+        // the pointer moves over many spots in a drag: only the layout that is (or was) the target has to redraw
+        private bool wasDropTarget;
+
+        private void OnHoverChanged()
+        {
+            var now = IsDropTarget;
+            if (now == wasDropTarget) return;
+            wasDropTarget = now;
+            InvokeAsync(StateHasChanged);
+        }
 
         public void Dispose()
         {
             if (DragState != null)
             {
                 DragState.StateChanged -= OnDragStateChanged;
+                DragState.HoverChanged -= OnHoverChanged;
             }
             if (SelectionState != null)
             {

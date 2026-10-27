@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using Radzen;
 using MudBlazorServerApp.Data;
 using Squora.Forms.Blazor.Extensions;
 using Squora.Forms.Blazor.MudBlazorComponents.Extensions;
@@ -12,6 +13,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<OnboardingService>();
 builder.Services.AddMudServices();
+// the Radzen components of the framework switcher need these (dialogs, tooltips, notifications)
+builder.Services.AddRadzenComponents();
 builder.Services.AddSquoraForms(cfg => 
                 cfg.UseDefaultMudBlazorComponents()
                 .RegisterComponent(ComponentType.GroupLayout, "Collapsable", typeof(CollapsableGroup)));

@@ -102,27 +102,36 @@ await test('nested click selects only innermost', async p => {
 await test('select FileUpload shows props', async p => {
   await select(p, 3);
   const t = await p.locator('.bd-property-editor').innerText();
-  return /Unknown|Component Type/.test(t) ? (/Unknown/.test(t) ? 'FileUpload shows "Unknown" type name' : '') : 'no panel';
+  if (/Unknown/.test(t)) return 'FileUpload shows "Unknown" type name';
+  if (!/File Upload/.test(t)) return 'no type name in the pane: ' + t.slice(0, 80);
 });
 await test('background click clears selection', async p => {
   await select(p, 1);
-  const bb = await p.locator('.bd-edit-mode-toggle').boundingBox();
-  // empty part of the bar, clear of the property pane that covers the right edge of the screen
-  await p.mouse.click(bb.x + Math.min(bb.width - 3, 500), bb.y + 3);
+  const bb = await p.locator('.bd-canvas').boundingBox();
+  // the canvas around the form's page
+  await p.mouse.click(bb.x + 8, bb.y + 8);
   await settle(p);
-  if (await p.locator('.bd-property-editor-header').count()) return 'selection not cleared by clicking the toggle bar background';
+  if (await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count()) return 'selection not cleared by clicking the canvas background';
 });
 await test('click on empty form-area space clears selection', async p => {
   await select(p, 1);
   const bb = await p.locator('.bd-form-container-fullwidth').boundingBox();
   await p.mouse.click(bb.x + bb.width - 10, bb.y + bb.height - 5);
   await settle(p);
-  if (await p.locator('.bd-property-editor-header').count()) return 'selection not cleared';
+  if (await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count()) return 'selection not cleared';
 });
-await test('Close button clears selection', async p => {
+await test('Escape clears the selection', async p => {
+  await select(p, 1);
+  await p.keyboard.press('Escape'); await settle(p);
+  if (await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count()) return 'still selected';
+});
+await test('pane close button hides the pane, the selection stays', async p => {
   await select(p, 1);
   await p.locator('.bd-close-button').click(); await settle(p);
-  if (await p.locator('.bd-property-editor-header').count()) return 'still selected';
+  if (await p.locator('.bd-property-sidebar').count()) return 'pane still open';
+  if (!(await p.locator('.bd-selected').count())) return 'selection lost';
+  await p.locator('.bd-pane-toggle').click(); await settle(p);
+  if (!(await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count())) return 'pane did not come back with the selection';
 });
 await test('selected element has visual highlight', async p => {
   await select(p, 1);
@@ -237,7 +246,7 @@ await test('full-form JSON: unchanged apply, then re-render (root with HeaderMod
   await p.locator('.bd-json-mode-button').click(); await settle(p);
   await p.locator('.bd-apply-json-button').click(); await settle(p);
   await p.locator('.bd-toggle-slider').click(); await settle(p);
-  if ((await p.locator('.bd-toggle-text').innerText().catch(() => 'gone')) !== 'View Mode') return 'edit-mode toggle dead after apply (circuit crashed)';
+  if ((await p.locator('.bd-toggle-text').innerText().catch(() => 'gone')) !== 'Test Mode') return 'edit-mode toggle dead after apply (circuit crashed)';
 });
 await test('full-form JSON: apply twice does not duplicate elements', async p => {
   await select(p, 1); await elementJson(p);
@@ -367,7 +376,7 @@ await test('delete a field', async p => {
   await select(p, 1);
   await p.locator('.bd-delete-button').click(); await settle(p);
   if ((await rootChildren(p)) !== n - 1) return `children ${n} → ${await rootChildren(p)}`;
-  if (await p.locator('.bd-property-editor-header').count()) return 'selection not cleared after delete';
+  if (await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count()) return 'selection not cleared after delete';
 });
 await test('delete all fields then add one back', async p => {
   for (let i = 0; i < 3; i++) { await select(p, 1); await p.locator('.bd-delete-button').click(); await settle(p); }
@@ -376,7 +385,7 @@ await test('delete all fields then add one back', async p => {
   const stale = await p.locator('.bd-empty').count();
   await refresh(p);
   if (!(await p.locator('.bd-empty').count())) return 'no drop placeholder in the emptied layout (cannot add fields back)';
-  const sb = await p.locator('.bd-toolbox-item', { hasText: /^Text Field$/ }).boundingBox();
+  const sb = await p.locator('.bd-toolbox-item', { hasText: /^\s*Text Field\s*$/ }).boundingBox();
   const eb = await p.locator('.bd-empty').first().boundingBox();
   await mouseDrag(p, { x: sb.x + 20, y: sb.y + 10 }, { x: eb.x + eb.width / 2, y: eb.y + eb.height / 2 });
   if ((await rootChildren(p)) !== 1) return 'drop into emptied layout failed: ' + (await rootChildren(p));
@@ -405,10 +414,10 @@ async function slotXY(p, k) {
   const bb = await kids(p).nth(n - 1).boundingBox(); return { x: bb.x + bb.width / 2, y: bb.y + bb.height - 4 };
 }
 async function dragToolbox(p, name, slot) {
-  const sb = await p.locator('.bd-toolbox-item', { hasText: new RegExp('^' + name + '$') }).boundingBox();
+  const sb = await p.locator('.bd-toolbox-item', { hasText: new RegExp('^\\s*' + name + '\\s*$') }).boundingBox();
   await mouseDrag(p, { x: sb.x + sb.width / 2, y: sb.y + sb.height / 2 }, await slotXY(p, slot));
 }
-const visibleHandle = p => p.locator('.bd-handle').evaluateAll(hs => { const e = hs.find(h => getComputedStyle(h).opacity === '1'); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+const visibleHandle = p => p.locator('.bd-tag').evaluateAll(ts => { const t = ts.find(t => getComputedStyle(t).opacity === '1'); if (!t) return null; const r = t.querySelector('.bd-handle').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
 const order = p => p.locator('.bd-form-container-fullwidth label.mud-input-label').allTextContents();
 
 await test('toolbox → form adds a Text Field at the dropped position', async p => {
@@ -452,14 +461,14 @@ await test('reorder via handle (first → after second)', async p => {
   if (o[0] !== 'City' || o[1] !== 'Name') return 'order: ' + o.join(',');
 });
 await test('only one handle visible on hover; none when idle', async p => {
-  const vis = () => p.locator('.bd-handle').evaluateAll(hs => hs.filter(h => getComputedStyle(h).opacity === '1').length);
+  const vis = () => p.locator('.bd-tag').evaluateAll(ts => ts.filter(t => getComputedStyle(t).opacity === '1').length);
   if (await vis()) return 'handles visible with no hover/selection';
   await kids(p).nth(1).hover(); await settle(p);
   const n = await vis(); if (n !== 1) return `${n} handles visible on hover`;
 });
 await test('drop targets show only while dragging, then disappear', async p => {
   if (await p.locator('.bd-zone').count()) return 'zones present while idle';
-  const sb = await p.locator('.bd-toolbox-item', { hasText: /^Checkbox$/ }).boundingBox();
+  const sb = await p.locator('.bd-toolbox-item', { hasText: /^\s*Checkbox\s*$/ }).boundingBox();
   await mouseDrag(p, { x: sb.x + 20, y: sb.y + 10 }, await slotXY(p, 1), { release: false });
   const during = await p.locator('.bd-zone').count(); const over = await p.locator('.bd-zone.over').count();
   await p.mouse.move(20, 20, { steps: 4 }); await p.mouse.up(); await p.waitForTimeout(600);
@@ -470,7 +479,7 @@ await test('drop targets show only while dragging, then disappear', async p => {
 });
 await test('drag released outside leaves the form unchanged', async p => {
   const n = await rootChildren(p);
-  const sb = await p.locator('.bd-toolbox-item', { hasText: /^Checkbox$/ }).boundingBox();
+  const sb = await p.locator('.bd-toolbox-item', { hasText: /^\s*Checkbox\s*$/ }).boundingBox();
   await mouseDrag(p, { x: sb.x + 20, y: sb.y + 10 }, { x: 600, y: 60 });
   if ((await rootChildren(p)) !== n) return 'changed';
 });
@@ -513,7 +522,7 @@ await test('edit mode off clears selection', async p => {
   await select(p, 1);
   await p.locator('.bd-toggle-slider').click(); await settle(p);
   await p.locator('.bd-toggle-slider').click(); await settle(p);
-  if (await p.locator('.bd-property-editor-header').count()) return 'selection survived edit-mode toggle (stale)';
+  if (await p.locator('.bd-property-editor-header:not(.bd-pe-plain)').count()) return 'selection survived edit-mode toggle (stale)';
 });
 await test('toolbox hide/show', async p => {
   await p.locator('.bd-toolbox-toggle').click(); await settle(p);
