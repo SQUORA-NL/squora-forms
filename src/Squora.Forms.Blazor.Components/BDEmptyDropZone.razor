@@ -1,73 +1,13 @@
 @namespace Squora.Forms.Blazor.Components
-@using Squora.Forms.Blazor
-@using Squora.Forms.Blazor.Services
-@implements IDisposable
+@inject IServiceProvider Services
 
-<div class="bd-empty @(over ? "over" : "") @(dragging ? "ready" : "")"
-     @ondragenter="@Enter"
-     @ondragleave="@Leave"
-     @ondragover="@KeepDropTarget"
-     @ondragover:preventDefault="true"
-     @ondrop:preventDefault="true"
-     @ondrop="@OnDrop">
-    <span class="bd-empty-icon">@EditorIcons.Plus</span>
-    <span class="bd-empty-title">@(over ? "Release to drop it here" : "Drop a component here")</span>
-    <span class="bd-empty-sub">or click a component in the Components panel to add it</span>
-</div>
+@* What a layout shows while it has no elements and a form is being edited: the editor's place to drop one (see IFormEditSurface). Without an editor nothing. *@
+@if (Services.GetService(typeof(IFormEditSurface)) is IFormEditSurface surface)
+{
+    <DynamicComponent Type="@surface.EmptyLayoutType" Parameters="@(new Dictionary<string, object?> { ["Container"] = Container })" />
+}
 
 @code {
-    // Blazor only listens for dragover on elements that also have a handler, and the default (no drop allowed) must be prevented for drop to fire.
-    private void KeepDropTarget() { }
-
-    private bool over;
-
-    // The container this placeholder stands in for (only shown while the container has no elements).
-    [Parameter, EditorRequired] public IDragContainer Container { get; set; } = null!;
-
-    [CascadingParameter] public DragStateService? DragState { get; set; }
-
-    private bool dragging => DragState?.IsDragging == true;
-
-    protected override void OnInitialized()
-    {
-        if (DragState != null)
-        {
-            DragState.StateChanged += OnDragStateChanged;
-        }
-    }
-
-    private void Enter()
-    {
-        over = true;
-        DragState?.SetHover(this, Container.ContainerModel, "Drop here");
-    }
-
-    private void Leave()
-    {
-        over = false;
-        DragState?.ClearHover(this);
-    }
-
-    private void OnDragStateChanged()
-    {
-        if (DragState?.IsDragging != true)
-        {
-            over = false;
-        }
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void OnDrop()
-    {
-        over = false;
-        Container.Drop(0);
-    }
-
-    public void Dispose()
-    {
-        if (DragState != null)
-        {
-            DragState.StateChanged -= OnDragStateChanged;
-        }
-    }
+    /// <summary>The layout this stands in for.</summary>
+    [Parameter, EditorRequired] public FormComponentBase Container { get; set; } = null!;
 }

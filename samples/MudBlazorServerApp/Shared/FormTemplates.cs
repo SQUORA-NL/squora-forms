@@ -1,4 +1,4 @@
-using System.Dynamic;
+﻿using System.Dynamic;
 using Squora.Forms.Blazor.Components.Factories;
 using Squora.Forms.Common.Enums;
 using Squora.Forms.Core.Models;
@@ -7,12 +7,11 @@ namespace MudBlazorServerApp.Shared;
 
 public record FormTemplate(string Name, string Description, Func<DynamicFormModel> Create);
 
-/// <summary>Starting points for the editor. "All components" holds one of everything the editor can build.</summary>
+/// <summary>Forms to look at: each one is a JSON form definition built with the factory. "All components" holds one of every component.</summary>
 public static class FormTemplates
 {
     public static readonly IReadOnlyList<FormTemplate> All = new List<FormTemplate>
     {
-        new("Empty", "A blank form", Empty),
         new("Contact form", "Name, email and a message", Contact),
         new("Profile", "A collapsible group with a summary line", Profile),
         new("Address", "A group with rows of fields and a dropdown", Address),
@@ -23,8 +22,6 @@ public static class FormTemplates
         new("Order with rules", "A webshop checkout where fields hide, show, disable and enable", OrderWithRules),
         new("All components", "One of every component", AllComponents),
     };
-
-    public static DynamicFormModel Empty() => FormFactory.VerticalLayout();
 
     public static DynamicFormModel Contact() =>
         FormFactory.VerticalLayout(
