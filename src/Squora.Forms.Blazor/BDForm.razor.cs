@@ -41,7 +41,8 @@ namespace Squora.Forms.Blazor
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (EditMode && ShowToolbox && !dragSupportLoaded)
+            // also without the toolbox: the script makes a click on a component's widget select the component
+            if (EditMode && !dragSupportLoaded)
             {
                 dragSupportLoaded = true;
                 try

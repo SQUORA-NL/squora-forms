@@ -148,6 +148,21 @@ namespace Squora.Forms.Blazor.Services
 
         public bool ExecuteDrop(FormComponentBase targetContainer, int targetIndex)
         {
+            try
+            {
+                return Drop(targetContainer, targetIndex);
+            }
+            finally
+            {
+                // A drop ends the drag. Not waiting for the handle's dragend: moving an element redraws the list, the handle that started the drag can
+                // be gone by then, and its dragend never arrives. The drag state (the drop spots, the "Into ..." label, the element marked as moved)
+                // stayed on and the element could not be dragged again.
+                EndDrag();
+            }
+        }
+
+        private bool Drop(FormComponentBase targetContainer, int targetIndex)
+        {
             if (!CanDrop(targetContainer) || _draggedElement == null)
                 return false;
 

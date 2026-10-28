@@ -33,7 +33,8 @@ namespace SharedDemos.Samples.Playground
                    .WithElements(
                         FormFactory.StringComponent("First Name", "$.firstName"),
                         FormFactory.StringComponent("Last Name", "$.lastName"),
-                        FormFactory.StringComponent("Email", "$.email")
+                        // WithClass: only this textbox gets the .sq-highlight look (wwwroot/css/app.css)
+                        FormFactory.StringComponent("Email", "$.email", b => b.WithClass("sq-highlight"))
                    )
                 ),
             FormFactory.GroupLayout(group =>

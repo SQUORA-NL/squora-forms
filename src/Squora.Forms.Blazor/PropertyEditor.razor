@@ -66,6 +66,36 @@
                     </div>
                 }
 
+                @if (!isRoot)
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">CSS class</label>
+                        <input class="bd-property-input bd-class-input"
+                               type="text"
+                               placeholder="my-highlight"
+                               value="@GetParameterValue(element, "Class")"
+                               @onchange="@((e) => UpdateClass(element, e.Value?.ToString()))" />
+                        <div class="bd-help">Extra class(es) on this element only, so your own CSS can style just this one.</div>
+                    </div>
+                }
+
+                @if (!isRoot && FormTree.FindParent(RootModel, element)?.DynamicType.ComponentType == ComponentType.HorizontalLayout)
+                {
+                    <div class="bd-property-group">
+                        <label class="bd-property-label">Width in the row</label>
+                        <input class="bd-property-input bd-width-input"
+                               type="text"
+                               placeholder="10%"
+                               value="@GetParameterValue(element, "Width")"
+                               @onchange="@((e) => UpdateWidth(element, e.Value?.ToString()))" />
+                        <div class="bd-help">A percentage (10% next to 90% fills the row) or a fixed size (200px). Empty shares the row equally.</div>
+                        @if (widthError != null)
+                        {
+                            <div class="bd-json-error">@widthError</div>
+                        }
+                    </div>
+                }
+
                 @if (componentType == ComponentType.Dropdown)
                 {
                     <div class="bd-property-group">
@@ -137,7 +167,11 @@
                             }
                             @Humanize(name)
                         </label>
-                        @if (setting.Value is null or string)
+                        @if (WholeNumberSettings.TryGetValue(name, out var wholeType))
+                        {
+                            <input class="bd-property-input" type="number" step="1" min="0" value="@(setting.Value == null ? "" : Convert.ToString(setting.Value, System.Globalization.CultureInfo.InvariantCulture))" @onchange="@((e) => UpdateWholeNumberSetting(element, name, wholeType, e.Value?.ToString()))" />
+                        }
+                        else if (setting.Value is null or string)
                         {
                             <input class="bd-property-input" type="text" value="@(setting.Value as string)" @onchange="@((e) => UpdateParameter(element, name, e.Value?.ToString()))" />
                         }
@@ -367,6 +401,26 @@
         }
     }
 
+    private string? widthError;
+
+    // empty clears the width; only a number with %, px, rem, em, vw or ch is accepted
+    private void UpdateWidth(DynamicFormModel element, string? newValue)
+    {
+        var text = newValue?.Trim();
+        if (string.IsNullOrEmpty(text)) { element.Parameters.Entries.Remove("Width"); widthError = null; }
+        else if (System.Text.RegularExpressions.Regex.IsMatch(text, @"^\d+(\.\d+)?(%|px|rem|em|vw|ch)?$")) { element.Parameters.Add("Width", text); widthError = null; }
+        else { widthError = "Use a number with %, px, rem, em, vw or ch, like 10% or 200px."; StateHasChanged(); return; }
+        ModelEdited();
+    }
+
+    // an empty class removes the setting, so the JSON stays clean
+    private void UpdateClass(DynamicFormModel element, string? newValue)
+    {
+        if (string.IsNullOrWhiteSpace(newValue)) element.Parameters.Entries.Remove("Class");
+        else element.Parameters.Add("Class", newValue.Trim());
+        ModelEdited();
+    }
+
     private void UpdateParameter(DynamicFormModel element, string parameterName, bool? newValue)
     {
         if (newValue.HasValue)
@@ -494,7 +548,7 @@
     private bool JsonIsFullForm => isFullFormJsonMode || (SelectionState?.SelectedElement != null && SelectionState.SelectedElement == RootModel);
 
     // parameters that have their own input above, or that only the editor's own JSON can show
-    private static readonly HashSet<string> HandledSettings = new() { "Label", "Path", "Options", "Required", "Min", "Max" };
+    private static readonly HashSet<string> HandledSettings = new() { "Label", "Path", "Options", "Required", "Min", "Max", "Class", "Width" };
 
     private IEnumerable<KeyValuePair<string, object?>> OtherSettings(DynamicFormModel element) =>
         element.Parameters.Entries.Where(e => !HandledSettings.Contains(e.Key)).ToList();
@@ -506,6 +560,28 @@
     {
         var text = System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z])(?=[A-Z])", " ");
         return text.Length == 0 ? text : char.ToUpper(text[0]) + text[1..].ToLower();
+    }
+
+    // settings the components declare as whole numbers: the value has to be stored as that exact type, or the component cannot take it
+    private static readonly Dictionary<string, Type> WholeNumberSettings = new()
+    {
+        ["MinimumLength"] = typeof(long), ["MaximumLength"] = typeof(long), ["MaximumFileSize"] = typeof(long), ["MaximumFiles"] = typeof(int),
+    };
+
+    // empty clears the setting; anything that is not a whole number is refused (the input snaps back on re-render)
+    private void UpdateWholeNumberSetting(DynamicFormModel element, string name, Type type, string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            // the lengths are nullable and stay listed, empty; the other two fall back to their default
+            if (name is "MinimumLength" or "MaximumLength") element.Parameters.Add(name, null!);
+            else element.Parameters.Entries.Remove(name);
+        }
+        else if (long.TryParse(text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var number) && number >= 0
+                 && (type != typeof(int) || number <= int.MaxValue))
+            element.Parameters.Add(name, type == typeof(int) ? (object)(int)number : number);
+        else { StateHasChanged(); return; }
+        ModelEdited();
     }
 
     private void UpdateSettingNumber(DynamicFormModel element, string name, string? text)

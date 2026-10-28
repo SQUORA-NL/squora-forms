@@ -194,3 +194,65 @@
     --bd-gap: 20px; --bd-primary: #4a90d9; --bd-primary-hover: #357abd; --bd-border-focus: #4a90d9;
     --mud-palette-primary: #4a90d9; --mud-palette-text-primary: #555; --rz-primary: #4a90d9;
 }
+
+/* A class set on one component (the "CSS class" field in the editor, WithClass in code, "Class" in the JSON) styles only that component.
+   The class lands on the element's wrapper, so the rule reaches the input inside it, in every UI library. */
+.sq-highlight { padding: 8px 10px; border-radius: 8px; background: #fff7e0; border-left: 4px solid #f59e0b; }
+.sq-highlight :is(input, select, .mud-input-slot, .rz-textbox) { font-weight: 600; }
+.sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #b45309; font-weight: 700; }
+
+/* The contact card (Shared/FormExtentions/ContactCard.razor), a templated component.
+   It takes the sheet colour, text colour, font, border and radius of the form theme, and the editor accent for its banner. */
+.contactcardcomponent { align-self: flex-start; }
+.contact-card {
+    --cc-accent: var(--sq-accent, #2563eb);
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-width: 0;
+    font-family: var(--theme-font, inherit);
+    color: var(--theme-text, #1e293b);
+    background: color-mix(in srgb, var(--theme-text, #1e293b) 4%, var(--theme-sheet, #fff));
+    border: var(--theme-group-border, 1px solid color-mix(in srgb, var(--theme-text, #1e293b) 14%, transparent));
+    border-radius: var(--theme-group-radius, 16px);
+    box-shadow: var(--theme-sheet-shadow, 0 8px 24px rgba(15, 23, 42, .10));
+}
+.contact-card-banner {
+    height: 64px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255, 255, 255, .35), transparent 45%),
+        linear-gradient(120deg, var(--cc-accent), color-mix(in srgb, var(--cc-accent) 45%, #7c3aed));
+}
+.contact-card-avatar {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    background: color-mix(in srgb, var(--cc-accent) 80%, #000);
+    border: 4px solid color-mix(in srgb, var(--theme-text, #1e293b) 4%, var(--theme-sheet, #fff));
+    box-sizing: border-box;
+}
+.contact-card-body { padding: 40px 20px 18px; }
+.contact-card-name { margin: 0 0 10px; font-size: 19px; font-weight: 700; line-height: 1.25; color: inherit; overflow-wrap: anywhere; }
+.contact-card-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.contact-card-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; min-width: 0; }
+.contact-card-list li > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.contact-card-list svg {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--cc-accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.contact-card-hint { opacity: .5; font-style: italic; }

@@ -33,6 +33,11 @@ async function errorUi(p) {
   return await p.evaluate(() => { const e = document.getElementById('blazor-error-ui'); return e && getComputedStyle(e).display !== 'none'; });
 }
 const settle = p => p.waitForTimeout(500);
+// The default template's root is a (collapsible) group, which is an editable element of its own and selectable like any other.
+// The tests count the elements inside it, so index 0 is the layout in it and 1 the first field: this leaves the root group out.
+const hasClass = c => `contains(concat(' ',normalize-space(@class),' '),' ${c} ')`;
+const editable = p => p.locator(`xpath=//*[${hasClass('bd-editable')}][not(${hasClass('groupcomponent')} and not(ancestor::*[${hasClass('bd-editable')}]))]`);
+
 const refresh = async p => { await p.locator('.bd-toggle-slider').click(); await p.waitForTimeout(500); await p.locator('.bd-toggle-slider').click(); await p.waitForTimeout(600); const ex = p.getByRole('button', { name: 'Expand' }); if (await ex.count()) { await ex.click(); await p.waitForTimeout(400); } };
 // index 0 is the vertical layout, which has no area of its own anymore (edit mode adds no padding): click in the gap under its first child
 async function select(p, i) {
@@ -41,7 +46,7 @@ async function select(p, i) {
     const a = await k.nth(0).boundingBox(), b = await k.nth(1).boundingBox();
     await p.mouse.click(a.x + a.width / 2, (a.y + a.height + b.y) / 2);
   } else {
-    await p.locator('.bd-editable').nth(i).click({ position: { x: 5, y: 5 } });
+    await editable(p).nth(i).click({ position: { x: 5, y: 5 } });
   }
   await settle(p);
 }
@@ -91,10 +96,12 @@ await test('select layout shows Vertical Layout, no label/path', async p => {
   await select(p, 0);
   const t = await p.locator('.bd-property-editor').innerText();
   if (!/Vertical Layout/.test(t)) return 'wrong type: ' + t.slice(0, 120);
-  if (await p.locator('input.bd-property-input').count()) return 'layout shows label/path inputs';
+  // every element has a CSS class field (and one in a row a width): a layout just has no label or path of its own
+  const asked = (await p.locator('.bd-property-label').allInnerTexts()).map(x => x.trim());
+  if (asked.some(x => x === 'Label' || x === 'Path')) return 'layout shows label/path inputs: ' + asked.join(', ');
 });
 await test('nested click selects only innermost', async p => {
-  await p.locator('.bd-editable').nth(1).locator('input').first().click();
+  await editable(p).nth(1).locator('input').first().click();
   await settle(p);
   const t = await p.locator('.bd-property-editor').innerText();
   if (!/Text Field/.test(t)) return 'inner click selected: ' + t.slice(0, 80);
@@ -135,7 +142,7 @@ await test('pane close button hides the pane, the selection stays', async p => {
 });
 await test('selected element has visual highlight', async p => {
   await select(p, 1);
-  const cls = await p.locator('.bd-editable').nth(1).getAttribute('class');
+  const cls = await editable(p).nth(1).getAttribute('class');
   const any = await p.locator('[class*="selected"]').count();
   if (!/selected/.test(cls || '') && !any) return 'no selected class anywhere: ' + cls;
 });
@@ -159,7 +166,7 @@ await test('edited Path binds data (typing → data panel)', async p => {
   await select(p, 1);
   await p.locator('input.bd-property-input').nth(1).fill('$.zzz');
   await p.keyboard.press('Tab'); await settle(p);
-  await p.locator('.bd-editable').nth(1).locator('input').first().fill('hello');
+  await editable(p).nth(1).locator('input').first().fill('hello');
   await p.keyboard.press('Tab'); await settle(p);
   const body = (await p.waitForFunction(() => window.monaco && monaco.editor.getEditors().length, null, { timeout: 15000 }), await p.evaluate(() => monaco.editor.getEditors().map(e => e.getValue()).join('\n')));
   if (!body.includes('"zzz"')) return 'data panel: ' + body.slice(0, 120);
@@ -364,7 +371,7 @@ await test('Dropdown: rename key to existing key', async p => {
 await test('Dropdown: rendered options reflect edits', async p => {
   await loadSingle(p, 'Dropdown', { Options: { a: 'Alpha' } });
   await p.locator('.bd-add-option').click(); await settle(p);
-  await p.locator('.bd-editable').nth(1).locator('.mud-select, .mud-input-control').first().click();
+  await editable(p).nth(1).locator('.mud-select, .mud-input-control').first().click();
   await settle(p);
   const items = await p.locator('.mud-list-item, .mud-select-item, option').allInnerTexts();
   if (!items.join().includes('Option 2')) return 'options in dropdown: ' + items.join(',');
@@ -531,21 +538,21 @@ await test('toolbox hide/show', async p => {
   if (!(await p.locator('.bd-toolbox-item').count())) return 'not shown';
 });
 await test('edit mode: typing in a field still works (data panel)', async p => {
-  await p.locator('.bd-editable').nth(1).locator('input').first().fill('typed'); await p.keyboard.press('Tab'); await settle(p);
+  await editable(p).nth(1).locator('input').first().fill('typed'); await p.keyboard.press('Tab'); await settle(p);
   const body = (await p.waitForFunction(() => window.monaco && monaco.editor.getEditors().length, null, { timeout: 15000 }), await p.evaluate(() => monaco.editor.getEditors().map(e => e.getValue()).join('\n')));
   if (!body.includes('typed')) return 'value lost';
 });
 await test('typed value survives property edit of another field', async p => {
-  await p.locator('.bd-editable').nth(1).locator('input').first().fill('keepme'); await p.keyboard.press('Tab'); await settle(p);
+  await editable(p).nth(1).locator('input').first().fill('keepme'); await p.keyboard.press('Tab'); await settle(p);
   await select(p, 2);
   await p.locator('input.bd-property-input').first().fill('Other'); await p.keyboard.press('Tab'); await settle(p);
-  const v = await p.locator('.bd-editable').nth(1).locator('input').first().inputValue();
+  const v = await editable(p).nth(1).locator('input').first().inputValue();
   if (v !== 'keepme') return `value "${v}"`;
 });
 
 // ---------- stress ----------
 await test('rapid select/deselect 40x', async p => {
-  for (let i = 0; i < 40; i++) { await p.locator('.bd-editable').nth(1 + (i % 3)).click({ position: { x: 5, y: 5 } }); }
+  for (let i = 0; i < 40; i++) { await editable(p).nth(1 + (i % 3)).click({ position: { x: 5, y: 5 } }); }
   await settle(p);
 });
 await test('rapid add 15 fields', async p => {

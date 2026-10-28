@@ -218,6 +218,18 @@ for (const fw of FRAMEWORKS) {
     if (inFirstRow !== 3) return 'the first row has ' + inFirstRow + ' fields';
   });
 
+  // a move redraws the list, so the handle that started it can be gone before its dragend arrives: the drop has to end the drag itself
+  await test(fw, 'after moving by the handle: nothing drawn is left behind, and it can be moved again', async p => {
+    const handleOf = async f => { await f.hover(); await settle(p); return await p.locator('.bd-tag').evaluateAll(ts => { const t = ts.find(t => getComputedStyle(t).opacity === '1'); const r = t.querySelector('.bd-handle').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }); };
+    const leftover = () => p.locator('.bd-zone, .bd-drop-target, .bd-drag-active, .bd-dragging, .bd-shield').count();
+    const bb = await fields(p).nth(0).boundingBox();
+    await mouseDrag(p, await handleOf(fields(p).nth(4)), { x: bb.x + bb.width * 0.25, y: bb.y + 3 }); // the dropdown to the first row
+    if (await leftover()) return 'drag state left behind after the first move: ' + (await leftover());
+    await mouseDrag(p, await handleOf(fields(p).nth(0)), await lower(p, fields(p).nth(4))); // and the same one again, to the end
+    if (await leftover()) return 'drag state left behind after the second move: ' + (await leftover());
+    if ((await fields(p).count()) !== 5) return 'fields: ' + (await fields(p).count());
+  });
+
   await test(fw, 'dropping into an empty layout: placeholder is shown, lights up and takes the drop', async p => {
     await p.locator('.bd-toolbox-item', { hasText: /^\s*Vertical Layout\s*$/ }).click(); await settle(p);
     const ph = p.locator('.bd-empty');

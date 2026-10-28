@@ -122,6 +122,12 @@ namespace Squora.Forms.Blazor.Components.Factories
             model.DynamicType = new ComponentSelectionKey(model.DynamicType.ComponentType, typeDefinition);
             return model;
         }
+        /// <summary>The share of the row in a horizontal layout ("10%") or a fixed size ("200px"), for a component that is already built.</summary>
+        public static DynamicFormModel WithWidth(this DynamicFormModel model, string width)
+        {
+            model.Parameters.Add(ParameterNames.Width, width);
+            return model;
+        }
         public static DynamicFormModel AddSchemaRule(this DynamicFormModel model, RuleEffect ruleEffect, string scope, string jsonSchema)
         {
             return model.AddSchemaRule(ruleEffect, scope, JObject.Parse(jsonSchema));

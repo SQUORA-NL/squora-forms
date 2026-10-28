@@ -48,6 +48,13 @@ namespace Squora.Forms.Blazor.Components.Builders
             return this as TBuilder;
         }
 
+        /// <summary>The share of the row in a horizontal layout: "10%" or a fixed size such as "200px".</summary>
+        public TBuilder WithWidth(string width)
+        {
+            _component.Width = width;
+            return this as TBuilder;
+        }
+
         public TBuilder WithParameter(string parameterName, object value)
         {
             _customParameters.Add(parameterName, value);
@@ -111,6 +118,9 @@ namespace Squora.Forms.Blazor.Components.Builders
             model.Parameters.AddRange(_customParameters);
             model.Parameters.Add(ParameterNames.Path, _component.Path);
             model.Parameters.Add(ParameterNames.InvalidMesssage, _component.InvalidMessage);
+            if (!string.IsNullOrWhiteSpace(_component.Class)) model.Parameters.Add(ParameterNames.Class, _component.Class);
+            if (!string.IsNullOrWhiteSpace(_component.Width)) model.Parameters.Add(ParameterNames.Width, _component.Width);
+            if (!string.IsNullOrWhiteSpace(_component.Style)) model.Parameters.Add(ParameterNames.Style, _component.Style);
             model.Elements = _component.FormModel.Elements;
             return model;
         }
