@@ -84,12 +84,19 @@
 /* checkboxes, buttons, groups */
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.boolcomponent, .mud-checkbox, .rz-chkbox) { color: var(--theme-text); }
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) fieldset.card,
-.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-paper-outlined {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-paper-outlined,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .rz-card {
     background: var(--theme-group, transparent);
     border: var(--theme-group-border, 1px solid var(--t-border));
     border-radius: var(--theme-group-radius, var(--t-radius, 8px));
     box-shadow: var(--theme-group-shadow, none);
     color: var(--theme-text);
+}
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .rz-fileupload-buttonbar { background: transparent; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.mud-card-header, fieldset.card legend) { background: transparent; }
+.form-stage[data-form-theme]:not([data-form-theme="default"]) fieldset.card legend { background: transparent; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) input[type="file"]::file-selector-button {
+    background: var(--t-bg, transparent); color: var(--theme-text); border: 1px solid var(--t-border, currentColor); border-radius: var(--t-radius, 6px);
 }
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) .groupcomponent legend { color: var(--theme-label, var(--theme-text)); font-family: var(--theme-font, inherit); }
 
@@ -195,9 +202,9 @@
 
 /* A class set on one component (WithClass in code, "Class" in the JSON, the "CSS class" field in the Designer) styles only that component.
    The class lands on the element's wrapper, so the rule reaches the input inside it, in every UI library. */
-.sq-highlight { padding: 8px 10px; border-radius: 8px; background: #fff7e0; border-left: 4px solid #f59e0b; }
+.sq-highlight { padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, #f59e0b 16%, transparent); border-left: 4px solid #f59e0b; }
 .sq-highlight :is(input, select, .mud-input-slot, .rz-textbox) { font-weight: 600; }
-.sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #b45309; font-weight: 700; }
+.sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #d97706; font-weight: 700; }
 
 /* The contact card (Shared/FormExtentions/ContactCard.razor), a templated component.
    It takes the sheet colour, text colour, font, border and radius of the form theme, and the --sq-accent colour for its banner. */
