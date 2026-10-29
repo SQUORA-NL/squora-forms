@@ -106,6 +106,12 @@
 }
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) .groupcomponent legend { color: var(--theme-label, var(--theme-text)); font-family: var(--theme-font, inherit); }
 
+/* MudBlazor colours the label of an input with its secondary text colour, and the file upload's label with a typography class */
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) { --mud-palette-text-secondary: var(--theme-label, var(--theme-text)); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .fileuploadcomponent > .mud-typography {
+    color: var(--theme-label, var(--theme-text)); font-size: var(--t-label-size, 14px); font-weight: var(--t-label-weight, 500);
+}
+
 /* ================= the themes ================= */
 
 /* ---- Dark ---- */
@@ -215,7 +221,7 @@
    The class lands on the element's wrapper, so the rule reaches the input inside it, in every UI library. */
 .sq-highlight { padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, #f59e0b 16%, transparent); border-left: 4px solid #f59e0b; }
 .sq-highlight :is(input, select, .mud-input-slot, .rz-textbox) { font-weight: 600; }
-.sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #d97706; font-weight: 700; }
+.form-stage .sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #d97706; font-weight: 700; }
 
 /* The contact card (Shared/FormExtentions/ContactCard.razor), a templated component.
    It takes the sheet colour, text colour, font, border and radius of the form theme, and the --sq-accent colour for its banner. */
