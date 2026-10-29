@@ -56,6 +56,18 @@ public class RuleEvaluatorTests
     }
 
     [Test]
+    public void The_same_rule_and_value_can_be_resolved_more_often_than_the_schema_library_allows_without_a_licence()
+    {
+        // a form resolves its rules on every render: the library stops validating after 1000 an hour
+        var rules = new[] { Rule(RuleEffect.HIDE, "$.isActive", IsFalse) };
+
+        for (var i = 0; i < 1500; i++)
+        {
+            Assert.That(RuleEvaluator.Resolve(rules, new { isActive = false }), Is.EqualTo(RuleEffect.HIDE));
+        }
+    }
+
+    [Test]
     public void Hidden_wins_over_disabled()
     {
         var rules = new[]
