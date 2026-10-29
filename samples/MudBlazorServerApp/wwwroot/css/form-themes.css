@@ -81,6 +81,12 @@
 /* a theme with only an underline has no box for the label to sit in */
 .form-stage:is([data-form-theme="studio"], [data-form-theme="vintage"], [data-form-theme="neu"]) .mud-input-outlined-border legend { display: none; }
 
+/* the space between elements: the same in every UI library (a theme sets --bd-gap to change it) */
+.form-stage { --bd-gap: 12px; }
+.form-stage .rz-stack.rz-flex-column { gap: var(--bd-gap) !important; }   /* Radzen sets the gap on the element itself */
+.form-stage .rz-text-body1 { margin-bottom: 0; }
+.form-stage .dropdowncomponent .rz-dropdown { width: 100%; }
+
 /* checkboxes, buttons, groups */
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.boolcomponent, .mud-checkbox, .rz-chkbox) { color: var(--theme-text); }
 .form-stage:where([data-form-theme]:not([data-form-theme="default"])) fieldset.card,

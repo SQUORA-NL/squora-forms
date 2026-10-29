@@ -2,7 +2,7 @@
 @inherits Squora.Forms.Blazor.Components.Input.DropDownComponentBase
 
 <BDFormComponentWrapper Class="dropdowncomponent" FormComponent="@this" ShowValidation="false">
-    <MudSelect @bind-Value="@SelectedValue" Label="@Label" Validation="@(new Func<string, string>(ValueMatch))" Disabled="@IsDisabled">
+    <MudSelect @bind-Value="@SelectedValue" Label="@Label" Variant="Variant.Outlined" Validation="@(new Func<string, string>(ValueMatch))" Disabled="@IsDisabled">
         @foreach (var item in Options)
         {
             <MudSelectItem Value="@item.Key">
