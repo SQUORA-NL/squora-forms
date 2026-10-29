@@ -173,8 +173,11 @@
     --mud-palette-primary: #6c63ff; --mud-palette-text-primary: #3a3a4a; --mud-palette-surface: #e0e5ec; --rz-primary: #6c63ff;
 }
 .form-stage[data-form-theme="neu"] .mud-input-outlined .mud-input-outlined-border { border-width: 0; }
-/* a filled-in field has no border to carry the shrunken label here, so the label goes (it stays while the field has focus) */
+/* a filled-in field has no border to carry the shrunken label here, so the label goes (it stays while the field has focus, above the field in the accent colour) */
 .form-stage[data-form-theme="neu"] .mud-input-control:not(:focus-within) .mud-input.mud-shrink ~ .mud-input-label { display: none; }
+.form-stage[data-form-theme="neu"] .mud-input-control:focus-within .mud-input-label.mud-input-label-outlined {
+    transform: translate(2px, -30px) scale(.8) !important; color: var(--bd-primary) !important; font-weight: 600; letter-spacing: .04em;
+}
 
 /* ---- Vintage ---- */
 .form-stage[data-form-theme="vintage"] {
