@@ -173,6 +173,8 @@
     --mud-palette-primary: #6c63ff; --mud-palette-text-primary: #3a3a4a; --mud-palette-surface: #e0e5ec; --rz-primary: #6c63ff;
 }
 .form-stage[data-form-theme="neu"] .mud-input-outlined .mud-input-outlined-border { border-width: 0; }
+/* a filled-in field has no border to carry the shrunken label here, so the label goes (it stays while the field has focus) */
+.form-stage[data-form-theme="neu"] .mud-input-control:not(:focus-within) .mud-input.mud-shrink ~ .mud-input-label { display: none; }
 
 /* ---- Vintage ---- */
 .form-stage[data-form-theme="vintage"] {
