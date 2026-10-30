@@ -22,6 +22,12 @@
   - Required: No
   - Example: `MaximumLength="255"`
 
+- **Class** (`string`)
+  - Description: Extra CSS class(es) for this one component, so your own CSS can style just this textbox. Set with `WithClass`, the **CSS class** field in the editor, or `"Class"` in the JSON.
+  - Type: `string`
+  - Required: No
+  - Example: `FormFactory.StringComponent("Nickname", "$.nickname", b => b.WithClass("sq-highlight"))`
+
 ### Properties
 
 - **ValidationString**
@@ -47,6 +53,8 @@
 
     public ExpandoObject data = new ExpandoObject();
 
-    public DynamicFormModel model = FormFactory.StringComponent("Name", "$.name");
+    public DynamicFormModel model = FormFactory.VerticalLayout(
+        FormFactory.StringComponent("Name", "$.name"),
+        FormFactory.StringComponent("Nickname (own class)", "$.nickname", b => b.WithClass("sq-highlight")));
 }
 ````

@@ -54,6 +54,45 @@ namespace Squora.Forms.Blazor.Components
         [Parameter]
         public string? Class { get; set; }
 
+        /// <summary>The share of the row this component takes in a horizontal layout: "10%", "30" (also a percentage) or a fixed size such as "200px".</summary>
+        [Parameter]
+        public string? Width { get; set; }
+
+        /// <summary>
+        /// The inline style for the component's wrapper: its <see cref="Width"/> (only inside a horizontal layout, where the wrapper is the
+        /// flex item) and its <see cref="Style"/>. A percentage may shrink, in proportion, to make room for the gaps between the columns, so
+        /// 10% and 90% fill the row exactly. In a row where some columns have a width, the ones without take what is left.
+        /// </summary>
+        public string? ItemStyle
+        {
+            get
+            {
+                var inRow = Parent?.FormModel?.DynamicType.ComponentType == ComponentType.HorizontalLayout;
+                var width = inRow ? WidthStyle(Width, Parent!.FormModel.Elements.Count) ?? (RowHasWidths() ? "flex: 1 1 0%; min-width: 0; " : null) : null;
+                var style = string.IsNullOrWhiteSpace(Style) ? null : Style.Trim().TrimEnd(';') + ";";
+                return width == null && style == null ? null : $"{width}{style}";
+            }
+        }
+
+        private bool RowHasWidths() =>
+            Parent!.FormModel.Elements.Any(e => e.Parameters.Entries.TryGetValue(ParameterNames.Width, out var w) && WidthStyle(w as string, 1) != null);
+
+        // only a number with a unit is let through into the style attribute
+        private static string? WidthStyle(string? width, int columns)
+        {
+            width = width?.Trim();
+            if (string.IsNullOrEmpty(width) || !System.Text.RegularExpressions.Regex.IsMatch(width, @"^\d+(\.\d+)?(%|px|rem|em|vw|ch)?$")) return null;
+            if (char.IsDigit(width[^1]) || width.EndsWith('%'))
+            {
+                // the share of the room that is left once the gaps between the columns are taken out (the HTML row wraps when it does not fit)
+                var share = double.Parse(width.TrimEnd('%'), System.Globalization.CultureInfo.InvariantCulture) / 100;
+                var gaps = Math.Max(columns - 1, 0);
+                return string.Create(System.Globalization.CultureInfo.InvariantCulture,
+                    $"flex: 0 1 calc((100% - {gaps} * var(--bd-gap, 16px)) * {share}); min-width: 0; ");
+            }
+            return $"flex: 0 0 {width}; min-width: 0; ";
+        }
+
         [Parameter]
         public EventCallback<object?> OnSubmitted { get; set; }
 
@@ -115,6 +154,10 @@ namespace Squora.Forms.Blazor.Components
             if (formModel == null) { return new Dictionary<string, object>(); }
             var componentType = GetComponentTypeFor(formModel);
             var validParameters = RegularObjectHandler.GetParameters(componentType, formModel.Parameters.Entries, IncludeDynamicOptionsInParameters(formModel.Parameters.Entries));
+            // a parameter that is no longer passed keeps its last value on a component that is already there:
+            // pass the class always, so removing it in the editor clears it
+            validParameters[ParameterNames.Width] = formModel.Parameters.Entries.TryGetValue(ParameterNames.Width, out var width) ? width : null!;
+            validParameters[ParameterNames.Class] = formModel.Parameters.Entries.TryGetValue(ParameterNames.Class, out var cssClass) ? cssClass : null!;
             validParameters.Add(ParameterNames.Value, Value);
             validParameters.Add(ParameterNames.ValueChanged, EventCallback.Factory.Create<object?>(this, ValueUpdate));
             validParameters.Add(ParameterNames.OnSubmitted, EventCallback.Factory.Create<object?>(this, Submitted));

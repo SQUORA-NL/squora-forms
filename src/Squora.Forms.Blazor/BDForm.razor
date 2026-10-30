@@ -1,63 +1,14 @@
 @inherits Squora.Forms.Blazor.Components.LayoutFormComponent
 
-<div class="sq-dynamicform" @onclick="@OnBackgroundClick">
-    @{ var editing = EditMode && ShowToolbox; }
-    @* The form sits at the same place in the render tree in both modes, so turning edit mode on or off
-       does not recreate it (which would reset the state of the components in it). *@
-    <CascadingValue Value="dragStateService" IsFixed="true">
-        <CascadingValue Value="selectionStateService" IsFixed="true">
-            <CascadingValue Value="validationStateService" IsFixed="true">
-            <CascadingValue Value="FormModel" IsFixed="true">
-                <div class="@(editing ? "bd-editor" : null)" @onclick:stopPropagation="@editing">
-                    @if (ShowEditModeToggle || editing)
-                    {
-                        <div class="bd-editor-bar">
-                            @if (ShowEditModeToggle)
-                            {
-                                <EditModeToggle EditMode="@EditMode" EditModeChanged="@OnEditModeChanged" />
-                            }
-                            @if (editing)
-                            {
-                                <span class="bd-editor-hint">
-                                    <span class="bd-hint-step">@EditorIcons.Pointer Click an element to edit it</span>
-                                    <span class="bd-hint-step"><span class="bd-grip-sample" aria-hidden="true">⋮⋮</span> Drag its handle to move it</span>
-                                </span>
-                                <div class="bd-editor-bar-actions">
-                                    <button type="button" class="bd-bar-button bd-toolbox-toggle" aria-pressed="@((!isToolboxCollapsed).ToString().ToLower())"
-                                            title="@(isToolboxCollapsed ? "Show the components" : "Hide the components")" @onclick="ToggleToolbox">
-                                        @EditorIcons.PanelLeft<span>Components</span>
-                                    </button>
-                                    <button type="button" class="bd-bar-button bd-pane-toggle" aria-pressed="@((!isPaneCollapsed).ToString().ToLower())"
-                                            title="@(isPaneCollapsed ? "Show the properties" : "Hide the properties")" @onclick="TogglePane">
-                                        @EditorIcons.Panel<span>Properties</span>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                    }
-                    <div class="@(editing ? "bd-editor-body" : null)">
-                        @if (editing && !isToolboxCollapsed)
-                        {
-                            <aside class="bd-toolbox-rail" aria-label="Components" @onkeydown="@OnCanvasKeyDown">
-                                <ComponentToolbox />
-                            </aside>
-                        }
-                        @* bd-stage and bd-sheet are there in both modes, so a theme can style the form in test mode as well *@
-                        <div class="@(editing ? "bd-canvas bd-stage" : "bd-stage")" tabindex="@(editing ? "-1" : null)" @onkeydown="@OnCanvasKeyDown" @onclick="@OnBackgroundClick">
-                            <div class="@(editing ? "bd-form-container-fullwidth bd-paper bd-sheet" : "bd-sheet")">
-                                <DynamicComponent Type=@componentType Parameters=@validParameters />
-                            </div>
-                        </div>
-                        @if (editing && !isPaneCollapsed)
-                        {
-                            <aside class="bd-property-sidebar" aria-label="Properties">
-                                <PropertyEditor OnClose="@TogglePane" />
-                            </aside>
-                        }
-                    </div>
+<div class="sq-dynamicform">
+    <CascadingValue Value="validationStateService" IsFixed="true">
+        <CascadingValue Value="FormModel" IsFixed="true">
+            @* bd-stage and bd-sheet are always there (what the form is on, and the form's own page), so a theme can style a form with them *@
+            <div class="@Join("bd-stage", StageClass)">
+                <div class="@Join("bd-sheet", SheetClass)">
+                    <DynamicComponent Type=@componentType Parameters=@validParameters />
                 </div>
-            </CascadingValue>
-            </CascadingValue>
+            </div>
         </CascadingValue>
     </CascadingValue>
 </div>

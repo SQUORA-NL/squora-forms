@@ -99,3 +99,9 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+/* A class set on one component (the "CSS class" field in the editor, WithClass in code, "Class" in the JSON) styles only that component.
+   The class lands on the element's wrapper, so the rule reaches the input inside it, in every UI library. */
+.sq-highlight { padding: 8px 10px; border-radius: 8px; background: #fff7e0; border-left: 4px solid #f59e0b; }
+.sq-highlight :is(input, select, .mud-input-slot, .rz-textbox) { font-weight: 600; }
+.sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #b45309; font-weight: 700; }

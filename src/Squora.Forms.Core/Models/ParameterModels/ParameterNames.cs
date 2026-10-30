@@ -9,6 +9,7 @@
         public const string MinimumLength = "MinimumLength";
         public const string MaximumLength = "MaximumLength";
         public const string Style = "Style";
+        public const string Width = "Width";
         public const string Class = "Class";
         public const string Options = "Options";
         public const string IteratorPath = "IteratorPath";

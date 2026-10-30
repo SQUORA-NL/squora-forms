@@ -22,7 +22,6 @@
     <None Remove="Samples\Components\StringSample - Copy.razor.md" />
     <None Remove="Samples\Components\StringSample.razor.md" />
     <None Remove="Samples\Components\VerticalLayoutSample - Copy.razor.md" />
-    <None Remove="Samples\Playground\Editor.razor.md" />
     <None Remove="Samples\Playground\Json.razor.md" />
     <None Remove="Samples\Rules\CompleteSample.razor.md" />
     <None Remove="Samples\Typed\BaseSample.razor.md" />
@@ -80,7 +79,6 @@
     <EmbeddedResource Include="Samples\Components\StringSample.razor.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Samples\Playground\Editor.razor.md" />
     <EmbeddedResource Include="Samples\Playground\Json.razor.md" />
     <EmbeddedResource Include="Samples\Rules\RulesSample.razor.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -118,12 +116,6 @@
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.HtmlComponents\Squora.Forms.Blazor.HtmlComponents.csproj" />
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.MudBlazorComponents\Squora.Forms.Blazor.MudBlazorComponents.csproj" />
     <ProjectReference Include="..\..\src\implementations\Squora.Forms.Blazor.RadzenComponents\Squora.Forms.Blazor.RadzenComponents.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Samples\Playground\Editor.razor.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

@@ -15,8 +15,15 @@
 
     public ExpandoObject data = new ExpandoObject();
 
-    public DynamicFormModel model = FormFactory.HorizontalLayout(
-        FormFactory.BoolComponent("Check", "$.check"),
-        FormFactory.StringComponent("Text", "$.text")
+    // without a Width the elements share the row equally; a percentage is a share of the row
+    public DynamicFormModel model = FormFactory.VerticalLayout(
+        FormFactory.HorizontalLayout(
+            FormFactory.BoolComponent("Check", "$.check"),
+            FormFactory.StringComponent("Text", "$.text")
+        ),
+        FormFactory.HorizontalLayout(
+            FormFactory.StringComponent("10%", "$.small", b => b.WithWidth("10%")),
+            FormFactory.StringComponent("90%", "$.large", b => b.WithWidth("90%"))
+        )
     );
 }

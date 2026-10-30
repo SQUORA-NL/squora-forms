@@ -19,8 +19,8 @@ public static class FormFrameworks
     public static readonly IReadOnlyList<FormFramework> All = new List<FormFramework>
     {
         new("mudblazor", "MudBlazor", "Material design components", MudBlazor()),
-        new("html", "HTML", "Plain HTML inputs, no UI library", new HtmlComponentsProvider().GetComponents()),
-        new("radzen", "Radzen", "Radzen Blazor components", new RadzenComponentProvider().GetComponents()),
+        new("html", "HTML", "Plain HTML inputs, no UI library", WithCustomComponents(new HtmlComponentsProvider().GetComponents())),
+        new("radzen", "Radzen", "Radzen Blazor components", WithCustomComponents(new RadzenComponentProvider().GetComponents())),
     };
 
     public static FormFramework Default => All[0];
@@ -32,6 +32,13 @@ public static class FormFrameworks
         var components = new MudBlazorComponentProvider().GetComponents();
         // a group that collapses; the other component sets show a "Collapsable" group as a plain group
         components[new ComponentSelectionKey(ComponentType.GroupLayout, "Collapsable")] = typeof(CollapsableGroup);
+        return WithCustomComponents(components);
+    }
+
+    // a templated component draws itself with plain markup, so every component set can show it
+    private static ComponentsList WithCustomComponents(ComponentsList components)
+    {
+        components[new ComponentSelectionKey(ComponentType.TemplateContent, "contactcard")] = typeof(ContactCard);
         return components;
     }
 }

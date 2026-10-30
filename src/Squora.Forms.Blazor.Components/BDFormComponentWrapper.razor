@@ -1,33 +1,34 @@
-﻿@using Squora.Forms.Blazor
-@using Squora.Forms.Blazor.Components
-@using Squora.Forms.Blazor.Services
-@using Squora.Forms.Common.Enums
-@namespace Squora.Forms.Blazor.Components
+﻿@namespace Squora.Forms.Blazor.Components
+@inject IServiceProvider Services
 
-<div class="@($"{Class} {FormComponent.Class} {(IsSelected ? "bd-selected" : "")} {(EditMode ? "bd-editable" : "")} {(EditMode && FormComponent is IDragContainer ? "bd-container" : "")} {(EditMode && IsDragging ? "bd-drag-active" : "")} {(IsDragSource ? "bd-dragging" : "")} {(IsDropTarget ? "bd-drop-target" : "")} {(FormComponent?.IsDisabled == true ? "bd-disabled" : "")}".Trim())"
-     data-drop-label="@(IsDropTarget ? DropLabel : null)"
-     aria-live="polite"
-     aria-disabled="@(FormComponent?.IsDisabled == true ? "true" : null)"
-     @onclick="@OnElementClick"
-     @onclick:stopPropagation="true"
-     @ondblclick="@OnElementDoubleClick"
-     @ondblclick:stopPropagation="true"
-     @onfocusout="OnFocusOut">
-    @* while editing, a component a rule hides stays in view (otherwise it could not be selected again) *@
-    @if (EditMode || (FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)
+@* Every component draws itself inside this wrapper. It is the same wrapper for every component and every UI library; what it draws is the plain
+   one, or, when an editor registered an IFormEditSurface, the editor's. A custom component has to be drawn inside it to get its class, style
+   and width, validation and (in an editor) selection. *@
+<DynamicComponent Type="@wrapperType" Parameters="@WrapperParameters" />
+
+@code {
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public FormComponentBase? FormComponent { get; set; }
+    [Parameter] public bool ShowValidation { get; set; } = true;
+
+    /// <summary>Kept for the components that set it; what the wrapper does while editing is up to the form component's own <see cref="FormComponentBase.EditMode"/>.</summary>
+    [Parameter] public bool EditMode { get; set; } = false;
+
+    private Type wrapperType = typeof(PlainElementWrapper);
+
+    protected override void OnInitialized()
     {
-        @ChildContent
+        wrapperType = Services.GetService(typeof(IFormEditSurface)) is IFormEditSurface surface
+            ? surface.ElementWrapperType
+            : typeof(PlainElementWrapper);
     }
-    @if (EditMode && FormComponent?.RuleEffect == RuleEffect.HIDE)
+
+    private IDictionary<string, object?> WrapperParameters => new Dictionary<string, object?>
     {
-        <span class="bd-rule-badge" title="A rule hides this while the form is filled in">Hidden by a rule</span>
-    }
-    @if (EditMode && FormComponent?.Parent is IDragContainer)
-    {
-        <BDEditChrome FormComponent="FormComponent" />
-    }
-    @if (ShowValidation && (!FormComponent?.IsValid ?? true))
-    {
-        <div class="bd-validation" id="@(FormComponent?.ErrorMessageId)" role="alert">@(FormComponent?.ValidationString??"")</div>
-    }
-</div>
+        [nameof(ElementWrapperBase.Class)] = Class,
+        [nameof(ElementWrapperBase.ChildContent)] = ChildContent,
+        [nameof(ElementWrapperBase.FormComponent)] = FormComponent,
+        [nameof(ElementWrapperBase.ShowValidation)] = ShowValidation,
+    };
+}

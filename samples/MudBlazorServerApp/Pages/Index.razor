@@ -9,13 +9,13 @@
 
 @inject IJSRuntime JS
 
-<PageTitle>Form editor</PageTitle>
+<PageTitle>Form gallery</PageTitle>
 
 <div class="demo-intro">
-    <MudText Typo="Typo.h5">Form editor</MudText>
+    <MudText Typo="Typo.h5">Form gallery</MudText>
     <MudText Typo="Typo.body2" Style="color:#64748b">
-        Pick a template, then drag components onto the form (or click them to add). Click an element to edit its properties.
-        The same form renders with any of the UI libraries below.
+        Pick a form and fill it in. The same form, a JSON definition, renders with any of the UI libraries and themes below.
+        Designing a form (dragging components, editing properties) is what the Squora Forms Designer is for.
     </MudText>
 </div>
 
@@ -67,8 +67,8 @@
         </select>
     </div>
     <div class="demo-style-group">
-        <span class="demo-style-label">Editor accent</span>
-        <div class="demo-swatches" role="radiogroup" aria-label="Editor accent colour">
+        <span class="demo-style-label">Accent</span>
+        <div class="demo-swatches" role="radiogroup" aria-label="Accent colour">
             @foreach (var a in Accents)
             {
                 var accentOption = a;
@@ -91,17 +91,14 @@
     </MudPaper>
 }
 
-@* a new key gives a new editor, so nothing of the previous form (selection, state) is carried over *@
-@* the editor takes its colours from --sq-*; --sq-sticky-top keeps its side panels clear of the app bar *@
-<div class="editor-stage" data-form-theme="@themeKey" style="--sq-accent:@accent; --sq-sticky-top:72px;">
+@* a new key gives a new form, so nothing of the previous one (state) is carried over *@
+@* the accent is --sq-accent, which the custom Contact card component takes its colour from *@
+<div class="form-stage" data-form-theme="@themeKey" style="--sq-accent:@accent;">
     <BDForm @key="@($"{formVersion}-{framework.Key}")"
             FormModel=@model
             Components=@framework.Components
             Value="@data"
-            ValueChanged="@update"
-            EditMode="@editMode"
-            ShowEditModeToggle="true"
-            EditModeChanged="@OnEditModeChanged"></BDForm>
+            ValueChanged="@update"></BDForm>
 </div>
 
 <MudCard Class="mt-3 data-card">
@@ -147,7 +144,6 @@
     private string frameworkKey = FormFrameworks.Default.Key;
     private FormFramework framework => FormFrameworks.Find(frameworkKey);
 
-    private bool editMode = true;
     private bool showData = true;
     private int formVersion;
     private bool showJsonEditor;
@@ -157,8 +153,7 @@
 
     public ExpandoObject data = new ExpandoObject();
 
-    // the form starts empty
-    public DynamicFormModel model = FormTemplates.Empty();
+    public DynamicFormModel model = FormTemplates.Contact();
 
     private void update()
     {
@@ -174,18 +169,11 @@
         frameworkKey = key;
     }
 
-    private void OnEditModeChanged(bool newEditMode)
-    {
-        editMode = newEditMode;
-        StateHasChanged();
-    }
-
     private void Load(DynamicFormModel newModel)
     {
         model = newModel;
         data = new ExpandoObject();
         formVersion++;
-        editMode = true;
     }
 
     private void Report(string message, bool error = false)

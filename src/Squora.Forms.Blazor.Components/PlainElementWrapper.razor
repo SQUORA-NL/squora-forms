@@ -1,0 +1,19 @@
+@using Squora.Forms.Common.Enums
+@namespace Squora.Forms.Blazor.Components
+@inherits ElementWrapperBase
+
+<div class="@ElementClasses"
+     style="@FormComponent?.ItemStyle"
+     aria-live="polite"
+     aria-disabled="@(FormComponent?.IsDisabled == true ? "true" : null)"
+     @onfocusout="OnFocusOut">
+    @* a component a rule hides is not there *@
+    @if ((FormComponent?.RuleEffect ?? RuleEffect.SHOW) != RuleEffect.HIDE)
+    {
+        @ChildContent
+    }
+    @if (ShowValidation && (!FormComponent?.IsValid ?? true))
+    {
+        <div class="bd-validation" id="@(FormComponent?.ErrorMessageId)" role="alert">@(FormComponent?.ValidationString??"")</div>
+    }
+</div>

@@ -17,7 +17,8 @@ builder.Services.AddMudServices();
 builder.Services.AddRadzenComponents();
 builder.Services.AddSquoraForms(cfg => 
                 cfg.UseDefaultMudBlazorComponents()
-                .RegisterComponent(ComponentType.GroupLayout, "Collapsable", typeof(CollapsableGroup)));
+                .RegisterComponent(ComponentType.GroupLayout, "Collapsable", typeof(CollapsableGroup))
+                .RegisterComponent(ComponentType.TemplateContent, "contactcard", typeof(ContactCard)));
 
 var app = builder.Build();
 

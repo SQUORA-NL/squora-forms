@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -43,12 +44,30 @@ namespace Squora.Forms.Blazor.Utillities
             {
                 var value = root.SelectToken(JsonSchemaPathHelpers.ConvertSchemaPathToJsonPath(rule.Condition.Scope));
                 if (value == null) { return false; }
-                return value.IsValid(JSchema.Parse(rule.Condition.Schema.ToString()));
+                return IsValid(value, rule.Condition.Schema.ToString());
             }
             catch (Exception ex) when (ex is JsonException or JSchemaException or ArgumentException)
             {
                 return false;
             }
+        }
+
+        // Every component evaluates its rules on every render, and the schema library only allows 1000 validations an hour without a licence:
+        // past that every validation fails, which showed as rules that stopped reacting. The answer is the same for the same schema and value,
+        // so it is asked once.
+        private const int MaxCached = 5000;
+        private static readonly ConcurrentDictionary<(string Schema, string Value), bool> cache = new();
+        private static readonly ConcurrentDictionary<string, JSchema> schemas = new();
+
+        private static bool IsValid(JToken value, string schema)
+        {
+            var key = (schema, value.ToString(Formatting.None));
+            if (cache.TryGetValue(key, out var known)) { return known; }
+
+            var valid = value.IsValid(schemas.GetOrAdd(schema, s => JSchema.Parse(s)));
+            if (cache.Count >= MaxCached) { cache.Clear(); }
+            cache[key] = valid;
+            return valid;
         }
 
         private static JObject ToJObject(object? data)

@@ -1,5 +1,7 @@
 ﻿@inherits Squora.Forms.Blazor.Components.Content.TemplateDisplayBase
 
+@* the wrapper is what gives this component its Class, Style and Width (and the editor's selection) *@
+<Squora.Forms.Blazor.Components.BDFormComponentWrapper FormComponent="@this">
 <h3>@GetValue("$.FirstName") @GetValue("$.LastName")</h3>
 
 <div class="samplecard">
@@ -12,6 +14,7 @@
         <p>@GetValue("$.Address.City")</p>
     </div>
 </div>
+</Squora.Forms.Blazor.Components.BDFormComponentWrapper>
 
 <style>
     .samplecard {

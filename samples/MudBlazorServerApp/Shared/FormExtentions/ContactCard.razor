@@ -1,0 +1,50 @@
+@using Squora.Forms.Blazor.Components
+@inherits Squora.Forms.Blazor.Components.Content.TemplateDisplayBase
+
+@* A templated display component: it draws the form's data however it likes. The wrapper gives it the Class, Style and Width
+   of its place in the form, and makes it selectable in the editor. It is registered as (TemplateContent, "contactcard").
+   Its looks are in wwwroot/css/form-themes.css (.contact-card), so they follow the form theme and the editor accent. *@
+<BDFormComponentWrapper Class="contactcardcomponent" FormComponent="@this" ShowValidation="false">
+    <article class="contact-card" aria-label="Contact card">
+        <div class="contact-card-banner" aria-hidden="true"></div>
+        <div class="contact-card-avatar" aria-hidden="true">@Initials</div>
+        <div class="contact-card-body">
+            <h4 class="contact-card-name">@(string.IsNullOrWhiteSpace(FullName) ? "Your name" : FullName)</h4>
+            <ul class="contact-card-list">
+                <li>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6h18v12H3z M3 7l9 6 9-6" /></svg>
+                    @Show(GetValue("$.email"), "your.email@example.com")
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg>
+                    @Show(GetValue("$.phone"), "Phone number")
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" /></svg>
+                    @Show(GetValue("$.city"), "City")
+                </li>
+            </ul>
+        </div>
+    </article>
+</BDFormComponentWrapper>
+
+@code {
+    private string FullName => $"{GetValue("$.firstName")} {GetValue("$.lastName")}".Trim();
+
+    private string Initials
+    {
+        get
+        {
+            var letters = new[] { GetValue("$.firstName"), GetValue("$.lastName") }
+                .Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => char.ToUpper(s.Trim()[0]));
+            var text = string.Concat(letters);
+            return text.Length == 0 ? "?" : text;
+        }
+    }
+
+    // an empty field shows a grey hint, so the card looks right before anything is filled in
+    private static MarkupString Show(string value, string hint) =>
+        string.IsNullOrWhiteSpace(value)
+            ? new MarkupString($"<span class=\"contact-card-hint\">{System.Net.WebUtility.HtmlEncode(hint)}</span>")
+            : new MarkupString($"<span>{System.Net.WebUtility.HtmlEncode(value)}</span>");
+}

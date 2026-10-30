@@ -27,10 +27,7 @@
         <BDForm FormModel="@model"
                 Components="@DynamicComponentList"
                 Value="@data"
-                ValueChanged="@Update"
-                EditMode="@editMode"
-                ShowEditModeToggle="true"
-                EditModeChanged="@OnEditModeChanged" />
+                ValueChanged="@Update" />
     </div>
 
     <div class="e-card demo-output">
@@ -47,18 +44,11 @@
 
 @code {
     private string result = "{}";
-    private bool editMode = false;
     public ExpandoObject data = new ExpandoObject();
 
     private void Update()
     {
         result = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        StateHasChanged();
-    }
-
-    private void OnEditModeChanged(bool newEditMode)
-    {
-        editMode = newEditMode;
         StateHasChanged();
     }
 

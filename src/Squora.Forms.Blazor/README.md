@@ -8,35 +8,25 @@ dotnet add package Squora.Forms.Blazor
 
 Install a UI framework package (HTML, MudBlazor, Radzen or Syncfusion) to get concrete components.
 
-## The form editor
+## Class, style and width of an element
 
-`<BDForm EditMode="true" ShowEditModeToggle="true" ... />` turns a form into an editor: a Components panel on the left, the form in the middle, the properties of the selected element on the right.
+Every element of a form can carry its own settings, in the form definition (JSON) or with the builders:
 
-- **Add**: drag a component onto the form, or click it. A click adds it inside the selected layout, after the selected field, or at the end of the form; the panel says which.
-- **Move**: drag an element by its handle. While dragging, every layout shows a dashed outline, every possible spot a line, and the spot under the pointer says where the drop lands ("Drop above City", "Into Address").
-- **Edit**: click an element. Its properties open on the right (the pane opens by itself if it was hidden); double click, or the sliders button on the element, moves the cursor to its first field. `Esc` lets go of the selection.
-- **Actions on the selected element**: edit properties, select the layout it is in, duplicate (the copy gets its own paths) and delete.
+- **Class**: extra CSS classes on that one element (`WithClass("highlight")`), so your own CSS styles just that textbox.
+- **Style**: an inline style on the element's wrapper (`WithStyle("...")`).
+- **Width**: in a horizontal layout, the share of the row an element takes: `"10%"` next to `"90%"` fills the row, or a fixed size such as `"200px"` (`WithWidth("10%")`). Elements without a width share what is left.
 
-The editor works with every UI framework package, and a form can be shown with any of them: pass the `ComponentsList` of the one you want as `Components`.
+A custom component gets all of this when it draws itself inside a `BDFormComponentWrapper`.
 
-### Colours
+## Editing forms
 
-The editor takes its colours from CSS variables, so one rule themes all of it. All are optional.
+This package only renders and validates forms. Editing them, the drag and drop, selecting an element and its properties, is what the
+**Squora Forms Designer** does (a separate product). It plugs in through one extension point: an `IFormEditSurface` registered as a service.
+It tells the runtime which component draws the wrapper around every element while a form is being edited (`ElementWrapperType`, derived from
+`ElementWrapperBase`) and which one shows the empty-layout placeholder (`EmptyLayoutType`). With none registered, a form renders as it always
+did, and `EditMode` changes nothing.
 
-```css
-.my-editor {
-    --sq-accent: #7c3aed;       /* selection, drop targets, buttons */
-    --sq-surface: #fff;         /* panels */
-    --sq-surface-2: #f1f5f9;    /* the canvas behind the form */
-    --sq-paper: #fff;           /* the form's own page */
-    --sq-border: #dbe1ea;
-    --sq-text: #1e293b;
-    --sq-muted: #64748b;
-    --sq-danger: #dc2626;
-    --sq-sticky-top: 72px;      /* keep the side panels below a fixed app bar */
-    --sq-toolbox-width: 224px;
-    --sq-pane-width: 332px;
-}
-```
+The `BDForm` draws a `bd-stage` and a `bd-sheet` around every form (what it is on, and its own page), and takes `StageClass` and `SheetClass`
+to add to them, so themes and editors have something to hold on to.
 
 Part of [Squora Forms](https://github.com/SQUORA-NL/squora-forms) - open-source, schema-driven forms for Blazor and React. MIT licensed.

@@ -1,23 +1,21 @@
 /* Form themes for the demo (the looks of the React demo: default, dark, compact, studio, glass, neu, vintage, card).
 
-   A theme is chosen with data-form-theme on .editor-stage and works the same in edit mode and in test mode,
-   and with every UI library. Each theme is a set of variables:
+   A theme is chosen with data-form-theme on .form-stage and works with every UI library. Each theme is a set of variables:
      --bd-*, --mud-palette-*, --rz-*   the colours of the HTML, MudBlazor and Radzen components
      --t-*                             the look of a field and its label, applied to all three libraries below
      --theme-sheet / --theme-stage     the sheet the form is on, and what is behind it
-   The sheet is .bd-sheet, the stage .bd-stage; both are there in test mode too (in edit mode they are the editor's paper and canvas). */
+   The sheet is .bd-sheet, the stage .bd-stage: the runtime's BDForm draws both around every form. */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Raleway:wght@400;600;700&display=swap');
 
 /* ================= what a theme does, once for every library ================= */
 
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .bd-stage:not(.bd-canvas) {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .bd-stage {
     padding: 24px;
     background: var(--theme-stage, transparent);
     border-radius: 14px;
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .bd-canvas { background-image: none; background: var(--theme-stage, var(--sq-surface-2, #f1f5f9)); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .bd-sheet {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .bd-sheet {
     box-sizing: border-box;
     padding: var(--theme-pad, 28px 24px 24px);
     background: var(--theme-sheet, #fff);
@@ -31,7 +29,7 @@
 }
 
 /* labels: HTML, Radzen, MudBlazor */
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.bd-label, .rz-text-body1, .mud-input-label, .rz-label) {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.bd-label, .rz-text-body1, .mud-input-label, .rz-label) {
     color: var(--theme-label, var(--theme-text));
     font-family: var(--theme-font, inherit);
     font-size: var(--t-label-size, 14px);
@@ -41,10 +39,10 @@
 }
 
 /* the field box: the HTML inputs, the Radzen inputs, and the Radzen wrappers around a number, a date and a list */
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(
     .stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input,
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .dropdowncomponent > select,
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric) {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .dropdowncomponent > select,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric) {
     background-color: var(--t-bg);
     color: var(--theme-text);
     border: 0 solid var(--t-border);
@@ -56,49 +54,68 @@
     letter-spacing: var(--t-input-spacing, normal);
     transition: border-color .2s, box-shadow .2s, background-color .2s;
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric) :is(input, .rz-dropdown-label) {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric) :is(input, .rz-dropdown-label) {
     background: transparent; color: var(--theme-text); border: 0; box-shadow: none; font-family: inherit;
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input:focus,
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .dropdowncomponent > select:focus,
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric):focus-within {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input:focus,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .dropdowncomponent > select:focus,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.rz-dropdown, .rz-datepicker, .rz-numeric):focus-within {
     outline: none;
     border-color: var(--t-focus, var(--t-border));
     box-shadow: var(--t-focus-shadow, none);
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input::placeholder { color: var(--theme-label, inherit); opacity: .6; }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) select option { background: var(--theme-option-bg, #fff); color: var(--theme-option-text, #111); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input::placeholder { color: var(--theme-label, inherit); opacity: .6; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) select option { background: var(--theme-option-bg, #fff); color: var(--theme-option-text, #111); }
 
 /* MudBlazor: the outline of the input, its text and its background */
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input { background-color: var(--t-bg); border-radius: var(--t-radius, 6px); box-shadow: var(--t-shadow, none); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-root { color: var(--theme-text); font-family: var(--theme-font, inherit); text-transform: var(--t-input-case, none); letter-spacing: var(--t-input-spacing, normal); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-outlined .mud-input-outlined-border {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input { background-color: var(--t-bg); border-radius: var(--t-radius, 6px); box-shadow: var(--t-shadow, none); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-root { color: var(--theme-text); font-family: var(--theme-font, inherit); text-transform: var(--t-input-case, none); letter-spacing: var(--t-input-spacing, normal); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-outlined .mud-input-outlined-border {
     border-color: var(--t-border);
     border-width: var(--t-border-w, 1px);
     border-radius: var(--t-radius, 6px);
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-outlined.mud-focused .mud-input-outlined-border { border-color: var(--t-focus, var(--t-border)); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input.mud-focused { box-shadow: var(--t-focus-shadow, var(--t-shadow, none)); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-label-outlined { background: transparent; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-outlined.mud-focused .mud-input-outlined-border { border-color: var(--t-focus, var(--t-border)); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input.mud-focused { box-shadow: var(--t-focus-shadow, var(--t-shadow, none)); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-input-label-outlined { background: transparent; }
 /* a theme with only an underline has no box for the label to sit in */
-.editor-stage:is([data-form-theme="studio"], [data-form-theme="vintage"], [data-form-theme="neu"]) .mud-input-outlined-border legend { display: none; }
+.form-stage:is([data-form-theme="studio"], [data-form-theme="vintage"], [data-form-theme="neu"]) .mud-input-outlined-border legend { display: none; }
+
+/* the space between elements: the same in every UI library (a theme sets --bd-gap to change it) */
+.form-stage { --bd-gap: 12px; }
+.form-stage .rz-stack.rz-flex-column { gap: var(--bd-gap) !important; }   /* Radzen sets the gap on the element itself */
+.form-stage .rz-text-body1 { margin-bottom: 0; }
+.form-stage .dropdowncomponent .rz-dropdown { width: 100%; }
 
 /* checkboxes, buttons, groups */
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.boolcomponent, .mud-checkbox, .rz-chkbox) { color: var(--theme-text); }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) fieldset.card,
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-paper-outlined {
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.boolcomponent, .mud-checkbox, .rz-chkbox) { color: var(--theme-text); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) fieldset.card,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .mud-paper-outlined,
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .rz-card {
     background: var(--theme-group, transparent);
     border: var(--theme-group-border, 1px solid var(--t-border));
     border-radius: var(--theme-group-radius, var(--t-radius, 8px));
     box-shadow: var(--theme-group-shadow, none);
     color: var(--theme-text);
 }
-.editor-stage:where([data-form-theme]:not([data-form-theme="default"])) .groupcomponent legend { color: var(--theme-label, var(--theme-text)); font-family: var(--theme-font, inherit); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .rz-fileupload-buttonbar { background: transparent; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) :is(.mud-card-header, fieldset.card legend) { background: transparent; }
+.form-stage[data-form-theme]:not([data-form-theme="default"]) fieldset.card legend { background: transparent; }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) input[type="file"]::file-selector-button {
+    background: var(--t-bg, transparent); color: var(--theme-text); border: 1px solid var(--t-border, currentColor); border-radius: var(--t-radius, 6px);
+}
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .groupcomponent legend { color: var(--theme-label, var(--theme-text)); font-family: var(--theme-font, inherit); }
+
+/* MudBlazor colours the label of an input with its secondary text colour, and the file upload's label with a typography class */
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) { --mud-palette-text-secondary: var(--theme-label, var(--theme-text)); }
+.form-stage:where([data-form-theme]:not([data-form-theme="default"])) .fileuploadcomponent > .mud-typography {
+    color: var(--theme-label, var(--theme-text)); font-size: var(--t-label-size, 14px); font-weight: var(--t-label-weight, 500);
+}
 
 /* ================= the themes ================= */
 
 /* ---- Dark ---- */
-.editor-stage[data-form-theme="dark"] {
+.form-stage[data-form-theme="dark"] {
     --theme-sheet: #1a1a2e; --theme-stage: #10101c; --theme-text: #e0e0e0; --theme-label: #b6bdc9;
     --t-bg: #1a1a2e; --t-border: #4a4f63; --t-focus: #64b5f6; --t-focus-shadow: 0 0 0 3px rgba(100, 181, 246, .25);
     --theme-option-bg: #1a1a2e; --theme-option-text: #e0e0e0; --theme-sheet-border: 1px solid #2c2f45;
@@ -110,7 +127,7 @@
 }
 
 /* ---- Compact ---- */
-.editor-stage[data-form-theme="compact"] {
+.form-stage[data-form-theme="compact"] {
     --theme-text: #333; --theme-label: #555; --theme-pad: 16px 14px 12px; --theme-sheet-radius: 6px; --theme-sheet-border: 1px solid #e5e5e5;
     --t-bg: #fff; --t-border: #d6d6d6; --t-radius: 3px; --t-focus: #5c6bc0; --t-focus-shadow: 0 0 0 2px rgba(92, 107, 192, .22);
     --t-label-size: 12px;
@@ -118,12 +135,12 @@
     --mud-palette-primary: #5c6bc0; --rz-primary: #5c6bc0; --mud-default-borderradius: 3px;
     font-size: 13px;
 }
-.editor-stage[data-form-theme="compact"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input,
-.editor-stage[data-form-theme="compact"] .dropdowncomponent > select { height: 30px; font-size: 13px; }
-.editor-stage[data-form-theme="compact"] .mud-input-root { font-size: 13px; padding-top: 8px; padding-bottom: 8px; }
+.form-stage[data-form-theme="compact"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input,
+.form-stage[data-form-theme="compact"] .dropdowncomponent > select { height: 30px; font-size: 13px; }
+.form-stage[data-form-theme="compact"] .mud-input-root { font-size: 13px; padding-top: 8px; padding-bottom: 8px; }
 
 /* ---- Studio ---- */
-.editor-stage[data-form-theme="studio"] {
+.form-stage[data-form-theme="studio"] {
     --theme-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --theme-sheet: #fffcf8; --theme-stage: #f5f0eb; --theme-text: #2d2a26; --theme-label: #8a7e72; --theme-sheet-radius: 16px; --theme-pad: 32px 30px 28px;
     --theme-sheet-shadow: 0 10px 30px rgba(120, 90, 60, .1);
@@ -133,10 +150,10 @@
     --bd-gap: 24px; --bd-primary: #c47a5a; --bd-primary-hover: #a8613f; --bd-border-focus: #c47a5a;
     --mud-palette-primary: #c47a5a; --mud-palette-text-primary: #2d2a26; --rz-primary: #c47a5a;
 }
-.editor-stage[data-form-theme="studio"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input { font-size: 16px; padding-left: 2px; }
+.form-stage[data-form-theme="studio"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input { font-size: 16px; padding-left: 2px; }
 
 /* ---- Glass ---- */
-.editor-stage[data-form-theme="glass"] {
+.form-stage[data-form-theme="glass"] {
     --theme-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --theme-stage: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
     --theme-sheet: rgba(255, 255, 255, .06); --theme-sheet-border: 1px solid rgba(255, 255, 255, .16); --theme-sheet-radius: 22px;
@@ -155,7 +172,7 @@
 }
 
 /* ---- Neu ---- */
-.editor-stage[data-form-theme="neu"] {
+.form-stage[data-form-theme="neu"] {
     --theme-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --theme-stage: #e0e5ec; --theme-sheet: #e0e5ec; --theme-sheet-radius: 26px; --theme-sheet-border: 1px solid transparent;
     --theme-sheet-shadow: 9px 9px 18px #bfc6d1, -9px -9px 18px #fff; --theme-pad: 32px 28px 28px;
@@ -167,10 +184,15 @@
     --bd-gap: 24px; --bd-primary: #6c63ff; --bd-primary-hover: #5a52d5;
     --mud-palette-primary: #6c63ff; --mud-palette-text-primary: #3a3a4a; --mud-palette-surface: #e0e5ec; --rz-primary: #6c63ff;
 }
-.editor-stage[data-form-theme="neu"] .mud-input-outlined .mud-input-outlined-border { border-width: 0; }
+.form-stage[data-form-theme="neu"] .mud-input-outlined .mud-input-outlined-border { border-width: 0; }
+/* a filled-in field has no border to carry the shrunken label here, so the label goes (it stays while the field has focus, above the field in the accent colour) */
+.form-stage[data-form-theme="neu"] .mud-input-control:not(:focus-within) .mud-input.mud-shrink ~ .mud-input-label { display: none; }
+.form-stage[data-form-theme="neu"] .mud-input-control:focus-within .mud-input-label.mud-input-label-outlined {
+    transform: translate(2px, -30px) scale(.8) !important; color: var(--bd-primary) !important; font-weight: 600; letter-spacing: .04em;
+}
 
 /* ---- Vintage ---- */
-.editor-stage[data-form-theme="vintage"] {
+.form-stage[data-form-theme="vintage"] {
     --theme-font: 'Montserrat', Arial, sans-serif;
     --theme-stage: #e8e9e0; --theme-sheet: #f2f3eb; --theme-sheet-radius: 0; --theme-sheet-border: 2px solid #474544; --theme-pad: 36px 32px 30px;
     --theme-text: #474544; --theme-label: #474544;
@@ -181,10 +203,10 @@
     --bd-gap: 28px; --bd-primary: #474544; --bd-primary-hover: #2f2d2c; --bd-destructive: #9b2c2c; --bd-radius: 0; --bd-radius-lg: 0;
     --mud-palette-primary: #474544; --mud-palette-text-primary: #474544; --mud-palette-surface: #f2f3eb; --mud-default-borderradius: 0px; --rz-primary: #474544;
 }
-.editor-stage[data-form-theme="vintage"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input { padding-left: 0; }
+.form-stage[data-form-theme="vintage"] :is(.stringcomponent, .intcomponent, .numbercomponent, .datetimecomponent) > input { padding-left: 0; }
 
 /* ---- Card ---- */
-.editor-stage[data-form-theme="card"] {
+.form-stage[data-form-theme="card"] {
     --theme-font: 'Raleway', sans-serif;
     --theme-stage: #f4f4f4; --theme-sheet: #fff; --theme-sheet-radius: 16px; --theme-sheet-shadow: 0 10px 30px rgba(0, 0, 0, .08); --theme-pad: 32px 28px 28px;
     --theme-text: #555; --theme-label: #8a8a8a;
@@ -194,3 +216,65 @@
     --bd-gap: 20px; --bd-primary: #4a90d9; --bd-primary-hover: #357abd; --bd-border-focus: #4a90d9;
     --mud-palette-primary: #4a90d9; --mud-palette-text-primary: #555; --rz-primary: #4a90d9;
 }
+
+/* A class set on one component (WithClass in code, "Class" in the JSON, the "CSS class" field in the Designer) styles only that component.
+   The class lands on the element's wrapper, so the rule reaches the input inside it, in every UI library. */
+.sq-highlight { padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, #f59e0b 16%, transparent); border-left: 4px solid #f59e0b; }
+.sq-highlight :is(input, select, .mud-input-slot, .rz-textbox) { font-weight: 600; }
+.form-stage .sq-highlight :is(label, .bd-label, .mud-input-label, .rz-text-body1) { color: #d97706; font-weight: 700; }
+
+/* The contact card (Shared/FormExtentions/ContactCard.razor), a templated component.
+   It takes the sheet colour, text colour, font, border and radius of the form theme, and the --sq-accent colour for its banner. */
+.contactcardcomponent { align-self: flex-start; }
+.contact-card {
+    --cc-accent: var(--sq-accent, #2563eb);
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-width: 0;
+    font-family: var(--theme-font, inherit);
+    color: var(--theme-text, #1e293b);
+    background: color-mix(in srgb, var(--theme-text, #1e293b) 4%, var(--theme-sheet, #fff));
+    border: var(--theme-group-border, 1px solid color-mix(in srgb, var(--theme-text, #1e293b) 14%, transparent));
+    border-radius: var(--theme-group-radius, 16px);
+    box-shadow: var(--theme-sheet-shadow, 0 8px 24px rgba(15, 23, 42, .10));
+}
+.contact-card-banner {
+    height: 64px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255, 255, 255, .35), transparent 45%),
+        linear-gradient(120deg, var(--cc-accent), color-mix(in srgb, var(--cc-accent) 45%, #7c3aed));
+}
+.contact-card-avatar {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    background: color-mix(in srgb, var(--cc-accent) 80%, #000);
+    border: 4px solid color-mix(in srgb, var(--theme-text, #1e293b) 4%, var(--theme-sheet, #fff));
+    box-sizing: border-box;
+}
+.contact-card-body { padding: 40px 20px 18px; }
+.contact-card-name { margin: 0 0 10px; font-size: 19px; font-weight: 700; line-height: 1.25; color: inherit; overflow-wrap: anywhere; }
+.contact-card-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.contact-card-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; min-width: 0; }
+.contact-card-list li > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.contact-card-list svg {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--cc-accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.contact-card-hint { opacity: .5; font-style: italic; }

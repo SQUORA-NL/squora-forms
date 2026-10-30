@@ -15,5 +15,8 @@
 
     public ExpandoObject data = new ExpandoObject();
 
-    public DynamicFormModel model = FormFactory.StringComponent("Name", "$.name");
+    public DynamicFormModel model = FormFactory.VerticalLayout(
+        FormFactory.StringComponent("Name", "$.name"),
+        // a class on one component styles only that one (.sq-highlight is in the app's css)
+        FormFactory.StringComponent("Nickname (own class)", "$.nickname", b => b.WithClass("sq-highlight")));
 }
